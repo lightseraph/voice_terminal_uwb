@@ -16,9 +16,9 @@ extern "C"
 #define OLED 1   // OLED开关，ULM1使用OLED时开启,ULM1-LD1默认关闭
 #define E2PROM 0 // 外接EEPROM开关，ULM1默认不焊接，ULM1-LD1无板载
 
-#define MAX_TAG_110K 4 // 110K模式下最大的标签容量
-// #define MAX_TAG_110K      1   //110K模式下最大的标签容量
-#define MAX_TAG_68M 15 // 6.8M模式下最大的标签容量
+#define MAX_TAG_110K 4  // 110K模式下最大的标签容量
+#define MAX_TAG_850K 10 // 850K模式下最大的标签容量
+#define MAX_TAG_68M 15  // 6.8M模式下最大的标签容量
 
 #if (DISCOVERY == 0)
 #define MAX_TAG_LIST_SIZE (MAX_TAG_68M)
@@ -112,6 +112,8 @@ extern "C"
 #define A1_ANCHOR_ADDR (0x8001)
 #define A2_ANCHOR_ADDR (0x8002)
 #define A3_ANCHOR_ADDR (0x8003)
+#define A4_ANCHOR_ADDR (0x8004)
+#define A5_ANCHOR_ADDR (0x8005)
 
 #define WAIT4TAGFINAL 1
 
