@@ -1,7 +1,7 @@
 #ifndef _24CXX_H
 #define _24CXX_H
 // #include "sys.h"
-#include "ctiic.h"
+#include "main.h"
 //////////////////////////////////////////////////////////////////////////////////
 // 本程序只供学习使用，未经作者许可，不得用于其它任何用途
 // ALIENTEK STM32F429开发板
@@ -25,7 +25,7 @@
 #define AT24C128 16383
 #define AT24C256 32767
 // STM32F429开发板使用的是24c02，所以定义EE_TYPE为AT24C02
-#define EE_TYPE AT24C32
+#define EE_TYPE AT24C64
 
 u8 AT24CXX_ReadOneByte(u16 ReadAddr);                              // 指定地址读取一个字节
 void AT24CXX_WriteOneByte(u16 WriteAddr, u8 DataToWrite);          // 指定地址写入一个字节

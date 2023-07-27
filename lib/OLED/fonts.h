@@ -36,6 +36,7 @@ extern C
 
 	extern FontDef_t Font_7x10;
 	extern FontDef_t Font_8x16;
+	extern FontDef_t Font_7x14;
 
 	char *FONTS_GetStringSize(char *str, FONTS_SIZE_t *SizeStruct, FontDef_t *Font);
 

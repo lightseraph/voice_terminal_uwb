@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dma.h"
-#include "i2c.h"
 #include "iwdg.h"
 #include "spi.h"
 #include "tim.h"
@@ -35,6 +34,7 @@
 #endif
 #include "bk9535.h"
 #include "key.h"
+#include "24cxx.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -120,9 +120,10 @@ int main(void)
   MX_IWDG_Init();
   MX_SPI1_Init();
   MX_TIM6_Init();
-  MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_Delay(500);
+  AT24CXX_Check();
   KEY_Config();
   BK_Init();
   HAL_UART_Receive_DMA(&huart1, &UART_RX_BUF[0], 1); // 启动DMA接收

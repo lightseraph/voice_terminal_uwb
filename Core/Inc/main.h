@@ -23,35 +23,34 @@
 #define __MAIN_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32g0xx_hal.h"
 
-  /* Private includes ----------------------------------------------------------*/
-  /* USER CODE BEGIN Includes */
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
 
-  /* USER CODE END Includes */
+/* USER CODE END Includes */
 
-  /* Exported types ------------------------------------------------------------*/
-  /* USER CODE BEGIN ET */
+/* Exported types ------------------------------------------------------------*/
+/* USER CODE BEGIN ET */
 
-  /* USER CODE END ET */
+/* USER CODE END ET */
 
-  /* Exported constants --------------------------------------------------------*/
-  /* USER CODE BEGIN EC */
+/* Exported constants --------------------------------------------------------*/
+/* USER CODE BEGIN EC */
 
-  /* USER CODE END EC */
+/* USER CODE END EC */
 
-  /* Exported macro ------------------------------------------------------------*/
-  /* USER CODE BEGIN EM */
+/* Exported macro ------------------------------------------------------------*/
+/* USER CODE BEGIN EM */
 
-  /* USER CODE END EM */
+/* USER CODE END EM */
 
-  /* Exported functions prototypes ---------------------------------------------*/
-  void Error_Handler(void);
+/* Exported functions prototypes ---------------------------------------------*/
+void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -77,6 +76,12 @@ extern "C"
 #define DW_MOSI_GPIO_Port GPIOA
 #define DW_NSS_Pin GPIO_PIN_0
 #define DW_NSS_GPIO_Port GPIOB
+#define DW_SYNC_Pin GPIO_PIN_8
+#define DW_SYNC_GPIO_Port GPIOA
+#define I2C_SCL_Pin GPIO_PIN_11
+#define I2C_SCL_GPIO_Port GPIOA
+#define I2C_SDA_Pin GPIO_PIN_12
+#define I2C_SDA_GPIO_Port GPIOA
 #define SW_PLUS_Pin GPIO_PIN_3
 #define SW_PLUS_GPIO_Port GPIOB
 #define SW_PLUS_EXTI_IRQn EXTI2_3_IRQn
@@ -86,7 +91,7 @@ extern "C"
 #define RF_CE_Pin GPIO_PIN_8
 #define RF_CE_GPIO_Port GPIOB
 
-  /* USER CODE BEGIN Private defines */
+/* USER CODE BEGIN Private defines */
   typedef const int32_t sc32;
   typedef const int16_t sc16;
   typedef const int8_t sc8;
@@ -118,7 +123,7 @@ extern "C"
   extern vu32 time_delay;
   extern const uint8_t LOCAL_ID[16];
   extern uint8_t local_id;
-  /* USER CODE END Private defines */
+/* USER CODE END Private defines */
 
 #ifdef __cplusplus
 }

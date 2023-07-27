@@ -22,7 +22,7 @@
 void IIC_Delay(void)
 {
 	int t = 0;
-	while (t < 2)
+	while (t < 10)
 	{
 		__NOP();
 		t++;

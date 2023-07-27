@@ -1,6 +1,6 @@
 #include "ssd1306.h"
+#include "ctiic.h"
 
-extern I2C_HandleTypeDef hi2c2;
 /* Write command */
 #define SSD1306_WRITECOMMAND(command) ssd1306_I2C_Write(SSD1306_I2C_ADDR, 0x00, (command))
 /* Write data */
@@ -29,14 +29,14 @@ uint8_t SSD1306_Init(void)
 	HAL_Delay(500);
 
 	/* Check if LCD connected to I2C */
-	if (HAL_I2C_IsDeviceReady(&hi2c2, SSD1306_I2C_ADDR, 1, 1000) != HAL_OK)
+	/* if (HAL_I2C_IsDeviceReady(&hi2c1, SSD1306_I2C_ADDR, 1, 1000) != HAL_OK)
 	{
-		/* Return false */
+
 		return 0;
-	}
+	} */
 
 	/* A little delay */
-	HAL_Delay(10);
+	// HAL_Delay(10);
 
 	/* Init LCD */
 	SSD1306_WRITECOMMAND(0xAE); // display off
@@ -48,7 +48,7 @@ uint8_t SSD1306_Init(void)
 	SSD1306_WRITECOMMAND(0x10); //---set high column address
 	SSD1306_WRITECOMMAND(0x40); //--set start line address
 	SSD1306_WRITECOMMAND(0x81); //--set contrast control register
-	SSD1306_WRITECOMMAND(0xFF);
+	SSD1306_WRITECOMMAND(0x60);
 	SSD1306_WRITECOMMAND(0xA1); //--set segment re-map 0 to 127
 	SSD1306_WRITECOMMAND(0xA6); //--set normal display
 	SSD1306_WRITECOMMAND(0xA8); //--set multiplex ratio(1 to 64)
@@ -173,7 +173,7 @@ char SSD1306_Putc(char ch, FontDef_t *Font, SSD1306_COLOR_t color)
 		b = Font->data[(ch - 32) * Font->FontHeight + i];
 		for (j = 0; j < Font->FontWidth; j++)
 		{
-			if ((b << j) & 0x8000)
+			if ((b << j) & 0x80)
 			{
 				SSD1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR_t)color);
 			}
@@ -534,24 +534,39 @@ void SSD1306_OFF(void)
 void LCD_DISPLAY(uint16_t x, uint16_t y, char *str)
 {
 	SSD1306_GotoXY(x, y);
-	SSD1306_Puts(str, &Font_8x16, 1);
+	SSD1306_Puts(str, &Font_7x14, 1);
+	SSD1306_UpdateScreen(); // display
+}
+
+void LCD_Title(void)
+{
+	for (uint8_t a = 127; a < 135; a++)
+	{
+		SSD1306_GotoXY((a - 127) * 7, 0);
+		SSD1306_Putc(a, &Font_7x14, 1);
+	}
+	LCD_DISPLAY(60, 0, "RTLS V1");
 	SSD1306_UpdateScreen(); // display
 }
 
 void ssd1306_I2C_WriteMulti(uint8_t address, uint8_t reg, uint8_t *data, uint16_t count)
 {
-	uint8_t dt[count + 1];
-	dt[0] = reg;
-	uint8_t i;
-	for (i = 1; i <= count; i++)
-		dt[i] = data[i - 1];
-	HAL_I2C_Master_Transmit(&hi2c2, address, dt, count, 10);
+	IIC_Start();
+	IIC_SendByte(address);
+	reg = 0xC0;
+	for (u8 i = 0; i < count; i++)
+	{
+		IIC_SendByte(reg); // 写数据寄存器地址
+		IIC_SendByte(data[i]);
+	}
+	IIC_Stop();
 }
 
 void ssd1306_I2C_Write(uint8_t address, uint8_t reg, uint8_t data)
 {
-	uint8_t dt[2];
-	dt[0] = reg;
-	dt[1] = data;
-	HAL_I2C_Master_Transmit(&hi2c2, address, dt, 2, 10);
+	IIC_Start();
+	IIC_SendByte(address);
+	IIC_SendByte(reg); // 写数据寄存器地址
+	IIC_SendByte(data);
+	IIC_Stop();
 }

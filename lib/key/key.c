@@ -2,7 +2,6 @@
 #include "bk9535.h"
 #include "tim.h"
 #include "syscall.h"
-#include "eeprom.h"
 #include <stdio.h>
 
 KEY_PROCESS_TypeDef key[KEYS];
@@ -123,14 +122,14 @@ void KEY_Scan(void)
                 {
                 case 0:
                     SwitchNextFreq();
-                    EEPROM_WRITE_W_CHECK(FREQ_ADDR, &USER_DATA.rUserFreqIndex, 1);
+                    // EEPROM_WRITE_W_CHECK(FREQ_ADDR, &USER_DATA.rUserFreqIndex, 1);
                     Flash_LED(LED_GREEN, 100, USER_DATA.rUserFreqIndex, FOLLOW_PREVIOUS);
                     // Disp_Freq(USER_DATA.rUserFreqIndex);
                     //  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, RESET);
                     break;
                 case 1:
                     SwitchPrevFreq();
-                    EEPROM_WRITE_W_CHECK(FREQ_ADDR, &USER_DATA.rUserFreqIndex, 1);
+                    // EEPROM_WRITE_W_CHECK(FREQ_ADDR, &USER_DATA.rUserFreqIndex, 1);
                     Flash_LED(LED_GREEN, 100, USER_DATA.rUserFreqIndex, FOLLOW_PREVIOUS);
                     // Disp_Freq(USER_DATA.rUserFreqIndex);
                     //  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, SET);
@@ -144,7 +143,7 @@ void KEY_Scan(void)
                     local_id++;
                     if (local_id == 16)
                         local_id = 0;
-                    EEPROM_WRITE_W_CHECK(LOCAL_ID_ADDR, &local_id, 1);
+                    // EEPROM_WRITE_W_CHECK(LOCAL_ID_ADDR, &local_id, 1);
                     Flash_LED(LED_GREEN, 100, 2, FOLLOW_PREVIOUS);
                     // Disp_ID(local_id);
                     break;
@@ -153,7 +152,7 @@ void KEY_Scan(void)
                         local_id = 15;
                     else
                         local_id--;
-                    EEPROM_WRITE_W_CHECK(LOCAL_ID_ADDR, &local_id, 1);
+                    // EEPROM_WRITE_W_CHECK(LOCAL_ID_ADDR, &local_id, 1);
                     Flash_LED(LED_GREEN, 100, 2, FOLLOW_PREVIOUS);
                     Disp_ID(local_id);
                     break;
@@ -175,7 +174,7 @@ void KEY_Scan(void)
                 {
                 case 0:
                     HAL_GPIO_TogglePin(RF_CE_GPIO_Port, RF_CE_Pin);
-                    HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+                    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
                     delay_nms(1);
                     if (HAL_GPIO_ReadPin(RF_CE_GPIO_Port, RF_CE_Pin))
                     {

@@ -4,6 +4,8 @@
         "stm32g0xx_hal.h": "c",
         "stm32g0xx_hal_conf.h": "c",
         "stm32g0xx_hal_exti.h": "c",
-        "ssd1306.h": "c"
+        "ssd1306.h": "c",
+        "fonts.h": "c",
+        "main.h": "c"
     }
 }
