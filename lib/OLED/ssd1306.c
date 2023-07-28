@@ -538,15 +538,23 @@ void LCD_DISPLAY(uint16_t x, uint16_t y, char *str)
 	SSD1306_UpdateScreen(); // display
 }
 
-void LCD_Title(void)
+void LCD_Title(char *str)
 {
 	for (uint8_t a = 127; a < 135; a++)
 	{
 		SSD1306_GotoXY((a - 127) * 7, 0);
 		SSD1306_Putc(a, &Font_7x14, 1);
 	}
-	LCD_DISPLAY(60, 0, "RTLS V1");
+	LCD_DISPLAY(60, 0, str);
 	SSD1306_UpdateScreen(); // display
+}
+
+void Disp_ID(uint8_t id)
+{
+}
+
+void Disp_Freq(uint8_t freq_index)
+{
 }
 
 void ssd1306_I2C_WriteMulti(uint8_t address, uint8_t reg, uint8_t *data, uint16_t count)

@@ -31,7 +31,7 @@ uint8_t instance_mode = ANCHOR;
 
 #define LCD_BUFF_LEN (20)
 char lcd_data[LCD_BUFF_LEN];
-uint8_t max_tag_num = 4;
+uint8_t max_tag_num = 10;
 uint8_t UART_RX_BUF[1];
 
 // 默认使用110K，channel2

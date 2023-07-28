@@ -34,13 +34,14 @@
 #endif
 #include "bk9535.h"
 #include "key.h"
-#include "24cxx.h"
+#include "eeprom.h"
+#include "syscall.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define SOFTWARE_VER_STRING "HR-RTLS_ULM1 V4"
-vu32 time_delay;
+#define SOFTWARE_VER_STRING "RTLS V1"
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -121,11 +122,26 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM6_Init();
   MX_USART1_UART_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   HAL_Delay(500);
-  AT24CXX_Check();
+  if (0 == AT24CXX_Check())
+  {
+    Init_Param();
+    AT24CXX_WriteOneByte(0x000, EEPROM_DATAFORMAT);
+  }
+  rWorkChannel = CHA;
   KEY_Config();
-  BK_Init();
+  SSD1306_Init();
+  LCD_Title(SOFTWARE_VER_STRING);
+  HAL_GPIO_WritePin(RF_CE_GPIO_Port, RF_CE_Pin, SET);
+
+  local_id = AT24CXX_ReadOneByte(LOCAL_ID_ADDR);
+  USER_DATA.rUserFreqIndex = AT24CXX_ReadOneByte(FREQ_ADDR);
+  Flash_LED(LED_RED, 50, 3, LIGHT_ON);
+
+  if (BK_Init())
+    Flash_LED(LED_GREEN, 50, 3, LIGHT_ON);
   HAL_UART_Receive_DMA(&huart1, &UART_RX_BUF[0], 1); // 启动DMA接收
   setup_DW1000RSTnIRQ(0);
   dw_main();
@@ -144,6 +160,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    delay_ms(50);
+    KEY_Scan();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -176,7 +194,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 16;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV3;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();

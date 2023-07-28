@@ -3,8 +3,8 @@
 
 #include "main.h"
 
-#define KEY_Minus_PIN SW_MInus_Pin // 注意查看中断服务函数是否与该管脚对应
-#define KEY_Plus_PIN SW_Plus_Pin   // 注意查看中断服务函数是否与该管脚对应
+#define KEY_Minus_PIN KEY_Minus_Pin // 注意查看中断服务函数是否与该管脚对应
+#define KEY_Plus_PIN KEY_Plus_Pin   // 注意查看中断服务函数是否与该管脚对应
 #define KEYS 2
 
 // 定时器为100ms定时

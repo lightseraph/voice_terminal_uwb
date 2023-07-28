@@ -105,13 +105,13 @@ u32 AT24CXX_ReadLenByte(u16 ReadAddr, u8 Len)
 u8 AT24CXX_Check(void)
 {
 	u8 temp;
-	temp = AT24CXX_ReadOneByte(0x1FFF); // 避免每次开机都写AT24CXX
+	temp = AT24CXX_ReadOneByte(0xFFF); // 避免每次开机都写AT24CXX
 	if (temp == 0XBB)
 		return 0;
 	else // 排除第一次初始化的情况
 	{
-		AT24CXX_WriteOneByte(0x1FFF, 0XBB);
-		temp = AT24CXX_ReadOneByte(0x1FFF);
+		AT24CXX_WriteOneByte(0xFFF, 0XBB);
+		temp = AT24CXX_ReadOneByte(0xFFF);
 		if (temp == 0XBB)
 			return 0;
 	}

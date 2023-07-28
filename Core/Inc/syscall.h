@@ -19,8 +19,7 @@ typedef enum
 
 void Flash_LED(LED_TYPE led, u16 interval, u8 count, LED_AFTER_FLASH cond);
 
-void delay_nus(u32 num);
-void delay_nms(u32 num);
-void IR_delay(uint16_t num);
+void delay_us(u16 num);
+void delay_ms(u16 num);
 
 #endif

@@ -6,52 +6,24 @@
 
 vs8 keypress_remain = 0;
 
-void delay_nus(u32 nus)
-{
-    if (SysTick_Config(80))
-    {
-        while (1)
-            ;
-    }
-    time_delay = nus; // 读取定时时间
-    while (time_delay)
-        ;
-    SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk; // 关闭计数器
-    SysTick->VAL = 0X00;                       // 清空计数器
-}
-
-void delay_nms(u32 nms)
-{
-    if (SysTick_Config(SystemCoreClock / 1000UL - 1))
-    {
-        while (1)
-            ;
-    }
-    time_delay = nms; // 读取定时时间
-    while (time_delay)
-        ;
-    SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk; // 关闭计数器
-    SysTick->VAL = 0X00;                       // 清空计数器
-}
-
 void Flash_LED(LED_TYPE led, u16 interval, u8 count, LED_AFTER_FLASH cond)
 {
-    /* for (int i = 0; i < count * 2; i++)
+    for (int i = 0; i < count * 2; i++)
     {
         if (led == LED_RED)
-            HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+            HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
         else if (led == LED_GREEN)
-            HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
+            HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 
-        delay_nms(interval);
+        delay_ms(interval);
     }
     if (cond != FOLLOW_PREVIOUS)
     {
         if (led == LED_RED)
-            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, (GPIO_PinState)cond);
+            HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, (GPIO_PinState)cond);
         else if (led == LED_GREEN)
-            HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, (GPIO_PinState)cond);
-    } */
+            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, (GPIO_PinState)cond);
+    }
 }
 
 int _write(int file, char *data, int len)
@@ -70,11 +42,19 @@ int _write(int file, char *data, int len)
     return (status == HAL_OK ? len : 0);
 }
 
-void IR_delay(uint16_t num)
+void delay_us(uint16_t num)
 {
-    __HAL_TIM_SET_COUNTER(&htim6, 0); // 将装载值计0
-    HAL_TIM_Base_Start(&htim6);       // 开始计数
-    while (__HAL_TIM_GetCounter(&htim6) < num)
+    __HAL_TIM_SET_COUNTER(&htim7, 0); // 将装载值计0
+    HAL_TIM_Base_Start(&htim7);       // 开始计数
+    while (__HAL_TIM_GetCounter(&htim7) < num)
         ;                      // 当装载值小于预设值时循环
-    HAL_TIM_Base_Stop(&htim6); // 结束延时
+    HAL_TIM_Base_Stop(&htim7); // 结束延时
+}
+
+void delay_ms(uint16_t num)
+{
+    for (int i = 0; i < num; i++)
+    {
+        delay_us(1000);
+    }
 }

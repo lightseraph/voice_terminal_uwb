@@ -82,12 +82,12 @@ void Error_Handler(void);
 #define I2C_SCL_GPIO_Port GPIOA
 #define I2C_SDA_Pin GPIO_PIN_12
 #define I2C_SDA_GPIO_Port GPIOA
-#define SW_PLUS_Pin GPIO_PIN_3
-#define SW_PLUS_GPIO_Port GPIOB
-#define SW_PLUS_EXTI_IRQn EXTI2_3_IRQn
-#define SW_MINUS_Pin GPIO_PIN_4
-#define SW_MINUS_GPIO_Port GPIOB
-#define SW_MINUS_EXTI_IRQn EXTI4_15_IRQn
+#define KEY_Plus_Pin GPIO_PIN_3
+#define KEY_Plus_GPIO_Port GPIOB
+#define KEY_Plus_EXTI_IRQn EXTI2_3_IRQn
+#define KEY_Minus_Pin GPIO_PIN_4
+#define KEY_Minus_GPIO_Port GPIOB
+#define KEY_Minus_EXTI_IRQn EXTI4_15_IRQn
 #define RF_CE_Pin GPIO_PIN_8
 #define RF_CE_GPIO_Port GPIOB
 

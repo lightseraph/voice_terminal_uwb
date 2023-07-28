@@ -22,6 +22,7 @@
 #include "stm32g0xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "key.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -132,8 +133,6 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-  if (time_delay)
-    time_delay--;
   /* USER CODE END SysTick_IRQn 1 */
 }
 
@@ -153,9 +152,20 @@ void EXTI2_3_IRQHandler(void)
 
   /* USER CODE END EXTI2_3_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(DW_IRQn_Pin);
-  HAL_GPIO_EXTI_IRQHandler(SW_PLUS_Pin);
+  HAL_GPIO_EXTI_IRQHandler(KEY_Plus_Pin);
   /* USER CODE BEGIN EXTI2_3_IRQn 1 */
-
+  if ((GPIOB->IDR & KEY_Plus_PIN) == 0)
+  {
+    key[0].flag.key_state = KEY_STATE_PRESS; // 按下
+    key[0].flag.check = 1;
+    key[0].time_continus = 0; // 按键持续时间置零，准备开始计时
+  }
+  else if ((GPIOB->IDR & KEY_Plus_PIN) != 0 && key[0].flag.key_state == KEY_STATE_PRESS)
+  {
+    key[0].flag.key_state = KEY_STATE_RELEASE; // 松开
+    key[0].flag.check = 1;
+    key[0].time_idle = 0; // 按键空闲时间置零，准备开始计时
+  }
   /* USER CODE END EXTI2_3_IRQn 1 */
 }
 
@@ -167,9 +177,20 @@ void EXTI4_15_IRQHandler(void)
   /* USER CODE BEGIN EXTI4_15_IRQn 0 */
 
   /* USER CODE END EXTI4_15_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(SW_MINUS_Pin);
+  HAL_GPIO_EXTI_IRQHandler(KEY_Minus_Pin);
   /* USER CODE BEGIN EXTI4_15_IRQn 1 */
-
+  if ((GPIOB->IDR & KEY_Minus_PIN) == 0)
+  {
+    key[1].flag.key_state = KEY_STATE_PRESS; // 按下
+    key[1].flag.check = 1;
+    key[1].time_continus = 0; // 按键持续时间置零，准备开始计时
+  }
+  else if ((GPIOB->IDR & KEY_Minus_PIN) != 0 && key[1].flag.key_state == KEY_STATE_PRESS)
+  {
+    key[1].flag.key_state = KEY_STATE_RELEASE; // 松开
+    key[1].flag.check = 1;
+    key[1].time_idle = 0; // 按键空闲时间置零，准备开始计时
+  }
   /* USER CODE END EXTI4_15_IRQn 1 */
 }
 
@@ -198,7 +219,9 @@ void TIM6_DAC_LPTIM1_IRQHandler(void)
   /* USER CODE END TIM6_DAC_LPTIM1_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_LPTIM1_IRQn 1 */
-
+  TIM6->SR = 0x0000; // 清除中断标志位
+  for (int i = 0; i < KEYS; i++)
+    KEY_Process(i);
   /* USER CODE END TIM6_DAC_LPTIM1_IRQn 1 */
 }
 

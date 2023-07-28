@@ -66,7 +66,7 @@ u8 BK_Init(void)
     retry = TX_INIT_RETRY_TIMES;
     while (retry--)
     {
-        delay_nms(20);
+        delay_ms(20);
         if (!TX_I2C_Read(0x70, reg_val))
             continue;
         if (reg_val[3] == TX_Chip_ID)
@@ -92,7 +92,7 @@ void TX_Reset_Chip(void)
     TX_I2C_Read(0x3F, reg_val);
     reg_val[1] &= ~0x08; //
     TX_I2C_Write(0x3F, reg_val);
-    delay_nms(1);
+    delay_ms(1);
     reg_val[1] |= 0x08; //
     TX_I2C_Write(0x3F, reg_val);
 }
@@ -285,15 +285,15 @@ void TX_Trigger(void)
         reg_val[3] = 0x00;
 
         TX_I2C_Write(0x03, reg_val); // REG3[23] = 1,触发一次校准
-        delay_nms(50);
+        delay_ms(50);
         reg_val[1] = 0x24;
         TX_I2C_Write(0x03, reg_val); // REG3[23] = 0,恢复原值
 
-        delay_nms(10);
+        delay_ms(10);
         TX_I2C_Read(0x72, reg_val); // 检查是否校准成功
         if ((reg_val[1] & 0x40) && ((reg_val[2] & 0x01) == 0x00))
             return; // 校准完成并且PLL锁定
-        delay_nms(50);
+        delay_ms(50);
     }
 }
 
