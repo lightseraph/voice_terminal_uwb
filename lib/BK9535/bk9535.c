@@ -353,14 +353,17 @@ u8 TX_I2C_Write(u8 reg, u8 *buf)
     while (retry--)
     {
         IIC_Start();
-        if (IIC_SendByte(CHIP_DEV_TX))
+        IIC_SendByte(CHIP_DEV_TX);
+        if (IIC_Wait_Ack())
             continue;
         reg = reg << 1;
-        if (IIC_SendByte(reg))
+        IIC_SendByte(reg);
+        if (IIC_Wait_Ack())
             continue;
         for (i = 0; i < 4; i++)
         {
             IIC_SendByte(buf[i]);
+            IIC_Wait_Ack();
         }
         break;
     }
@@ -389,12 +392,14 @@ u8 TX_I2C_Read(u8 reg, u8 *buf)
         while (retry--)
         {
             IIC_Start();
-            if (IIC_SendByte(CHIP_DEV_TX))
+            IIC_SendByte(CHIP_DEV_TX);
+            if (IIC_Wait_Ack())
                 continue;
 
             reg = reg << 1;
             reg |= 0x01;
-            if (IIC_SendByte(reg))
+            IIC_SendByte(reg);
+            if (IIC_Wait_Ack())
                 continue;
 
             for (i = 0; i < 3; i++)

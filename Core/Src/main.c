@@ -118,17 +118,18 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_IWDG_Init();
   MX_SPI1_Init();
   MX_TIM6_Init();
   MX_USART1_UART_Init();
   MX_TIM7_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
-  HAL_Delay(500);
-  if (0 == AT24CXX_Check())
+  HAL_Delay(200);
+  if (AT24CXX_Check())
   {
     Init_Param();
     AT24CXX_WriteOneByte(0x000, EEPROM_DATAFORMAT);
+    HAL_Delay(10);
   }
   rWorkChannel = CHA;
   KEY_Config();
@@ -139,12 +140,11 @@ int main(void)
   local_id = AT24CXX_ReadOneByte(LOCAL_ID_ADDR);
   USER_DATA.rUserFreqIndex = AT24CXX_ReadOneByte(FREQ_ADDR);
   Flash_LED(LED_RED, 50, 3, LIGHT_ON);
-
   if (BK_Init())
     Flash_LED(LED_GREEN, 50, 3, LIGHT_ON);
   HAL_UART_Receive_DMA(&huart1, &UART_RX_BUF[0], 1); // 启动DMA接收
-  setup_DW1000RSTnIRQ(0);
-  dw_main();
+  //  setup_DW1000RSTnIRQ(0);
+  //  dw_main();
 
   t_PCMCfg cfg;
   cfg.bclk = PCM_SCK_I;
@@ -154,14 +154,19 @@ int main(void)
   cfg.lrck = PCM_LRCK_I;
   BK_Tx_I2SOpen(cfg);
   SwitchFreqByIndex(USER_DATA.rUserFreqIndex);
+
+  Disp_ID(local_id);
+  Disp_Freq(USER_DATA.rUserFreqIndex);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    HAL_IWDG_Refresh(&hiwdg);
     delay_ms(50);
     KEY_Scan();
+    // printf("asda\n");
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -194,7 +199,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 16;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV3;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();

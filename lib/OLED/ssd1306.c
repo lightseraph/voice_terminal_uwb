@@ -1,6 +1,8 @@
 #include "ssd1306.h"
 #include "ctiic.h"
-
+#include "syscall.h"
+#include "stdio.h"
+#include "config.h"
 /* Write command */
 #define SSD1306_WRITECOMMAND(command) ssd1306_I2C_Write(SSD1306_I2C_ADDR, 0x00, (command))
 /* Write data */
@@ -26,7 +28,7 @@ static SSD1306_t SSD1306;
 uint8_t SSD1306_Init(void)
 {
 
-	HAL_Delay(500);
+	delay_ms(500);
 
 	/* Check if LCD connected to I2C */
 	/* if (HAL_I2C_IsDeviceReady(&hi2c1, SSD1306_I2C_ADDR, 1, 1000) != HAL_OK)
@@ -546,26 +548,33 @@ void LCD_Title(char *str)
 		SSD1306_Putc(a, &Font_7x14, 1);
 	}
 	LCD_DISPLAY(60, 0, str);
-	SSD1306_UpdateScreen(); // display
+	// SSD1306_UpdateScreen(); // display
 }
 
 void Disp_ID(uint8_t id)
 {
+	char str[10];
+	sprintf((char *)&str[0], "ID:%1X", LOCAL_ID[id]);
+	LCD_DISPLAY(0, 16, str);
 }
 
 void Disp_Freq(uint8_t freq_index)
 {
+	char str[12];
+	float freq_num = FreqTableA[USER_DATA.rUserFreqIndex] / 10.0;
+	sprintf((char *)&str[0], "FQ:%3.1fMHz", freq_num);
+	LCD_DISPLAY(42, 16, str);
 }
 
 void ssd1306_I2C_WriteMulti(uint8_t address, uint8_t reg, uint8_t *data, uint16_t count)
 {
 	IIC_Start();
-	IIC_SendByte(address);
+	IIC_SendByte_ack(address);
 	reg = 0xC0;
 	for (u8 i = 0; i < count; i++)
 	{
-		IIC_SendByte(reg); // 写数据寄存器地址
-		IIC_SendByte(data[i]);
+		IIC_SendByte_ack(reg); // 写数据寄存器地址
+		IIC_SendByte_ack(data[i]);
 	}
 	IIC_Stop();
 }
@@ -573,8 +582,8 @@ void ssd1306_I2C_WriteMulti(uint8_t address, uint8_t reg, uint8_t *data, uint16_
 void ssd1306_I2C_Write(uint8_t address, uint8_t reg, uint8_t data)
 {
 	IIC_Start();
-	IIC_SendByte(address);
-	IIC_SendByte(reg); // 写数据寄存器地址
-	IIC_SendByte(data);
+	IIC_SendByte_ack(address);
+	IIC_SendByte_ack(reg); // 写数据寄存器地址
+	IIC_SendByte_ack(data);
 	IIC_Stop();
 }

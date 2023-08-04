@@ -42,7 +42,7 @@ int _write(int file, char *data, int len)
     return (status == HAL_OK ? len : 0);
 }
 
-void delay_us(uint16_t num)
+void delay_us(u16 num)
 {
     __HAL_TIM_SET_COUNTER(&htim7, 0); // 将装载值计0
     HAL_TIM_Base_Start(&htim7);       // 开始计数
@@ -51,7 +51,7 @@ void delay_us(uint16_t num)
     HAL_TIM_Base_Stop(&htim7); // 结束延时
 }
 
-void delay_ms(uint16_t num)
+void delay_ms(u16 num)
 {
     for (int i = 0; i < num; i++)
     {

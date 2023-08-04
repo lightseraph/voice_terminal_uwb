@@ -22,7 +22,7 @@
 void IIC_Delay(void)
 {
 	int t = 0;
-	while (t < 10)
+	while (t < 8)
 	{
 		__NOP();
 		t++;
@@ -51,36 +51,30 @@ void IIC_Stop(void)
 	IIC_SDA(0);
 	// IIC_Delay();
 	IIC_SCL(1);
-	IIC_Delay();
+	// IIC_Delay();
 	IIC_SDA(1); // STOP:when CLK is high DATA change form low to high
 }
 // 等待应答信号到来
-// 返回值：1，接收应答失败
-//         0，接收应答成功
+// 返回值：0，接收应答失败
+//         1，接收应答成功
 u8 IIC_Wait_Ack(void)
 {
-	u8 ucErrTime = 0;
+	// u8 ucErrTime = 0;
 	u8 rack = 0;
 	IIC_SDA_IN();
-	IIC_SDA(1);
-	IIC_Delay();
+	// IIC_SDA(1);
+	// IIC_Delay();
 	IIC_SCL(1);
 	IIC_Delay();
 
-	while (IIC_READ_SDA)
-	{
-		ucErrTime++;
-
-		if (ucErrTime > 250)
-		{
-			IIC_Stop();
-			rack = 1;
-			break;
-		}
-	}
+	if (IIC_READ_SDA)
+		rack = 1;
+	else
+		rack = 0;
 
 	IIC_SCL(0); // 时钟输出0
 	IIC_Delay();
+	IIC_SDA_OUT();
 	return rack;
 }
 // 产生ACK应答
@@ -103,11 +97,7 @@ void IIC_NAck(void)
 	IIC_Delay();
 	IIC_SCL(0);
 }
-// IIC发送一个字节
-// 返回从机有无应答
-// 1，有应答
-// 0，无应答
-u8 IIC_SendByte(u8 txd)
+u8 IIC_SendByte_ack(u8 txd)
 {
 	u8 t, ack;
 	IIC_SDA_OUT();
@@ -127,7 +117,7 @@ u8 IIC_SendByte(u8 txd)
 	}
 	IIC_SDA(1);
 	IIC_SDA_IN();
-	IIC_Delay();
+	// IIC_Delay();
 	IIC_SCL(1);
 	IIC_Delay();
 	if (IIC_READ_SDA)
@@ -137,6 +127,31 @@ u8 IIC_SendByte(u8 txd)
 	IIC_SCL(0);
 	IIC_SDA_OUT();
 	return ack;
+}
+// IIC发送一个字节
+// 返回从机有无应答
+// 1，有应答
+// 0，无应答
+void IIC_SendByte(u8 txd)
+{
+	u8 t;
+	IIC_SDA_OUT();
+	// IIC_SCL(0);
+	for (t = 0; t < 8; t++)
+	{
+		if (txd & 0x80)
+			IIC_SDA(1);
+		else
+			IIC_SDA(0);
+		IIC_Delay();
+		IIC_SCL(1);
+		// IIC_Delay();
+		IIC_Delay();
+		IIC_SCL(0);
+		txd <<= 1;
+	}
+	IIC_SDA(1);
+	// IIC_Delay();
 }
 // 读1个字节，ack=1时，发送ACK，ack=0，发送nACK
 u8 IIC_ReadByte(u8 ack)

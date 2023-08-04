@@ -124,17 +124,17 @@ void KEY_Scan(void)
                 {
                 case 0:
                     SwitchNextFreq();
-                    AT24CXX_WriteOneByte(FREQ_ADDR, USER_DATA.rUserFreqIndex);
                     Flash_LED(LED_GREEN, 100, USER_DATA.rUserFreqIndex, FOLLOW_PREVIOUS);
-                    // Disp_Freq(USER_DATA.rUserFreqIndex);
-                    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, RESET);
+                    AT24CXX_WriteOneByte(FREQ_ADDR, (u8)USER_DATA.rUserFreqIndex);
+                    Disp_Freq(USER_DATA.rUserFreqIndex);
+                    // HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, RESET);
                     break;
                 case 1:
                     SwitchPrevFreq();
-                    AT24CXX_WriteOneByte(FREQ_ADDR, USER_DATA.rUserFreqIndex);
                     Flash_LED(LED_GREEN, 100, USER_DATA.rUserFreqIndex, FOLLOW_PREVIOUS);
-                    // Disp_Freq(USER_DATA.rUserFreqIndex);
-                    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, SET);
+                    AT24CXX_WriteOneByte(FREQ_ADDR, (u8)USER_DATA.rUserFreqIndex);
+                    Disp_Freq(USER_DATA.rUserFreqIndex);
+                    // HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, SET);
                     break;
                 }
                 break;
@@ -145,17 +145,17 @@ void KEY_Scan(void)
                     local_id++;
                     if (local_id == 16)
                         local_id = 0;
-                    AT24CXX_WriteOneByte(LOCAL_ID_ADDR, local_id);
                     Flash_LED(LED_GREEN, 100, 2, FOLLOW_PREVIOUS);
-                    // Disp_ID(local_id);
+                    AT24CXX_WriteOneByte(LOCAL_ID_ADDR, local_id);
+                    Disp_ID(local_id);
                     break;
                 case 1:
                     if (local_id == 0)
                         local_id = 15;
                     else
                         local_id--;
-                    AT24CXX_WriteOneByte(LOCAL_ID_ADDR, local_id);
                     Flash_LED(LED_GREEN, 100, 2, FOLLOW_PREVIOUS);
+                    AT24CXX_WriteOneByte(LOCAL_ID_ADDR, local_id);
                     Disp_ID(local_id);
                     break;
                 }
@@ -165,7 +165,7 @@ void KEY_Scan(void)
                 {
                 case 0:
                     Init_Param();
-                    Flash_LED(LED_RED, 300, 3, FOLLOW_PREVIOUS);
+                    Flash_LED(LED_RED, 100, 3, FOLLOW_PREVIOUS);
                     break;
                 case 1:
                     break;

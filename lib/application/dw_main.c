@@ -14,7 +14,7 @@
 #include "instance.h"
 #include "deca_types.h"
 #include "deca_spi.h"
-#include "iwdg.h"
+// #include "iwdg.h"
 #include "ssd1306.h"
 #include "usart.h"
 #include "kalman.h"
@@ -275,7 +275,7 @@ int dw_main(void)
 
 	while (1)
 	{
-		HAL_IWDG_Refresh(&hiwdg);
+		// HAL_IWDG_Refresh(&hiwdg);
 		int UART_TX_DATA_len = 0;
 		int UART_TX_DATA_len2 = 0;
 		instance_data_t *inst = instance_get_local_structure_ptr();

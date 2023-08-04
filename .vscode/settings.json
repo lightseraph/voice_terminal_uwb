@@ -6,6 +6,7 @@
         "stm32g0xx_hal_exti.h": "c",
         "ssd1306.h": "c",
         "fonts.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "syscall.h": "c"
     }
 }
