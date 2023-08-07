@@ -19,8 +19,8 @@
 // ----------------------------------------------------------------------------------------------
 // 函数声明
 // ----------------------------------------------------------------------------------------------
-void anch_prepare_anc2tag_response(unsigned int tof_index, uint8 srcAddr_index, uint8 fcode_index, uint8 *frame, uint32 uTimeStamp);
-void anch_enable_rx(uint32 dlyTime);
+void anch_prepare_anc2tag_response(unsigned int tof_index, uint8_t srcAddr_index, uint8_t fcode_index, uint8_t *frame, uint32_t uTimeStamp);
+void anch_enable_rx(uint32_t dlyTime);
 
 /*
  * 函数名称：void anch_no_timeout_rx_reenable(void)
@@ -36,11 +36,11 @@ void anch_no_timeout_rx_reenable(void)
 // DISCOVERY 模式
 #if (DISCOVERY == 1)
 
-int anch_add_tag_to_list(uint8 *tagAddr)
+int anch_add_tag_to_list(uint8_t *tagAddr)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
-	uint8 i;
-	uint8 blank[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+	uint8_t i;
+	uint8_t blank[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	int slot = -1;
 
 	// add the new Tag to the list, if not already there and there is space
@@ -66,10 +66,10 @@ int anch_add_tag_to_list(uint8 *tagAddr)
 	return slot;
 }
 
-int anch_prepare_anc2tag_rangeinitresponse(uint8 *tagID, uint8 slot, uint32 uTimeStamp)
+int anch_prepare_anc2tag_rangeinitresponse(uint8_t *tagID, uint8_t slot, uint32_t uTimeStamp)
 {
 	int typePend = DWT_SIG_DW_IDLE;
-	uint16 frameLength = 0;
+	uint16_t frameLength = 0;
 	instance_data_t *inst = instance_get_local_structure_ptr();
 
 	inst->psduLength = frameLength = RANGINGINIT_MSG_LEN + FRAME_CRTL_AND_ADDRESS_LS + FRAME_CRC;
@@ -107,7 +107,7 @@ int anch_prepare_anc2tag_rangeinitresponse(uint8 *tagID, uint8 slot, uint32 uTim
 	inst->rng_initmsg.messageData[RES_TAG_ADD1] = (slot >> 8) & 0xFF;
 	inst->rng_initmsg.messageData[FCODE] = RTLS_DEMO_MSG_RNG_INIT;
 	dwt_writetxfctrl(frameLength, 0, 1);
-	dwt_writetxdata(frameLength, (uint8 *)&inst->rng_initmsg, 0);
+	dwt_writetxdata(frameLength, (uint8_t *)&inst->rng_initmsg, 0);
 
 	dwt_setrxaftertxdelay(0);
 
@@ -131,7 +131,7 @@ int anch_prepare_anc2tag_rangeinitresponse(uint8 *tagID, uint8 slot, uint32 uTim
 #endif
 
 /*
- * 函数名称：void anch_enable_rx(uint32 dlyTime)
+ * 函数名称：void anch_enable_rx(uint32_t dlyTime)
  * 主要功能：
  * 接收消息超时事件
  */
@@ -146,30 +146,30 @@ void anch_process_RX_timeout(instance_data_t *inst)
 }
 
 /*
- * 函数名称：void anch_enable_rx(uint32 dlyTime)
+ * 函数名称：void anch_enable_rx(uint32_t dlyTime)
  * 主要功能：
  * 打开接收机
  */
-void anch_enable_rx(uint32 dlyTime)
+void anch_enable_rx(uint32_t dlyTime)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	dwt_setdelayedtrxtime(dlyTime - inst->preambleDuration32h);
 	if (dwt_rxenable(DWT_START_RX_DELAYED | DWT_IDLE_ON_DLY_ERR)) // delayed rx
 	{
-		dwt_setrxtimeout((uint16)inst->fwto4RespFrame_sy * 2);
+		dwt_setrxtimeout((uint16_t)inst->fwto4RespFrame_sy * 2);
 		dwt_rxenable(DWT_START_RX_IMMEDIATE);
-		dwt_setrxtimeout((uint16)inst->fwto4RespFrame_sy);
+		dwt_setrxtimeout((uint16_t)inst->fwto4RespFrame_sy);
 	}
 }
 
 /*
- * 函数名称：uint8 anch_txresponse_or_rx_reenable(void)
+ * 函数名称：uint8_t anch_txresponse_or_rx_reenable(void)
  * 主要功能：
  * 打开接收机接收数据和发送resp消息
  */
-uint8 anch_txresponse_or_rx_reenable(void)
+uint8_t anch_txresponse_or_rx_reenable(void)
 {
-	uint8 typePend = DWT_SIG_DW_IDLE;
+	uint8_t typePend = DWT_SIG_DW_IDLE;
 	int sendResp = 0;
 	instance_data_t *inst = instance_get_local_structure_ptr();
 
@@ -237,13 +237,13 @@ uint8 anch_txresponse_or_rx_reenable(void)
 }
 
 /*
- * 函数名称：void anch_prepare_anc2tag_response(unsigned int tof_idx, uint8 srcAddr_index, uint8 fcode_index, uint8 *frame, uint32 uTimeStamp)
+ * 函数名称：void anch_prepare_anc2tag_response(unsigned int tof_idx, uint8_t srcAddr_index, uint8_t fcode_index, uint8_t *frame, uint32_t uTimeStamp)
  * 主要功能：
  * 打包resp消息数据
  */
-void anch_prepare_anc2tag_response(unsigned int tof_idx, uint8 srcAddr_index, uint8 fcode_index, uint8 *frame, uint32 uTimeStamp)
+void anch_prepare_anc2tag_response(unsigned int tof_idx, uint8_t srcAddr_index, uint8_t fcode_index, uint8_t *frame, uint32_t uTimeStamp)
 {
-	uint16 frameLength = 0;
+	uint16_t frameLength = 0;
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	int tagSleepCorrection_ms = 0;
 
@@ -302,7 +302,7 @@ void anch_prepare_anc2tag_response(unsigned int tof_idx, uint8 srcAddr_index, ui
 	inst->msg_f.messageData[FCODE] = RTLS_DEMO_MSG_ANCH_RESP; // message function code (specifies if message is a poll, response or other...)
 
 	dwt_writetxfctrl(frameLength, 0, 1);
-	dwt_writetxdata(frameLength, (uint8 *)&inst->msg_f, 0); // write the frame data
+	dwt_writetxdata(frameLength, (uint8_t *)&inst->msg_f, 0); // write the frame data
 }
 
 /*
@@ -385,36 +385,34 @@ void rx_err_cb_anch(const dwt_cb_data_t *rxd)
 void rx_ok_cb_anch(const dwt_cb_data_t *rxd)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
-	uint8 rxTimeStamp[5] = {0, 0, 0, 0, 0};
+	uint8_t rxTimeStamp[5] = {0, 0, 0, 0, 0};
 
-	uint8 rxd_event = 0;
-	uint8 fcode_index = 0;
-	uint8 srcAddr_index = 0;
+	uint8_t rxd_event = 0;
+	uint8_t fcode_index = 0;
+	uint8_t srcAddr_index = 0;
 	event_data_t dw_event;
 
 	dw_event.uTimeStamp = portGetTickCnt();
 	dw_event.rxLength = rxd->datalength;
 
-	if ((rxd->fctrl[0] == 0x41) && ((rxd->fctrl[1] & 0xCC) == 0x88)) // 短地址消息
-	{
-		fcode_index = FRAME_CRTL_AND_ADDRESS_S;
-		srcAddr_index = FRAME_CTRLP + ADDR_BYTE_SIZE_S;
-		rxd_event = DWT_SIG_RX_OKAY;
-	}
+	fcode_index = FRAME_CRTL_AND_ADDRESS_S;
+	srcAddr_index = FRAME_CTRLP + ADDR_BYTE_SIZE_S;
+	rxd_event = DWT_SIG_RX_OKAY;
+
 #if (DISCOVERY == 1)
 	else if (inst->gatewayAnchor && (rxd->fctrl[0] == 0xC5) && (inst->twrMode == LISTENER)) // only gateway anchor processes blinks
 	{
 		rxd_event = DWT_SIG_RX_BLINK;
 	}
 #endif
-	else
+	/* else
 	{
 		rxd_event = SIG_RX_UNKNOWN;
-	}
+	} */
 
 	// 读取时间戳
 	dwt_readrxtimestamp(rxTimeStamp);
-	dwt_readrxdata((uint8 *)&dw_event.msgu.frame[0], rxd->datalength, 0); // Read Data Frame
+	dwt_readrxdata((uint8_t *)&dw_event.msgu.frame[0], rxd->datalength, 0); // Read Data Frame
 	instance_seteventtime(&dw_event, rxTimeStamp);
 	dw_event.type = 0;
 	dw_event.typePend = DWT_SIG_DW_IDLE;
@@ -454,7 +452,7 @@ void rx_ok_cb_anch(const dwt_cb_data_t *rxd)
 #endif
 		if (rxd_event == DWT_SIG_RX_OKAY) // 接收正确消息数据
 	{
-		uint16 sourceAddress = (((uint16)dw_event.msgu.frame[srcAddr_index + 1]) << 8) + dw_event.msgu.frame[srcAddr_index];
+		uint16_t sourceAddress = (((uint16_t)dw_event.msgu.frame[srcAddr_index + 1]) << 8) + dw_event.msgu.frame[srcAddr_index];
 		if ((dw_event.msgu.rxmsg_ss.panID[0] != (inst->panID & 0xff)) || (dw_event.msgu.rxmsg_ss.panID[1] != (inst->panID >> 8)))
 		{
 			anch_handle_error_unknownframe_timeout(dw_event);
@@ -472,7 +470,7 @@ void rx_ok_cb_anch(const dwt_cb_data_t *rxd)
 				inst->wait4final = 0;
 				// 准备打包RESP消息数据
 				anch_prepare_anc2tag_response(sourceAddress, srcAddr_index, fcode_index, &dw_event.msgu.frame[0], dw_event.uTimeStamp);
-				dwt_setrxtimeout((uint16)inst->fwto4RespFrame_sy); // 设置接收超时
+				dwt_setrxtimeout((uint16_t)inst->fwto4RespFrame_sy); // 设置接收超时
 				inst->delayedTRXTime32h = dw_event.timeStamp32h;
 				inst->remainingRespToRx = NUM_EXPECTED_RESPONSES;
 				dw_event.typePend = anch_txresponse_or_rx_reenable();
@@ -531,11 +529,11 @@ void rx_ok_cb_anch(const dwt_cb_data_t *rxd)
 }
 
 /*
- * 函数名称：int check_state_change(uint8 event)
+ * 函数名称：int check_state_change(uint8_t event)
  * 主要功能：
  * 检查当前状态机状态并判断是否切换状态
  */
-int check_state_change(uint8 event)
+int check_state_change(uint8_t event)
 {
 	int state = TA_RXE_WAIT;
 	// the response has been sent - await TX done event
@@ -559,37 +557,37 @@ int check_state_change(uint8 event)
 }
 
 /*
- * 函数名称：int32 calc_tof(uint8 *messageData, uint64 anchorRespTxTime, uint64 tagFinalRxTime, uint64 tagPollRxTime, uint8 shortAdd_idx)
+ * 函数名称：int32_t calc_tof(uint8_t *messageData, uint64_t anchorRespTxTime, uint64_t tagFinalRxTime, uint64_t tagPollRxTime, uint8_t shortAdd_idx)
  * 主要功能：
  * 根据时间戳计算TOF
  */
-int32 calc_tof(uint8 *messageData, uint64 anchorRespTxTime, uint64 tagFinalRxTime, uint64 tagPollRxTime, uint8 shortAdd_idx)
+int32_t calc_tof(uint8_t *messageData, uint64_t anchorRespTxTime, uint64_t tagFinalRxTime, uint64_t tagPollRxTime, uint8_t shortAdd_idx)
 {
-	int64 Rb, Da, Ra, Db;
-	uint64 tagFinalTxTime = 0;
-	uint64 tagPollTxTime = 0;
-	uint64 anchorRespRxTime = 0;
+	int64_t Rb, Da, Ra, Db;
+	uint64_t tagFinalTxTime = 0;
+	uint64_t tagPollTxTime = 0;
+	uint64_t anchorRespRxTime = 0;
 
 	double RaRbxDaDb = 0;
 	double RbyDb = 0;
 	double RayDa = 0;
-	int32 tof;
-	uint8 index = RRXT0 + 5 * (shortAdd_idx);
+	int32_t tof;
+	uint8_t index = RRXT0 + 5 * (shortAdd_idx);
 
 	memcpy(&tagPollTxTime, &(messageData[PTXT]), 5);
 	memcpy(&anchorRespRxTime, &(messageData[index]), 5);
 	memcpy(&tagFinalTxTime, &(messageData[FTXT]), 5);
 
-	Ra = (int64)((anchorRespRxTime - tagPollTxTime) & MASK_40BIT); // Tround1
-	Db = (int64)((anchorRespTxTime - tagPollRxTime) & MASK_40BIT); // reply1
+	Ra = (int64_t)((anchorRespRxTime - tagPollTxTime) & MASK_40BIT); // Tround1
+	Db = (int64_t)((anchorRespTxTime - tagPollRxTime) & MASK_40BIT); // reply1
 
-	Rb = (int64)((tagFinalRxTime - anchorRespTxTime) & MASK_40BIT); // Tround2
-	Da = (int64)((tagFinalTxTime - anchorRespRxTime) & MASK_40BIT); // reply2
+	Rb = (int64_t)((tagFinalRxTime - anchorRespTxTime) & MASK_40BIT); // Tround2
+	Da = (int64_t)((tagFinalTxTime - anchorRespRxTime) & MASK_40BIT); // reply2
 
 	RaRbxDaDb = (((double)Ra)) * (((double)Rb)) - (((double)Da)) * (((double)Db));
 	RbyDb = ((double)Rb + (double)Db);
 	RayDa = ((double)Ra + (double)Da);
-	tof = (int32)(RaRbxDaDb / (RbyDb + RayDa));
+	tof = (int32_t)(RaRbxDaDb / (RbyDb + RayDa));
 
 	return tof;
 }
@@ -623,11 +621,11 @@ int anch_app_run(instance_data_t *inst)
 			{
 				inst->gatewayAnchor = TRUE;
 			}
-			dwt_enableframefilter(DWT_FF_NOTYPE_EN); // 设置帧过滤模式，允许接收帧数据和ACK数据
-			dwt_setrxaftertxdelay(0);				 // 初始化发送消息后立即打开接收机
-			inst->AppState = TA_RXE_WAIT;			 // 下一个状态机标志位TA_RXE_WAIT
-			dwt_setrxtimeout(0);					 // 初始化接收超时为0
-			instance_config_frameheader_16bit(inst); // 数据帧控制字节0X41 0X88
+			dwt_configureframefilter(DWT_FF_ENABLE_802_15_4, DWT_FF_DATA_EN | DWT_FF_ACK_EN); // 设置帧过滤模式，允许接收帧数据和ACK数据
+			dwt_setrxaftertxdelay(0);														  // 初始化发送消息后立即打开接收机
+			inst->AppState = TA_RXE_WAIT;													  // 下一个状态机标志位TA_RXE_WAIT
+			dwt_setrxtimeout(0);															  // 初始化接收超时为0
+			instance_config_frameheader_16bit(inst);										  // 数据帧控制字节0X41 0X88
 
 			// 设置DISCOVERY模式下的帧控制字节为0X41 0X8C
 			inst->rng_initmsg.frameCtrl[0] = 0x1 | 0x40;
@@ -645,7 +643,7 @@ int anch_app_run(instance_data_t *inst)
 
 	case TA_TX_WAIT_CONF:
 	{
-		static uint32 count = 0;
+		static uint32_t count = 0;
 		event_data_t *dw_event = instance_getevent(); // 读取事件消息
 
 		if (dw_event->type != DWT_SIG_TX_DONE) // 等待发送成功，等待在该状态内，由中断函数转换标志位
@@ -698,13 +696,13 @@ int anch_app_run(instance_data_t *inst)
 		{
 		case DWT_SIG_RX_OKAY: // 读取接收成功事件消息
 		{
-			event_data_t *dw_event = instance_getevent(); // 读取事件消息
-			uint8 srcAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0};  // 源地址
-			uint8 dstAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0};  // 目标地址
+			event_data_t *dw_event = instance_getevent();  // 读取事件消息
+			uint8_t srcAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // 源地址
+			uint8_t dstAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // 目标地址
 			int fcode = 0;
-			uint8 tof_idx = 0;
+			uint8_t tof_idx = 0;
 			int tag_index = 0;
-			uint8 *messageData;
+			uint8_t *messageData;
 
 			memcpy(&srcAddr[0], &(dw_event->msgu.rxmsg_ss.sourceAddr[0]), ADDR_BYTE_SIZE_S); // 获取消息源地址
 			memcpy(&dstAddr[0], &(dw_event->msgu.rxmsg_ss.destAddr[0]), ADDR_BYTE_SIZE_S);	 // 获取消息目标地址
@@ -716,7 +714,7 @@ int anch_app_run(instance_data_t *inst)
 			{
 			case RTLS_DEMO_MSG_TAG_POLL: // 标签POLL消息
 			{
-				tag_index = srcAddr[0] + (((uint16)srcAddr[1]) << 8);
+				tag_index = srcAddr[0] + (((uint16_t)srcAddr[1]) << 8);
 				inst->rangeNumA[tag_index] = messageData[POLL_RNUM]; // 记录rangeNum
 				inst->tagPollRxTime = dw_event->timeStamp;			 // 记录 Poll Rx 时间戳
 
@@ -730,7 +728,7 @@ int anch_app_run(instance_data_t *inst)
 
 			case RTLS_DEMO_MSG_ANCH_RESP:
 			{
-				uint8 currentRangeNum = (messageData[TOFRN] + 1); // currentRangeNum = previous + 1
+				uint8_t currentRangeNum = (messageData[TOFRN] + 1); // currentRangeNum = previous + 1
 
 				// the response has been sent - await TX done event
 				if (dw_event->typePend == DWT_SIG_TX_PENDING) // anchor received response from anchor ID - 1 so is sending it's response now back to tag
@@ -774,9 +772,9 @@ int anch_app_run(instance_data_t *inst)
 
 			case RTLS_DEMO_MSG_TAG_FINAL: // 标签FINAL消息
 			{
-				uint64 tof = INVALID_TOF;
-				uint8 validResp = messageData[VRESP];
-				tag_index = srcAddr[0] + (((uint16)srcAddr[1]) << 8);
+				uint64_t tof = INVALID_TOF;
+				uint8_t validResp = messageData[VRESP];
+				tag_index = srcAddr[0] + (((uint16_t)srcAddr[1]) << 8);
 
 				if (inst->rangeNumA[tag_index] != messageData[POLL_RNUM]) // 判断FINAL的rangeNum和POLL的rangeNum相同表示为同一组TWR测距
 				{

@@ -1,10 +1,10 @@
 /*! ----------------------------------------------------------------------------
- * @file	deca_spi.h
- * @brief	SPI access functions
+ * @file    deca_spi.h
+ * @brief   SPI access functions
  *
  * @attention
  *
- * Copyright 2015 (c) DecaWave Ltd, Dublin, Ireland.
+ * Copyright 2015-2020 (c) DecaWave Ltd, Dublin, Ireland.
  *
  * All rights reserved.
  *
@@ -18,10 +18,9 @@
 extern "C" {
 #endif
 
-#include "deca_types.h"
+#include <deca_types.h>
 
 #define DECA_MAX_SPI_HEADER_LENGTH      (3)                     // max number of bytes in header (for formating & sizing)
-#define EVB1000_LCD_SUPPORT				(1)
 /*! ------------------------------------------------------------------------------------------------------------------
  * Function: openspi()
  *
@@ -37,8 +36,6 @@ int openspi(void) ;
  * returns 0 for success, or -1 for error
  */
 int closespi(void) ;
-
-
 
 #ifdef __cplusplus
 }

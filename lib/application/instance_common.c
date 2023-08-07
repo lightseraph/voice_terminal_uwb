@@ -3,10 +3,11 @@
 #include "deca_device_api.h"
 #include "deca_spi.h"
 #include "instance.h"
+#include "eeprom.h"
 
-extern double dwt_getrangebias(uint8 chan, float range, uint8 prf);
+extern double dwt_getrangebias(uint8_t chan, float range, uint8_t prf);
 
-extern const uint16 rfDelays[2];
+extern const uint16_t rfDelays[2];
 extern const tx_struct txSpectrumConfig[8];
 instance_data_t instance_data[1];
 
@@ -26,28 +27,28 @@ instance_data_t *instance_get_local_structure_ptr(void)
 /* @fn 	  instance_convert_usec_to_devtimeu
  * @brief function to convert microseconds to device time
  * */
-uint64 instance_convert_usec_to_devtimeu(double microsecu)
+uint64_t instance_convert_usec_to_devtimeu(double microsecu)
 {
-	uint64 dt;
+	uint64_t dt;
 	long double dtime;
 	dtime = (microsecu / (double)DWT_TIME_UNITS) / 1e6;
-	dt = (uint64)(dtime);
+	dt = (uint64_t)(dtime);
 	return dt;
 }
 
 /* @fn 	  instance_calculate_rangefromTOF
  * @brief function to calculate and the range from given Time of Flight
  * */
-int instance_calculate_rangefromTOF(int idx, uint32 tofx)
+int instance_calculate_rangefromTOF(int idx, uint32_t tofx)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	double distance;
 	double distance_to_correct;
 	double tof;
-	int32 tofi;
+	int32_t tofi;
 
 	// check for negative results and accept them making them proper negative integers
-	tofi = (int32)tofx;	   // make it signed
+	tofi = (int32_t)tofx;  // make it signed
 	if (tofi > 0x7FFFFFFF) // close up TOF may be negative
 	{
 		tofi -= 0x80000000;
@@ -200,13 +201,14 @@ int instance_init(int inst_mode)
 	inst->twrMode = LISTENER;
 	inst->AppState = TA_INIT;
 	inst->instToSleep = FALSE;
+	inst->is_Kalman = rom_KalFilter();
 
 	// Reset the IC (might be needed if not getting here from POWER ON)
 	// ARM code: Remove soft reset here as using hard reset in the inittestapplication() in the main.c file
 	// dwt_softreset();
 
 	// this initialises DW1000 and uses specified configurations from OTP/ROM
-	result = dwt_initialise(DWT_LOADUCODE);
+	result = dwt_initialise(DWT_DW_INIT);
 
 	// this is platform dependent - only program if DW EVK/EVB
 	dwt_setleds(3); // configure the GPIOs which control the leds on EVBs
@@ -232,20 +234,20 @@ int instance_init(int inst_mode)
 #endif
 	inst->tagSleepCorrection_ms = 0;
 
-	dwt_setdblrxbuffmode(0); // disable double RX buffer
+	dwt_setdblrxbuffmode(DBL_BUF_STATE_DIS, DBL_BUF_MODE_MAN); // disable double RX buffer
 
 	// if using auto CRC check (DWT_INT_RFCG and DWT_INT_RFCE) are used instead of DWT_INT_RDFR flag
 	// other errors which need to be checked (as they disable receiver) are
 	// dwt_setinterrupt(DWT_INT_TFRS | DWT_INT_RFCG | (DWT_INT_SFDT | DWT_INT_RFTO /*| DWT_INT_RXPTO*/), 1);
-	dwt_setinterrupt(DWT_INT_TFRS | DWT_INT_RFCG | (DWT_INT_ARFE | DWT_INT_RFSL | DWT_INT_SFDT | DWT_INT_RPHE | DWT_INT_RFCE | DWT_INT_RFTO | DWT_INT_RXPTO), 1);
+	dwt_setinterrupt(DWT_INT_TFRS | DWT_INT_RFCG | (DWT_INT_ARFE | DWT_INT_RFSL | DWT_INT_SFDT | DWT_INT_RPHE | DWT_INT_RFCE | DWT_INT_RFTO | DWT_INT_RXPTO), 0, DWT_ENABLE_INT_ONLY);
 
 	if (inst_mode == ANCHOR)
 	{
-		dwt_setcallbacks(tx_conf_cb, rx_ok_cb_anch, rx_to_cb_anch, rx_err_cb_anch);
+		dwt_setcallbacks(tx_conf_cb, rx_ok_cb_anch, rx_to_cb_anch, rx_err_cb_anch, NULL, NULL);
 	}
 	else
 	{
-		dwt_setcallbacks(tx_conf_cb, rx_ok_cb_tag, rx_to_cb_tag, rx_err_cb_tag);
+		dwt_setcallbacks(tx_conf_cb, rx_ok_cb_tag, rx_to_cb_tag, rx_err_cb_tag, NULL, NULL);
 	}
 
 	inst->monitor = 0;
@@ -257,14 +259,14 @@ int instance_init(int inst_mode)
 
 	inst->rxResps = 0;
 
-	dwt_setlnapamode(1, 1); // enable TX, RX state on GPIOs 6 and 5
+	dwt_setlnapamode(3); // enable TX, RX state on GPIOs 6 and 5
 
 	inst->delayedTRXTime32h = 0;
 
 	return 0;
 }
 
-uint32 instance_readdeviceid(void)
+uint32_t instance_readdeviceid(void)
 {
 	return dwt_readdevid();
 }
@@ -273,7 +275,7 @@ uint32 instance_readdeviceid(void)
 //
 // function to allow application configuration be passed into instance and affect underlying device operation
 //
-void instance_config(instanceConfig_t *config, sfConfig_t *sfConfig, uint8_t s1switch)
+void instance_config(instanceConfig_t *config, sfConfig_t *sfConfig)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 
@@ -284,13 +286,13 @@ void instance_config(instanceConfig_t *config, sfConfig_t *sfConfig, uint8_t s1s
 	inst->configData.dataRate = config->dataRate;
 	inst->configData.txPreambLength = config->preambleLen;
 	inst->configData.rxPAC = config->pacSize;
-	inst->configData.nsSFD = config->nsSFD;
+	// inst->configData.nsSFD = config->nsSFD;
 	inst->configData.phrMode = DWT_PHRMODE_STD;
 	inst->configData.sfdTO = config->sfdTO;
 
 	dwt_configure(&inst->configData);
 
-	if (s1switch & SWS1_HPR_MODE) // 第3拨码开关=on
+	/* if (s1switch & SWS1_HPR_MODE) // 第3拨码开关=on
 	{
 #if (OLED == 1)							   // ULM1
 		inst->configTX.power = 0x1F1F1F1F; // 30.5dBm_TXPOWER_SUN
@@ -306,26 +308,26 @@ void instance_config(instanceConfig_t *config, sfConfig_t *sfConfig, uint8_t s1s
 #else									   // ULM1-LD1
 		inst->configTX.power = 0xB8B8B8B8; // 15DB_TXPOWER_SUN
 #endif
-	}
+	} */
 
 	inst->configTX.PGdly = txSpectrumConfig[config->channelNumber].pgDelay;
 	dwt_configuretxrf(&inst->configTX);
 #if (OLED == 1) // ULM1
 	inst->txAntennaDelay = rfDelays[config->pulseRepFreq - DWT_PRF_16M] + ANT_DELAY_COMPENSATE;
 #else // ULM1-LD1
-	inst->txAntennaDelay = 16488;		   // TXDELAY_SUN
+	inst->txAntennaDelay = 16488; // TXDELAY_SUN
 #endif
 	dwt_setrxantennadelay(inst->txAntennaDelay);
 	dwt_settxantennadelay(inst->txAntennaDelay);
 
 	inst->rxAntennaDelay = inst->txAntennaDelay;
 
-	if (config->preambleLen == DWT_PLEN_64) // if preamble length is 64
+	/* if (config->preambleLen == DWT_PLEN_64) // if preamble length is 64
 	{
-		port_set_dw1000_slowrate(); // reduce SPI to < 3MHz
+		port_set_dw_ic_spi_slowrate(); // reduce SPI to < 3MHz
 		dwt_loadopsettabfromotp(0);
-		port_set_dw1000_fastrate(); // increase SPI to max
-	}
+		port_set_dw_ic_spi_fastrate(); // increase SPI to max
+	} */
 
 	inst->tagPeriod_ms = sfConfig->tagPeriod_ms; // set the Tag sleep time
 	inst->sframePeriod_ms = sfConfig->sfPeriod_ms;
@@ -411,7 +413,7 @@ int instance_get_idistraw_mm(int idx) // get instantaneous range (uncorrected)
  * @brief set the 16-bit MAC address
  *
  */
-void instance_set_16bit_address(uint16 address)
+void instance_set_16bit_address(uint16_t address)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	inst->instanceAddress16 = address; // copy configurations
@@ -466,7 +468,7 @@ int instance_send_delayed_frame(instance_data_t *inst, int delayedTx)
 void tx_conf_cb(const dwt_cb_data_t *txd)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
-	uint8 txTimeStamp[5] = {0, 0, 0, 0, 0};
+	uint8_t txTimeStamp[5] = {0, 0, 0, 0, 0};
 	event_data_t dw_event;
 
 	dw_event.uTimeStamp = portGetTickCnt();
@@ -483,10 +485,10 @@ void tx_conf_cb(const dwt_cb_data_t *txd)
 #endif
 	else
 	{
-		// uint64 txtimestamp = 0;
+		// uint64_t txtimestamp = 0;
 
 		// NOTE - we can only get TX good (done) while here
-		// dwt_readtxtimestamp((uint8*) &inst->txu.txTimeStamp);
+		// dwt_readtxtimestamp((uint8_t*) &inst->txu.txTimeStamp);
 
 		dwt_readtxtimestamp(txTimeStamp);
 		instance_seteventtime(&dw_event, txTimeStamp);
@@ -496,7 +498,7 @@ void tx_conf_cb(const dwt_cb_data_t *txd)
 		dw_event.typePend = 0;
 		// dw_event.typeSave = DWT_SIG_TX_DONE;
 
-		memcpy((uint8 *)&dw_event.msgu.frame[0], (uint8 *)&inst->msg_f, inst->psduLength);
+		memcpy((uint8_t *)&dw_event.msgu.frame[0], (uint8_t *)&inst->msg_f, inst->psduLength);
 
 		instance_putevent(dw_event, DWT_SIG_TX_DONE);
 
@@ -506,13 +508,13 @@ void tx_conf_cb(const dwt_cb_data_t *txd)
 	inst->monitor = 0;
 }
 
-void instance_seteventtime(event_data_t *dw_event, uint8 *timeStamp)
+void instance_seteventtime(event_data_t *dw_event, uint8_t *timeStamp)
 {
-	dw_event->timeStamp32l = (uint32)timeStamp[0] + ((uint32)timeStamp[1] << 8) + ((uint32)timeStamp[2] << 16) + ((uint32)timeStamp[3] << 24);
+	dw_event->timeStamp32l = (uint32_t)timeStamp[0] + ((uint32_t)timeStamp[1] << 8) + ((uint32_t)timeStamp[2] << 16) + ((uint32_t)timeStamp[3] << 24);
 	dw_event->timeStamp = timeStamp[4];
 	dw_event->timeStamp <<= 32;
 	dw_event->timeStamp += dw_event->timeStamp32l;
-	dw_event->timeStamp32h = ((uint32)timeStamp[4] << 24) + (dw_event->timeStamp32l >> 8);
+	dw_event->timeStamp32h = ((uint32_t)timeStamp[4] << 24) + (dw_event->timeStamp32l >> 8);
 }
 
 int instance_peekevent(void)
@@ -521,7 +523,7 @@ int instance_peekevent(void)
 	return inst->dwevent[inst->dweventPeek].type; // return the type of event that is in front of the queue
 }
 
-void instance_putevent(event_data_t newevent, uint8 etype)
+void instance_putevent(event_data_t newevent, uint8_t etype)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	// newevent.gotit = 0; //newevent.eventtimeclr = 0;
@@ -591,7 +593,7 @@ void instance_clearevents(void)
 	inst->dweventPeek = 0;
 }
 
-void instance_config_txpower(uint32 txpower)
+void instance_config_txpower(uint32_t txpower)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	inst->txPower = txpower;
@@ -611,7 +613,7 @@ void instance_set_txpower(void)
 	}
 }
 
-void instance_config_antennadelays(uint16 tx, uint16 rx)
+void instance_config_antennadelays(uint16_t tx, uint16_t rx)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	inst->txAntennaDelay = tx;
@@ -632,29 +634,29 @@ void instance_set_antennadelays(void)
 	}
 }
 
-uint16 instance_get_txantdly(void)
+uint16_t instance_get_txantdly(void)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	return inst->txAntennaDelay;
 }
 
-uint16 instance_get_rxantdly(void)
+uint16_t instance_get_rxantdly(void)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	return inst->rxAntennaDelay;
 }
 
-uint8 instance_validranges(void)
+uint8_t instance_validranges(void)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
-	uint8 x = inst->rxResponseMaskReport;
+	uint8_t x = inst->rxResponseMaskReport;
 	inst->rxResponseMaskReport = 0; // reset mask as we have printed out the ToFs
 	return x;
 }
 
 float instance_getReceivePower(void)
 {
-	uint16 C, N;
+	uint16_t C, N;
 	uint32_t twoPower17 = 131072;
 	float A, corrFac;
 	readReceivePower(&C, &N);
@@ -688,7 +690,7 @@ float instance_getReceivePower(void)
 // This sets delay for RX to TX - Delayed Send, and for TX to RX delayed receive (wait for response) functionality,
 // and the frame wait timeout value to use.  This is a function of data rate, preamble length, and PRF
 
-extern uint8 dwnsSFDlen[];
+extern uint8_t dwnsSFDlen[];
 
 float calc_length_data(float msgdatalen)
 {
@@ -701,12 +703,7 @@ float calc_length_data(float msgdatalen)
 	msgdatalen = msgdatalen * 8 + x * 48;
 
 	// assume PHR length is 172308ns for 110k and 21539ns for 850k/6.81M
-	if (inst->configData.dataRate == DWT_BR_110K)
-	{
-		msgdatalen *= 8205.13f;
-		msgdatalen += 172308; // PHR length in nanoseconds
-	}
-	else if (inst->configData.dataRate == DWT_BR_850K)
+	if (inst->configData.dataRate == DWT_BR_850K)
 	{
 		msgdatalen *= 1025.64f;
 		msgdatalen += 21539; // PHR length in nanoseconds
@@ -811,25 +808,17 @@ void instance_set_replydelay(int delayus) // delay in us
 	// this delay depends on how quickly the tag can receive and process the message from previous anchor
 	//(and also the frame length of course)
 	respframe = (int)(preamblelen + (msgdatalen_resp / 1000.0)); // length of response frame (micro seconds)
-	if (inst->configData.dataRate == DWT_BR_110K)
-	{
-		// set the frame wait timeout time - total time the frame takes in symbols
-		inst->fwtoTime_sy = respframe_sy + RX_RESPONSE_TURNAROUND + 400;													  // add some margin because of the resp to resp RX turn on time
-		inst->preambleDuration32h = (uint32)(((uint64)instance_convert_usec_to_devtimeu(preamblelen)) >> 8) + DW_RX_ON_DELAY; // preamble duration + 16 us for RX on
-	}
-	else
-	{
-		// set the frame wait timeout time - total time the frame takes in symbols
-		inst->fwtoTime_sy = respframe_sy + RX_RESPONSE_TURNAROUND;															  // add some margin because of the resp to resp RX turn on time
-		inst->preambleDuration32h = (uint32)(((uint64)instance_convert_usec_to_devtimeu(preamblelen)) >> 8) + DW_RX_ON_DELAY; // preamble duration + 16 us for RX on
-	}
+
+	// set the frame wait timeout time - total time the frame takes in symbols
+	inst->fwtoTime_sy = respframe_sy + RX_RESPONSE_TURNAROUND;																  // add some margin because of the resp to resp RX turn on time
+	inst->preambleDuration32h = (uint32_t)(((uint64_t)instance_convert_usec_to_devtimeu(preamblelen)) >> 8) + DW_RX_ON_DELAY; // preamble duration + 16 us for RX on
 
 	inst->tagRespRxDelay_sy = RX_RESPONSE_TURNAROUND + respframe_sy - pollframe_sy;
 
 	// anchors will reply after RX_RESPONSE_TURNAROUND time, also subtract 16 us for RX on delay
 	inst->ancRespRxDelay_sy = RX_RESPONSE_TURNAROUND - DW_RX_ON_DELAY;
 
-	inst->fixedReplyDelayAnc32h = ((uint64)instance_convert_usec_to_devtimeu(respframe + RX_RESPONSE_TURNAROUND) >> 8);
+	inst->fixedReplyDelayAnc32h = ((uint64_t)instance_convert_usec_to_devtimeu(respframe + RX_RESPONSE_TURNAROUND) >> 8);
 
 	inst->fwto4RespFrame_sy = respframe_sy;
 	inst->fwto4FinalFrame_sy = finalframeA_sy + 200; // add some margin so we don't timeout too soon
@@ -842,7 +831,7 @@ void instance_set_replydelay(int delayus) // delay in us
 /* @fn 	  instance_calc_ranges
  * @brief calculate range for each ToF in the array, and return a mask of valid ranges
  * */
-int instance_calc_ranges(uint32 *array, uint16 size, int reportRange, uint8 *mask)
+int instance_calc_ranges(uint32_t *array, uint16_t size, int reportRange, uint8_t *mask)
 {
 	int i;
 	int newRange = TOF_REPORT_NUL;
@@ -850,7 +839,7 @@ int instance_calc_ranges(uint32 *array, uint16 size, int reportRange, uint8 *mas
 
 	for (i = 0; i < size; i++)
 	{
-		uint32 tofx = array[i];
+		uint32_t tofx = array[i];
 		if (tofx != INVALID_TOF) // if ToF == 0 - then no new range to report
 		{
 			distance = instance_calculate_rangefromTOF(i, tofx);

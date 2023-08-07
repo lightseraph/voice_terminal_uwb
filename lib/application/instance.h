@@ -16,7 +16,7 @@ extern "C"
 #define OLED 1   // OLED开关，ULM1使用OLED时开启,ULM1-LD1默认关闭
 #define E2PROM 0 // 外接EEPROM开关，ULM1默认不焊接，ULM1-LD1无板载
 
-#define MAX_TAG_110K 4  // 110K模式下最大的标签容量
+// #define MAX_TAG_110K 4  // 110K模式下最大的标签容量
 #define MAX_TAG_850K 10 // 850K模式下最大的标签容量
 #define MAX_TAG_68M 15  // 6.8M模式下最大的标签容量
 
@@ -248,76 +248,76 @@ extern "C"
 
     typedef struct
     {
-        uint8 frameCtrl[2];                            //  frame control bytes 00-01
-        uint8 seqNum;                                  //  sequence_number 02
-        uint8 panID[2];                                //  PAN ID 03-04
-        uint8 destAddr[ADDR_BYTE_SIZE_L];              //  05-12 using 64 bit addresses
-        uint8 sourceAddr[ADDR_BYTE_SIZE_L];            //  13-20 using 64 bit addresses
-        uint8 messageData[MAX_USER_PAYLOAD_STRING_LL]; //  22-124 (application data and any user payload)
-        uint8 fcs[2];                                  //  125-126  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
+        uint8_t frameCtrl[2];                            //  frame control bytes 00-01
+        uint8_t seqNum;                                  //  sequence_number 02
+        uint8_t panID[2];                                //  PAN ID 03-04
+        uint8_t destAddr[ADDR_BYTE_SIZE_L];              //  05-12 using 64 bit addresses
+        uint8_t sourceAddr[ADDR_BYTE_SIZE_L];            //  13-20 using 64 bit addresses
+        uint8_t messageData[MAX_USER_PAYLOAD_STRING_LL]; //  22-124 (application data and any user payload)
+        uint8_t fcs[2];                                  //  125-126  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
     } srd_msg_dlsl;
 
     typedef struct
     {
-        uint8 frameCtrl[2];                            //  frame control bytes 00-01
-        uint8 seqNum;                                  //  sequence_number 02
-        uint8 panID[2];                                //  PAN ID 03-04
-        uint8 destAddr[ADDR_BYTE_SIZE_S];              //  05-06
-        uint8 sourceAddr[ADDR_BYTE_SIZE_S];            //  07-08
-        uint8 messageData[MAX_USER_PAYLOAD_STRING_SS]; //  09-124 (application data and any user payload)
-        uint8 fcs[2];                                  //  125-126  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
+        uint8_t frameCtrl[2];                            //  frame control bytes 00-01
+        uint8_t seqNum;                                  //  sequence_number 02
+        uint8_t panID[2];                                //  PAN ID 03-04
+        uint8_t destAddr[ADDR_BYTE_SIZE_S];              //  05-06
+        uint8_t sourceAddr[ADDR_BYTE_SIZE_S];            //  07-08
+        uint8_t messageData[MAX_USER_PAYLOAD_STRING_SS]; //  09-124 (application data and any user payload)
+        uint8_t fcs[2];                                  //  125-126  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
     } srd_msg_dsss;
 
     typedef struct
     {
-        uint8 frameCtrl[2];                            //  frame control bytes 00-01
-        uint8 seqNum;                                  //  sequence_number 02
-        uint8 panID[2];                                //  PAN ID 03-04
-        uint8 destAddr[ADDR_BYTE_SIZE_L];              //  05-12 using 64 bit addresses
-        uint8 sourceAddr[ADDR_BYTE_SIZE_S];            //  13-14
-        uint8 messageData[MAX_USER_PAYLOAD_STRING_LS]; //  15-124 (application data and any user payload)
-        uint8 fcs[2];                                  //  125-126  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
+        uint8_t frameCtrl[2];                            //  frame control bytes 00-01
+        uint8_t seqNum;                                  //  sequence_number 02
+        uint8_t panID[2];                                //  PAN ID 03-04
+        uint8_t destAddr[ADDR_BYTE_SIZE_L];              //  05-12 using 64 bit addresses
+        uint8_t sourceAddr[ADDR_BYTE_SIZE_S];            //  13-14
+        uint8_t messageData[MAX_USER_PAYLOAD_STRING_LS]; //  15-124 (application data and any user payload)
+        uint8_t fcs[2];                                  //  125-126  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
     } srd_msg_dlss;
 
     typedef struct
     {
-        uint8 frameCtrl[2];                            //  frame control bytes 00-01
-        uint8 seqNum;                                  //  sequence_number 02
-        uint8 panID[2];                                //  PAN ID 03-04
-        uint8 destAddr[ADDR_BYTE_SIZE_S];              //  05-06
-        uint8 sourceAddr[ADDR_BYTE_SIZE_L];            //  07-14 using 64 bit addresses
-        uint8 messageData[MAX_USER_PAYLOAD_STRING_LS]; //  15-124 (application data and any user payload)
-        uint8 fcs[2];                                  //  125-126  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
+        uint8_t frameCtrl[2];                            //  frame control bytes 00-01
+        uint8_t seqNum;                                  //  sequence_number 02
+        uint8_t panID[2];                                //  PAN ID 03-04
+        uint8_t destAddr[ADDR_BYTE_SIZE_S];              //  05-06
+        uint8_t sourceAddr[ADDR_BYTE_SIZE_L];            //  07-14 using 64 bit addresses
+        uint8_t messageData[MAX_USER_PAYLOAD_STRING_LS]; //  15-124 (application data and any user payload)
+        uint8_t fcs[2];                                  //  125-126  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
     } srd_msg_dssl;
 
     // 12 octets for Minimum IEEE ID blink
     typedef struct
     {
-        uint8 frameCtrl;                         //  frame control bytes 00
-        uint8 seqNum;                            //  sequence_number 01
-        uint8 tagID[BLINK_FRAME_SOURCE_ADDRESS]; //  02-09 64 bit address
-        uint8 fcs[2];                            //  10-11  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
+        uint8_t frameCtrl;                         //  frame control bytes 00
+        uint8_t seqNum;                            //  sequence_number 01
+        uint8_t tagID[BLINK_FRAME_SOURCE_ADDRESS]; //  02-09 64 bit address
+        uint8_t fcs[2];                            //  10-11  we allow space for the CRC as it is logically part of the message. However ScenSor TX calculates and adds these bytes.
     } iso_IEEE_EUI64_blink_msg;
 
     typedef struct
     {
-        uint8 channelNumber; // valid range is 1 to 11
-        uint8 preambleCode;  // 00 = use NS code, 1 to 24 selects code
-        uint8 pulseRepFreq;  // NOMINAL_4M, NOMINAL_16M, or NOMINAL_64M
-        uint8 dataRate;      // DATA_RATE_1 (110K), DATA_RATE_2 (850K), DATA_RATE_3 (6M81)
-        uint8 preambleLen;   // values expected are 64, (128), (256), (512), 1024, (2048), and 4096
-        uint8 pacSize;
-        uint8 nsSFD;
-        uint16 sfdTO; //!< SFD timeout value (in symbols) e.g. preamble length (128) + SFD(8) - PAC + some margin ~ 135us... DWT_SFDTOC_DEF; //default value
+        uint8_t channelNumber; // valid range is 1 to 11
+        uint8_t preambleCode;  // 00 = use NS code, 1 to 24 selects code
+        uint8_t pulseRepFreq;  // NOMINAL_4M, NOMINAL_16M, or NOMINAL_64M
+        uint8_t dataRate;      // DATA_RATE_1 (110K), DATA_RATE_2 (850K), DATA_RATE_3 (6M81)
+        uint8_t preambleLen;   // values expected are 64, (128), (256), (512), 1024, (2048), and 4096
+        uint8_t pacSize;
+        uint8_t nsSFD;
+        uint16_t sfdTO; //!< SFD timeout value (in symbols) e.g. preamble length (128) + SFD(8) - PAC + some margin ~ 135us... DWT_SFDTOC_DEF; //default value
     } instanceConfig_t;
 
     typedef struct
     {
-        uint16 slotDuration_ms;       // slot duration (time for 1 tag to range to 4 anchors)
-        uint16 numSlots;              // number of slots in one superframe (number of tags supported)
-        uint16 sfPeriod_ms;           // superframe period in ms
-        uint16 tagPeriod_ms;          // the time during which tag ranges to anchors and then sleeps, should be same as FRAME PERIOD so that tags don't interfere
-        uint16 pollTxToFinalTxDly_us; // response delay time (Poll to Final delay)
+        uint16_t slotDuration_ms;       // slot duration (time for 1 tag to range to 4 anchors)
+        uint16_t numSlots;              // number of slots in one superframe (number of tags supported)
+        uint16_t sfPeriod_ms;           // superframe period in ms
+        uint16_t tagPeriod_ms;          // the time during which tag ranges to anchors and then sleeps, should be same as FRAME PERIOD so that tags don't interfere
+        uint16_t pollTxToFinalTxDly_us; // response delay time (Poll to Final delay)
     } sfConfig_t;
 
 // size of the event queue, in this application there should be at most 2 unprocessed events,
@@ -327,18 +327,18 @@ extern "C"
 
     typedef struct
     {
-        uint8 type; // event type - if 0 there is no event in the queue
-        // uint8  typeSave;		// holds the event type - does not clear (used to show what event has been processed)
-        uint8 typePend;      // set if there is a pending event (i.e. DW is not in IDLE (TX/RX pending)
-        uint16 rxLength;     // length of RX data (does not apply to TX events)
-        uint64 timeStamp;    // last timestamp (Tx or Rx) - 40 bit DW1000 time
-        uint32 timeStamp32l; // last tx/rx timestamp - low 32 bits of the 40 bit DW1000 time
-        uint32 timeStamp32h; // last tx/rx timestamp - high 32 bits of the 40 bit DW1000 time
-        uint32 uTimeStamp;   // 32 bit system counter (ms) - STM32 tick time (at time of IRQ)
+        uint8_t type; // event type - if 0 there is no event in the queue
+        // uint8_t  typeSave;		// holds the event type - does not clear (used to show what event has been processed)
+        uint8_t typePend;      // set if there is a pending event (i.e. DW is not in IDLE (TX/RX pending)
+        uint16_t rxLength;     // length of RX data (does not apply to TX events)
+        uint64_t timeStamp;    // last timestamp (Tx or Rx) - 40 bit DW1000 time
+        uint32_t timeStamp32l; // last tx/rx timestamp - low 32 bits of the 40 bit DW1000 time
+        uint32_t timeStamp32h; // last tx/rx timestamp - high 32 bits of the 40 bit DW1000 time
+        uint32_t uTimeStamp;   // 32 bit system counter (ms) - STM32 tick time (at time of IRQ)
         union
         {
             // holds received frame (after a good RX frame event)
-            uint8 frame[STANDARD_FRAME_SIZE];
+            uint8_t frame[STANDARD_FRAME_SIZE];
             srd_msg_dlsl rxmsg_ll; // 64 bit addresses
             srd_msg_dssl rxmsg_sl;
             srd_msg_dlss rxmsg_ls;
@@ -351,14 +351,14 @@ extern "C"
     // TX power and PG delay configuration structure
     typedef struct
     {
-        uint8 pgDelay;
+        uint8_t pgDelay;
 
         // TX POWER
         // 31:24     BOOST_0.125ms_PWR
         // 23:16     BOOST_0.25ms_PWR-TX_SHR_PWR
         // 15:8      BOOST_0.5ms_PWR-TX_PHR_PWR
         // 7:0       DEFAULT_PWR-TX_DATA_PWR
-        uint32 txPwr[2]; //
+        uint32_t txPwr[2]; //
     } tx_struct;
 
     typedef struct
@@ -370,34 +370,35 @@ extern "C"
         INST_STATES previousState; // state machine - previous state
 
         // configuration structures
-        dwt_config_t configData;   // DW1000 channel configuration
-        dwt_txconfig_t configTX;   // DW1000 TX power configuration
-        uint16 txAntennaDelay;     // DW1000 TX antenna delay
-        uint16 rxAntennaDelay;     // DW1000 RX antenna delay
-        uint32 txPower;            // DW1000 TX power
-        uint8 txPowerChanged;      // power has been changed - update the register on next TWR exchange
-        uint8 antennaDelayChanged; // antenna delay has been changed - update the register on next TWR exchange
+        dwt_config_t configData;     // DW1000 channel configuration
+        dwt_txconfig_t configTX;     // DW1000 TX power configuration
+        uint16_t txAntennaDelay;     // DW1000 TX antenna delay
+        uint16_t rxAntennaDelay;     // DW1000 RX antenna delay
+        uint32_t txPower;            // DW1000 TX power
+        uint8_t txPowerChanged;      // power has been changed - update the register on next TWR exchange
+        uint8_t antennaDelayChanged; // antenna delay has been changed - update the register on next TWR exchange
+        uint8_t is_Kalman;
 
-        uint16 instanceAddress16; // contains tag/anchor 16 bit address
+        uint16_t instanceAddress16; // contains tag/anchor 16 bit address
         // timeouts and delays
-        int32 tagPeriod_ms;    // in ms, tag ranging + sleeping period
-        int32 tagSleepTime_ms; // in milliseconds - defines the nominal Tag sleep time period
-        int32 tagSleepRnd_ms;  // add an extra slot duration to sleep time to avoid collision before getting synced by anchor 0
+        int32_t tagPeriod_ms;    // in ms, tag ranging + sleeping period
+        int32_t tagSleepTime_ms; // in milliseconds - defines the nominal Tag sleep time period
+        int32_t tagSleepRnd_ms;  // add an extra slot duration to sleep time to avoid collision before getting synced by anchor 0
 
         // this is the delay used for the delayed transmit
-        uint64 pollTx2FinalTxDelay;        // this is delay from Poll Tx time to Final Tx time in DW1000 units (40-bit)
-        uint64 pollTx2FinalTxDelayAnc;     // this is delay from Poll Tx time to Final Tx time in DW1000 units (40-bit) for Anchor to Anchor ranging
-        uint32 fixedReplyDelayAnc32h;      // this is a delay used for calculating delayed TX/delayed RX on time (units: 32bit of 40bit DW time)
-        uint16 anc1RespTx2FinalRxDelay_sy; // This is delay for RX on when A1 expecting Final form A0 or A2 expecting Final from A1
-        uint16 anc2RespTx2FinalRxDelay_sy; // This is delay for RX on when A2 waiting for A0's final (anc to anc ranging)
-        uint32 preambleDuration32h;        // preamble duration in device time (32 MSBs of the 40 bit time)
-        uint32 tagRespRxDelay_sy;          // TX to RX delay time when tag is awaiting response message an another anchor
-        uint32 ancRespRxDelay_sy;          // TX to RX delay time when anchor is awaiting response message an another anchor
+        uint64_t pollTx2FinalTxDelay;        // this is delay from Poll Tx time to Final Tx time in DW1000 units (40-bit)
+        uint64_t pollTx2FinalTxDelayAnc;     // this is delay from Poll Tx time to Final Tx time in DW1000 units (40-bit) for Anchor to Anchor ranging
+        uint32_t fixedReplyDelayAnc32h;      // this is a delay used for calculating delayed TX/delayed RX on time (units: 32bit of 40bit DW time)
+        uint16_t anc1RespTx2FinalRxDelay_sy; // This is delay for RX on when A1 expecting Final form A0 or A2 expecting Final from A1
+        uint16_t anc2RespTx2FinalRxDelay_sy; // This is delay for RX on when A2 waiting for A0's final (anc to anc ranging)
+        uint32_t preambleDuration32h;        // preamble duration in device time (32 MSBs of the 40 bit time)
+        uint32_t tagRespRxDelay_sy;          // TX to RX delay time when tag is awaiting response message an another anchor
+        uint32_t ancRespRxDelay_sy;          // TX to RX delay time when anchor is awaiting response message an another anchor
 
-        int fwtoTime_sy;          // this is FWTO for response message (used by initiating anchor in anchor to anchor ranging)
-        int fwto4RespFrame_sy;    // this is a frame wait timeout used when awaiting reception of Response frames (used by both tag/anchor)
-        int fwto4FinalFrame_sy;   // this is a frame wait timeout used when awaiting reception of Final frames
-        uint32 delayedTRXTime32h; // time at which to do delayed TX or delayed RX (note TX time is time of SFD, RX time is RX on time)
+        int fwtoTime_sy;            // this is FWTO for response message (used by initiating anchor in anchor to anchor ranging)
+        int fwto4RespFrame_sy;      // this is a frame wait timeout used when awaiting reception of Response frames (used by both tag/anchor)
+        int fwto4FinalFrame_sy;     // this is a frame wait timeout used when awaiting reception of Final frames
+        uint32_t delayedTRXTime32h; // time at which to do delayed TX or delayed RX (note TX time is time of SFD, RX time is RX on time)
 
         // message structure used for holding the data of the frame to transmit before it is written to the DW1000
         srd_msg_dsss msg_f;                // ranging message frame with 16-bit addresses
@@ -405,59 +406,59 @@ extern "C"
         srd_msg_dlss rng_initmsg;          // ranging init message (destination long, source short)
 
         // Tag function address/message configuration
-        uint8 shortAdd_idx; // device's 16-bit address low byte (used as index into arrays [0 - 3])
-        uint8 eui64[8];     // device's EUI 64-bit address
-        uint16 psduLength;  // used for storing the TX frame length
-        uint8 frameSN;      // modulo 256 frame sequence number - it is incremented for each new frame transmission
-        uint16 panID;       // panid used in the frames
+        uint8_t shortAdd_idx; // device's 16-bit address low byte (used as index into arrays [0 - 3])
+        uint8_t eui64[8];     // device's EUI 64-bit address
+        uint16_t psduLength;  // used for storing the TX frame length
+        uint8_t frameSN;      // modulo 256 frame sequence number - it is incremented for each new frame transmission
+        uint16_t panID;       // panid used in the frames
 
         // 64 bit timestamps
         // union of TX timestamps
         union
         {
-            uint64 txTimeStamp;      // last tx timestamp
-            uint64 tagPollTxTime;    // tag's poll tx timestamp
-            uint64 anchorRespTxTime; // anchor's reponse tx timestamp
+            uint64_t txTimeStamp;      // last tx timestamp
+            uint64_t tagPollTxTime;    // tag's poll tx timestamp
+            uint64_t anchorRespTxTime; // anchor's reponse tx timestamp
         } txu;
-        uint32 tagPollTxTime32h;
-        uint64 tagPollRxTime; // receive time of poll message
+        uint32_t tagPollTxTime32h;
+        uint64_t tagPollRxTime; // receive time of poll message
 
         // application control parameters
-        uint8 wait4ack; // if this is set to DWT_RESPONSE_EXPECTED, then the receiver will turn on automatically after TX completion
-        uint8 wait4final;
+        uint8_t wait4ack; // if this is set to DWT_RESPONSE_EXPECTED, then the receiver will turn on automatically after TX completion
+        uint8_t wait4final;
 
-        uint8 instToSleep;          // if set the instance will go to sleep before sending the blink/poll message
-        uint8 instanceTimerEn;      // enable/start a timer
-        uint32 instanceWakeTime_ms; // micro time at which the tag was waken up
-        uint32 nextWakeUpTime_ms;   // micro time at which to wake up tag
+        uint8_t instToSleep;          // if set the instance will go to sleep before sending the blink/poll message
+        uint8_t instanceTimerEn;      // enable/start a timer
+        uint32_t instanceWakeTime_ms; // micro time at which the tag was waken up
+        uint32_t nextWakeUpTime_ms;   // micro time at which to wake up tag
 
-        uint8 rxResponseMaskAnc; // bit mask - bit 0 not used;
-                                 // bit 1 = received response from anchor ID = 1;
-                                 // bit 2 from anchor ID = 2,
-                                 // bit 3 set if two responses (from Anchor 1 and Anchor 2) received and A0 got third response (from A2)
+        uint8_t rxResponseMaskAnc; // bit mask - bit 0 not used;
+                                   // bit 1 = received response from anchor ID = 1;
+                                   // bit 2 from anchor ID = 2,
+                                   // bit 3 set if two responses (from Anchor 1 and Anchor 2) received and A0 got third response (from A2)
 
-        uint8 rxResponseMask;                     // bit mask - bit 0 = received response from anchor ID = 0, bit 1 from anchor ID = 1 etc...
-        uint8 rxResponseMaskReport;               // this will be set before outputting range reports to signify which are valid
-        uint8 rangeNum;                           // incremented for each sequence of ranges (each slot)
-        uint8 rangeNumA[MAX_TAG_LIST_SIZE];       // array which holds last range number from each tag
-        uint8 rangeNumAAnc[MAX_ANCHOR_LIST_SIZE]; // array which holds last range number for each anchor
+        uint8_t rxResponseMask;                     // bit mask - bit 0 = received response from anchor ID = 0, bit 1 from anchor ID = 1 etc...
+        uint8_t rxResponseMaskReport;               // this will be set before outputting range reports to signify which are valid
+        uint8_t rangeNum;                           // incremented for each sequence of ranges (each slot)
+        uint8_t rangeNumA[MAX_TAG_LIST_SIZE];       // array which holds last range number from each tag
+        uint8_t rangeNumAAnc[MAX_ANCHOR_LIST_SIZE]; // array which holds last range number for each anchor
 
-        int8 rxResps;           // how many responses were received to a poll (in current ranging exchange)
-        int8 remainingRespToRx; // how many responses remain to be received (in current ranging exchange)
+        int8_t rxResps;           // how many responses were received to a poll (in current ranging exchange)
+        int8_t remainingRespToRx; // how many responses remain to be received (in current ranging exchange)
 
-        uint16 sframePeriod_ms; // superframe period in ms
-        uint16 slotDuration_ms; // slot duration in ms
-        uint16 numSlots;
-        int32 tagSleepCorrection_ms; // tag's sleep correction to keep it in it's assigned slot
+        uint16_t sframePeriod_ms; // superframe period in ms
+        uint16_t slotDuration_ms; // slot duration in ms
+        uint16_t numSlots;
+        int32_t tagSleepCorrection_ms; // tag's sleep correction to keep it in it's assigned slot
 
         // diagnostic counters/data, results and logging
-        uint32 tof[MAX_TAG_LIST_SIZE]; // this is an array which holds last ToF from particular tag (ID 0-(MAX_TAG_LIST_SIZE-1))
+        uint32_t tof[MAX_TAG_LIST_SIZE]; // this is an array which holds last ToF from particular tag (ID 0-(MAX_TAG_LIST_SIZE-1))
         // this is an array which holds last ToF to each anchor it should
-        uint32 tofArray[MAX_ANCHOR_LIST_SIZE]; // contain 4 ToF to 4 anchors all relating to same range number sequence
+        uint32_t tofArray[MAX_ANCHOR_LIST_SIZE]; // contain 4 ToF to 4 anchors all relating to same range number sequence
 
 #if (DISCOVERY == 1)
-        uint8 tagListLen;
-        uint8 tagList[MAX_TAG_LIST_SIZE][8];
+        uint8_t tagListLen;
+        uint8_t tagList[MAX_TAG_LIST_SIZE][8];
 #endif
 
         // ranging counters
@@ -467,15 +468,15 @@ extern "C"
         int newRangeTagAddress; // last 4 bytes of tag address - used for printing/range output display
         int newRangeTime;
 
-        uint8 gatewayAnchor; // set to TRUE = 1 if anchor address == GATEWAY_ANCHOR_ADDR
-        // event queue - used to store DW1000 events as they are processed by the dw_isr/callback functions
+        uint8_t gatewayAnchor; // set to TRUE = 1 if anchor address == GATEWAY_ANCHOR_ADDR
+        // event queue - used to store DW3000 events as they are processed by the dw_isr/callback functions
         event_data_t dwevent[MAX_EVENT_NUMBER]; // this holds any TX/RX events and associated message data
-        uint8 dweventIdxOut;
-        uint8 dweventIdxIn;
-        uint8 dweventPeek;
-        uint8 monitor;
-        uint32 timeofTx;
-        uint8 smartPowerEn;
+        uint8_t dweventIdxOut;
+        uint8_t dweventIdxIn;
+        uint8_t dweventPeek;
+        uint8_t monitor;
+        uint32_t timeofTx;
+        uint8_t smartPowerEn;
 
     } instance_data_t;
 
@@ -488,7 +489,7 @@ extern "C"
     //-------------------------------------------------------------------------------------------------------------
 
     // function to calculate and the range from given Time of Flight
-    int instance_calculate_rangefromTOF(int idx, uint32 tofx);
+    int instance_calculate_rangefromTOF(int idx, uint32_t tofx);
     void instance_cleardisttable(int idx);
     void instance_set_tagdist(int tidx, int aidx);
     double instance_get_tagdist(int idx);
@@ -496,7 +497,7 @@ extern "C"
     double instance_get_idistraw(int idx);
     int instance_get_idist_mm(int idx);
     int instance_get_idistraw_mm(int idx);
-    uint8 instance_validranges(void);
+    uint8_t instance_validranges(void);
     float instance_getReceivePower(void);
     int instance_get_rnum(void);
     int instance_get_rnuma(int idx);
@@ -506,7 +507,7 @@ extern "C"
     int instance_newrangetagadd(void);
     int instance_newrange(void);
     int instance_newrangetim(void);
-    int instance_calc_ranges(uint32 *array, uint16 size, int reportRange, uint8 *mask);
+    int instance_calc_ranges(uint32_t *array, uint16_t size, int reportRange, uint8_t *mask);
     // clear the status/ranging data
     void instance_clearcounts(void);
     void instance_cleardisttableall();
@@ -517,13 +518,13 @@ extern "C"
     //-------------------------------------------------------------------------------------------------------------
 
     // Call init, then call config, then call run.
-    // initialise the instance (application) structures and DW1000 device
+    // initialise the instance (application) structures and DW3000 device
     int instance_init(int role);
-    // configure the instance and DW1000 device
-    void instance_config(instanceConfig_t *config, sfConfig_t *sfconfig, uint8_t s1switch);
+    // configure the instance and DW3000 device
+    void instance_config(instanceConfig_t *config, sfConfig_t *sfconfig);
 
     // configure the MAC address
-    void instance_set_16bit_address(uint16 address);
+    void instance_set_16bit_address(uint16_t address);
     void instance_config_frameheader_16bit(instance_data_t *inst);
     void tag_process_rx_timeout(instance_data_t *inst);
 
@@ -531,7 +532,7 @@ extern "C"
     int tag_run(void);
     int anch_run(void); // returns indication of status report change
 
-    // configure TX/RX callback functions that are called from DW1000 ISR
+    // configure TX/RX callback functions that are called from DW3000 ISR
     void rx_ok_cb_tag(const dwt_cb_data_t *cb_data);
     void rx_to_cb_tag(const dwt_cb_data_t *cb_data);
     void rx_err_cb_tag(const dwt_cb_data_t *cb_data);
@@ -546,24 +547,24 @@ extern "C"
     // set/get the instance roles e.g. Tag/Anchor
     // done though instance_init void instance_set_role(int mode);
     int instance_get_role(void);
-    // get the DW1000 device ID (e.g. 0xDECA0130 for DW1000)
-    uint32 instance_readdeviceid(void); // Return Device ID reg, enables validation of physical device presence
+    // get the DW3000 device ID (e.g. 0xDECA0130 for DW3000)
+    uint32_t instance_readdeviceid(void); // Return Device ID reg, enables validation of physical device presence
     int instance_send_delayed_frame(instance_data_t *inst, int delayedTx);
-    uint64 instance_convert_usec_to_devtimeu(double microsecu);
-    void instance_seteventtime(event_data_t *dw_event, uint8 *timeStamp);
+    uint64_t instance_convert_usec_to_devtimeu(double microsecu);
+    void instance_seteventtime(event_data_t *dw_event, uint8_t *timeStamp);
     int instance_peekevent(void);
-    void instance_putevent(event_data_t newevent, uint8 etype);
+    void instance_putevent(event_data_t newevent, uint8_t etype);
     event_data_t *instance_getevent(void);
     void instance_clearevents(void);
     // configure the antenna delays
-    void instance_config_antennadelays(uint16 tx, uint16 rx);
+    void instance_config_antennadelays(uint16_t tx, uint16_t rx);
     void instance_set_antennadelays(void);
-    uint16 instance_get_txantdly(void);
-    uint16 instance_get_rxantdly(void);
+    uint16_t instance_get_txantdly(void);
+    uint16_t instance_get_rxantdly(void);
     // configure the TX power
-    void instance_config_txpower(uint32 txpower);
+    void instance_config_txpower(uint32_t txpower);
     void instance_set_txpower(void);
-    int instance_starttxtest(int framePeriod);
+    int instance_starttxtest(int framePeriod, uint8_t channel);
     instance_data_t *instance_get_local_structure_ptr(void);
 
 #ifdef __cplusplus

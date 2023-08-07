@@ -20,8 +20,8 @@
 #define NUM_64M_OFFSET  (26)
 #define NUM_64M_OFFSETWB  (59)
 
-const uint8 chan_idxnb[NUM_CH_SUPPORTED] = {0, 0, 1, 2, 0, 3, 0, 0}; //only channels 1,2,3 and 5 are in the narrow band tables
-const uint8 chan_idxwb[NUM_CH_SUPPORTED] = {0, 0, 0, 0, 0, 0, 0, 1}; //only channels 4 and 7 are in in the wide band tables
+const uint8_t chan_idxnb[NUM_CH_SUPPORTED] = {0, 0, 1, 2, 0, 3, 0, 0}; //only channels 1,2,3 and 5 are in the narrow band tables
+const uint8_t chan_idxwb[NUM_CH_SUPPORTED] = {0, 0, 0, 0, 0, 0, 0, 1}; //only channels 4 and 7 are in in the wide band tables
 
 //---------------------------------------------------------------------------------------------------------------------------
 // Range Bias Correction TABLES of range values in integer units of 25 CM, for 8-bit unsigned storage, MUST END IN 255 !!!!!!
@@ -39,7 +39,7 @@ const uint8 chan_idxwb[NUM_CH_SUPPORTED] = {0, 0, 0, 0, 0, 0, 0, 1}; //only chan
 // range25cm16PRFnb: Range Bias Correction table for narrow band channels at 16 MHz PRF, NB: !!!! each MUST END IN 255 !!!!
 //---------------------------------------------------------------------------------------------------------------------------
 
-const uint8 range25cm16PRFnb[4][NUM_16M_OFFSET] =
+const uint8_t range25cm16PRFnb[4][NUM_16M_OFFSET] =
 {
     // ch 1 - range25cm16PRFnb
     {
@@ -211,7 +211,7 @@ const uint8 range25cm16PRFnb[4][NUM_16M_OFFSET] =
 // range25cm16PRFwb: Range Bias Correction table for wide band channels at 16 MHz PRF, NB: !!!! each MUST END IN 255 !!!!
 //---------------------------------------------------------------------------------------------------------------------------
 
-const uint8 range25cm16PRFwb[2][NUM_16M_OFFSETWB] =
+const uint8_t range25cm16PRFwb[2][NUM_16M_OFFSETWB] =
 {
     // ch 4 - range25cm16PRFwb
     {
@@ -362,7 +362,7 @@ const uint8 range25cm16PRFwb[2][NUM_16M_OFFSETWB] =
 // range25cm64PRFnb: Range Bias Correction table for narrow band channels at 64 MHz PRF, NB: !!!! each MUST END IN 255 !!!!
 //---------------------------------------------------------------------------------------------------------------------------
 
-const uint8 range25cm64PRFnb[4][NUM_64M_OFFSET] =
+const uint8_t range25cm64PRFnb[4][NUM_64M_OFFSET] =
 {
     // ch 1 - range25cm64PRFnb
     {
@@ -489,7 +489,7 @@ const uint8 range25cm64PRFnb[4][NUM_64M_OFFSET] =
 // range25cm64PRFwb: Range Bias Correction table for wide band channels at 64 MHz PRF, NB: !!!! each MUST END IN 255 !!!!
 //---------------------------------------------------------------------------------------------------------------------------
 
-const uint8 range25cm64PRFwb[2][NUM_64M_OFFSETWB] =
+const uint8_t range25cm64PRFwb[2][NUM_64M_OFFSETWB] =
 {
     // ch 4 - range25cm64PRFwb
     {
@@ -624,8 +624,8 @@ const uint8 range25cm64PRFwb[2][NUM_64M_OFFSETWB] =
  *
  * Description: This function is used to return the range bias correction need for TWR with DW1000 units.
  *
- * input parameters:	
- * @param chan  - specifies the operating channel (e.g. 1, 2, 3, 4, 5, 6 or 7) 
+ * input parameters:
+ * @param chan  - specifies the operating channel (e.g. 1, 2, 3, 4, 5, 6 or 7)
  * @param range - the calculated distance before correction
  * @param prf	- this is the PRF e.g. DWT_PRF_16M or DWT_PRF_64M
  *
@@ -633,7 +633,7 @@ const uint8 range25cm64PRFwb[2][NUM_64M_OFFSETWB] =
  *
  * returns correction needed in meters
  */
-double dwt_getrangebias(uint8 chan, float range, uint8 prf)
+double dwt_getrangebias(uint8_t chan, float range, uint8_t prf)
 {
     //first get the lookup index that corresponds to given range for a particular channel at 16M PRF
     int i = 0 ;

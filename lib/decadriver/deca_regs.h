@@ -1,1363 +1,2841 @@
-/*! ------------------------------------------------------------------------------------------------------------------
+/*! ---------------------------------------------------------------------------
  * @file    deca_regs.h
- * @brief   DW1000 Register Definitions
- *          This file supports assembler and C development for DW1000 enabled devices
+ * @brief   DW3000 Register Definitions
+ *          This file supports Assembly and C development for DW3000 enabled devices
  *
+ * @author  Decawave Software
  * @attention
- *
- * Copyright 2013 (c) Decawave Ltd, Dublin, Ireland.
- *
+ * Copyright 2019 - 2020 (c) Decawave Ltd, Dublin, Ireland.
  * All rights reserved.
- *
  */
 
-#ifndef _DECA_REGS_H_
-#define _DECA_REGS_H_
+#ifndef __DECA_REGS_H
+#define __DECA_REGS_H                         1
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "deca_version.h"
+#include "deca_vals.h"
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register DEV_ID
+/******************************************************************************
+* @brief Bit definitions for register DEV_ID
 **/
-#define DEV_ID_ID               0x00            /* Device ID register, includes revision info (0xDECA0130) */
-#define DEV_ID_LEN              (4)
-/* mask and shift */
-#define DEV_ID_REV_MASK         0x0000000FUL    /* Revision */
-#define DEV_ID_VER_MASK         0x000000F0UL    /* Version */
-#define DEV_ID_MODEL_MASK       0x0000FF00UL    /* The MODEL identifies the device. The DW1000 is device type 0x01 */
-#define DEV_ID_RIDTAG_MASK      0xFFFF0000UL    /* Register Identification Tag 0XDECA */
+#define DEV_ID_ID                            0x0                  
+#define DEV_ID_LEN                           (4U)                
+#define DEV_ID_MASK                          0xFFFFFFFFUL        
+#define DEV_ID_RIDTAG_BIT_OFFSET             (16U)               
+#define DEV_ID_RIDTAG_BIT_LEN                (16U)               
+#define DEV_ID_RIDTAG_BIT_MASK               0xffff0000UL         
+#define DEV_ID_MODEL_BIT_OFFSET              (8U)                
+#define DEV_ID_MODEL_BIT_LEN                 (8U)                
+#define DEV_ID_MODEL_BIT_MASK                0xff00U              
+#define DEV_ID_VER_BIT_OFFSET                (4U)                
+#define DEV_ID_VER_BIT_LEN                   (4U)                
+#define DEV_ID_VER_BIT_MASK                  0xf0U                
+#define DEV_ID_REV_BIT_OFFSET                (0U)                
+#define DEV_ID_REV_BIT_LEN                   (4U)                
+#define DEV_ID_REV_BIT_MASK                  0xfU                 
 
-/****************************************************************************//**
- * @brief Bit definitions for register EUI_64
+/******************************************************************************
+* @brief Bit definitions for register EUI_64_LO
 **/
-#define EUI_64_ID               0x01            /* IEEE Extended Unique Identifier (63:0) */
-#define EUI_64_OFFSET           0x00
-#define EUI_64_LEN              (8)
+#define EUI_64_LO_ID                         0x4                  
+#define EUI_64_LO_LEN                        (4U)                
+#define EUI_64_LO_MASK                       0xFFFFFFFFUL        
+#define EUI_64_LO_EUI_64_BIT_OFFSET          (0U)                
+#define EUI_64_LO_EUI_64_BIT_LEN             (32U)               
+#define EUI_64_LO_EUI_64_BIT_MASK            0xffffffffUL         
 
-/****************************************************************************//**
- * @brief Bit definitions for register PANADR
+/******************************************************************************
+* @brief Bit definitions for register EUI_64_HI
 **/
-#define PANADR_ID               0x03            /* PAN ID (31:16) and Short Address (15:0) */
-#define PANADR_LEN              (4)
-/*mask and shift */
-#define PANADR_SHORT_ADDR_OFFSET 0              /* In bytes */
-#define PANADR_SHORT_ADDR_MASK  0x0000FFFFUL    /* Short Address */
-#define PANADR_PAN_ID_OFFSET     2              /* In bytes */
-#define PANADR_PAN_ID_MASK      0xFFFF00F0UL    /* PAN Identifier */
+#define EUI_64_HI_ID                         0x8                  
+#define EUI_64_HI_LEN                        (4U)                
+#define EUI_64_HI_MASK                       0xFFFFFFFFUL        
+#define EUI_64_HI_EUI_64_BIT_OFFSET          (0U)                
+#define EUI_64_HI_EUI_64_BIT_LEN             (32U)               
+#define EUI_64_HI_EUI_64_BIT_MASK            0xffffffffUL         
 
-/****************************************************************************//**
- * @brief Bit definitions for register 0x05
+/******************************************************************************
+* @brief Bit definitions for register PANADR
 **/
-#define REG_05_ID_RESERVED      0x05
+#define PANADR_ID                            0xc                  
+#define PANADR_LEN                           (4U)                
+#define PANADR_MASK                          0xFFFFFFFFUL        
+#define PANADR_PAN_ID_BIT_OFFSET             (16U)               
+#define PANADR_PAN_ID_BIT_LEN                (16U)               
+#define PANADR_PAN_ID_BIT_MASK               0xffff0000UL         
+#define PANADR_SHORTADDR_BIT_OFFSET          (0U)                
+#define PANADR_SHORTADDR_BIT_LEN             (16U)               
+#define PANADR_SHORTADDR_BIT_MASK            0xffffU              
 
-/****************************************************************************//**
- * @brief Bit definitions for register SYS_CFG
+/******************************************************************************
+* @brief Bit definitions for register SYS_CFG
 **/
-#define SYS_CFG_ID              0x04            /* System Configuration (31:0) */
-#define SYS_CFG_LEN             (4)
-/*mask and shift */
-#define SYS_CFG_MASK            0xF047FFFFUL    /* access mask to SYS_CFG_ID */
-#define SYS_CFG_FF_ALL_EN       0x000001FEUL    /* Frame filtering options all frames allowed */
-/*offset 0 */
-#define SYS_CFG_FFE             0x00000001UL    /* Frame Filtering Enable. This bit enables the frame filtering functionality */
-#define SYS_CFG_FFBC            0x00000002UL    /* Frame Filtering Behave as a Co-ordinator */
-#define SYS_CFG_FFAB            0x00000004UL    /* Frame Filtering Allow Beacon frame reception */
-#define SYS_CFG_FFAD            0x00000008UL    /* Frame Filtering Allow Data frame reception */
-#define SYS_CFG_FFAA            0x00000010UL    /* Frame Filtering Allow Acknowledgment frame reception */
-#define SYS_CFG_FFAM            0x00000020UL    /* Frame Filtering Allow MAC command frame reception */
-#define SYS_CFG_FFAR            0x00000040UL    /* Frame Filtering Allow Reserved frame types */
-#define SYS_CFG_FFA4            0x00000080UL    /* Frame Filtering Allow frames with frame type field of 4, (binary 100) */
-/*offset 8 */
-#define SYS_CFG_FFA5            0x00000100UL    /* Frame Filtering Allow frames with frame type field of 5, (binary 101) */
-#define SYS_CFG_HIRQ_POL        0x00000200UL    /* Host interrupt polarity */
-#define SYS_CFG_SPI_EDGE        0x00000400UL    /* SPI data launch edge */
-#define SYS_CFG_DIS_FCE         0x00000800UL    /* Disable frame check error handling */
-#define SYS_CFG_DIS_DRXB        0x00001000UL    /* Disable Double RX Buffer */
-#define SYS_CFG_DIS_PHE         0x00002000UL    /* Disable receiver abort on PHR error */
-#define SYS_CFG_DIS_RSDE        0x00004000UL    /* Disable Receiver Abort on RSD error */
-#define SYS_CFG_FCS_INIT2F      0x00008000UL    /* initial seed value for the FCS generation and checking function */
-/*offset 16 */
-#define SYS_CFG_PHR_MODE_SHFT   16
-#define SYS_CFG_PHR_MODE_00     0x00000000UL    /* Standard Frame mode */
-#define SYS_CFG_PHR_MODE_11     0x00030000UL    /* Long Frames mode */
-#define SYS_CFG_DIS_STXP        0x00040000UL    /* Disable Smart TX Power control */
-#define SYS_CFG_RXM110K         0x00400000UL    /* Receiver Mode 110 kbps data rate */
-/*offset 24 */
-#define SYS_CFG_RXWTOE          0x10000000UL    /* Receive Wait Timeout Enable. */
-#define SYS_CFG_RXAUTR          0x20000000UL    /* Receiver Auto-Re-enable. This bit is used to cause the receiver to re-enable automatically */
-#define SYS_CFG_AUTOACK         0x40000000UL    /* Automatic Acknowledgement Enable */
-#define SYS_CFG_AACKPEND        0x80000000UL    /* Automatic Acknowledgement Pending bit control */
+#define SYS_CFG_ID                           0x10                 
+#define SYS_CFG_LEN                          (4U)                
+#define SYS_CFG_MASK                         0xFFFFFFFFUL        
+#define SYS_CFG_FAST_AAT_EN_BIT_OFFSET       (18U)               
+#define SYS_CFG_FAST_AAT_EN_BIT_LEN          (1U)                
+#define SYS_CFG_FAST_AAT_EN_BIT_MASK         0x40000UL            
+#define SYS_CFG_PDOA_MODE_BIT_OFFSET         (16U)               
+#define SYS_CFG_PDOA_MODE_BIT_LEN            (2U)                
+#define SYS_CFG_PDOA_MODE_BIT_MASK           0x30000UL            
+#define SYS_CFG_CP_SDC_BIT_OFFSET            (15U)               
+#define SYS_CFG_CP_SDC_BIT_LEN               (1U)                
+#define SYS_CFG_CP_SDC_BIT_MASK              0x8000U              
+#define SYS_CFG_CP_SPC_BIT_OFFSET            (12U)               
+#define SYS_CFG_CP_SPC_BIT_LEN               (2U)                
+#define SYS_CFG_CP_SPC_BIT_MASK              0x3000U              
+#define SYS_CFG_AUTO_ACK_BIT_OFFSET          (11U)               
+#define SYS_CFG_AUTO_ACK_BIT_LEN             (1U)                
+#define SYS_CFG_AUTO_ACK_BIT_MASK            0x800U               
+#define SYS_CFG_RXAUTR_BIT_OFFSET            (10U)               
+#define SYS_CFG_RXAUTR_BIT_LEN               (1U)                
+#define SYS_CFG_RXAUTR_BIT_MASK              0x400U               
+#define SYS_CFG_RXWTOE_BIT_OFFSET            (9U)                
+#define SYS_CFG_RXWTOE_BIT_LEN               (1U)                
+#define SYS_CFG_RXWTOE_BIT_MASK              0x200U               
+#define SYS_CFG_CIA_STS_BIT_OFFSET           (8U)                
+#define SYS_CFG_CIA_STS_BIT_LEN              (1U)                
+#define SYS_CFG_CIA_STS_BIT_MASK             0x100U               
+#define SYS_CFG_CIA_IPATOV_BIT_OFFSET        (7U)                
+#define SYS_CFG_CIA_IPATOV_BIT_LEN           (1U)                
+#define SYS_CFG_CIA_IPATOV_BIT_MASK          0x80U                
+#define SYS_CFG_SPI_CRC_BIT_OFFSET           (6U)                
+#define SYS_CFG_SPI_CRC_BIT_LEN              (1U)                
+#define SYS_CFG_SPI_CRC_BIT_MASK             0x40U                
+#define SYS_CFG_PHR_6M8_BIT_OFFSET           (5U)                
+#define SYS_CFG_PHR_6M8_BIT_LEN              (1U)                
+#define SYS_CFG_PHR_6M8_BIT_MASK             0x20U                
+#define SYS_CFG_PHR_MODE_BIT_OFFSET          (4U)                
+#define SYS_CFG_PHR_MODE_BIT_LEN             (1U)                
+#define SYS_CFG_PHR_MODE_BIT_MASK            0x10U                
+#define SYS_CFG_DIS_DRXB_BIT_OFFSET          (3U)                
+#define SYS_CFG_DIS_DRXB_BIT_LEN             (1U)                
+#define SYS_CFG_DIS_DRXB_BIT_MASK            0x8U                 
+#define SYS_CFG_DIS_FCE_BIT_OFFSET           (2U)                
+#define SYS_CFG_DIS_FCE_BIT_LEN              (1U)                
+#define SYS_CFG_DIS_FCE_BIT_MASK             0x4U                 
+#define SYS_CFG_DIS_FCS_TX_BIT_OFFSET        (1U)                
+#define SYS_CFG_DIS_FCS_TX_BIT_LEN           (1U)                
+#define SYS_CFG_DIS_FCS_TX_BIT_MASK          0x2U                 
+#define SYS_CFG_FFEN_BIT_OFFSET              (0U)                
+#define SYS_CFG_FFEN_BIT_LEN                 (1U)                
+#define SYS_CFG_FFEN_BIT_MASK                0x1U                 
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register SYS_TIME
+/******************************************************************************
+* @brief Bit definitions for register ADR_FILT_CFG
 **/
-#define SYS_TIME_ID             0x06            /* System Time Counter (40-bit) */
-#define SYS_TIME_OFFSET         0x00
-#define SYS_TIME_LEN            (5)             /* Note 40 bit register */
+#define ADR_FILT_CFG_ID                      0x14                 
+#define ADR_FILT_CFG_LEN                     (4U)                
+#define ADR_FILT_CFG_MASK                    0xFFFFFFFFUL        
+#define ADR_FILT_CFG_LSADRAPE_BIT_OFFSET     (15U)               
+#define ADR_FILT_CFG_LSADRAPE_BIT_LEN        (1U)                
+#define ADR_FILT_CFG_LSADRAPE_BIT_MASK       0x8000U              
+#define ADR_FILT_CFG_SSADRAPE_BIT_OFFSET     (14U)               
+#define ADR_FILT_CFG_SSADRAPE_BIT_LEN        (1U)                
+#define ADR_FILT_CFG_SSADRAPE_BIT_MASK       0x4000U              
+#define ADR_FILT_CFG_LE3_PEND_BIT_OFFSET     (13U)               
+#define ADR_FILT_CFG_LE3_PEND_BIT_LEN        (1U)                
+#define ADR_FILT_CFG_LE3_PEND_BIT_MASK       0x2000U              
+#define ADR_FILT_CFG_LE2_PEND_BIT_OFFSET     (12U)               
+#define ADR_FILT_CFG_LE2_PEND_BIT_LEN        (1U)                
+#define ADR_FILT_CFG_LE2_PEND_BIT_MASK       0x1000U              
+#define ADR_FILT_CFG_LE1_PEND_BIT_OFFSET     (11U)               
+#define ADR_FILT_CFG_LE1_PEND_BIT_LEN        (1U)                
+#define ADR_FILT_CFG_LE1_PEND_BIT_MASK       0x800U               
+#define ADR_FILT_CFG_LE0_PEND_BIT_OFFSET     (10U)               
+#define ADR_FILT_CFG_LE0_PEND_BIT_LEN        (1U)                
+#define ADR_FILT_CFG_LE0_PEND_BIT_MASK       0x400U               
+#define ADR_FILT_CFG_FFIB_BIT_OFFSET         (9U)                
+#define ADR_FILT_CFG_FFIB_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFIB_BIT_MASK           0x200U               
+#define ADR_FILT_CFG_FFBC_BIT_OFFSET         (8U)                
+#define ADR_FILT_CFG_FFBC_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFBC_BIT_MASK           0x100U               
+#define ADR_FILT_CFG_FFAE_BIT_OFFSET         (7U)                
+#define ADR_FILT_CFG_FFAE_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFAE_BIT_MASK           0x80U                
+#define ADR_FILT_CFG_FFAF_BIT_OFFSET         (6U)                
+#define ADR_FILT_CFG_FFAF_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFAF_BIT_MASK           0x40U                
+#define ADR_FILT_CFG_FFAMULTI_BIT_OFFSET     (5U)                
+#define ADR_FILT_CFG_FFAMULTI_BIT_LEN        (1U)                
+#define ADR_FILT_CFG_FFAMULTI_BIT_MASK       0x20U                
+#define ADR_FILT_CFG_FFAR_BIT_OFFSET         (4U)                
+#define ADR_FILT_CFG_FFAR_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFAR_BIT_MASK           0x10U                
+#define ADR_FILT_CFG_FFAM_BIT_OFFSET         (3U)                
+#define ADR_FILT_CFG_FFAM_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFAM_BIT_MASK           0x8U                 
+#define ADR_FILT_CFG_FFAA_BIT_OFFSET         (2U)                
+#define ADR_FILT_CFG_FFAA_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFAA_BIT_MASK           0x4U                 
+#define ADR_FILT_CFG_FFAD_BIT_OFFSET         (1U)                
+#define ADR_FILT_CFG_FFAD_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFAD_BIT_MASK           0x2U                 
+#define ADR_FILT_CFG_FFAB_BIT_OFFSET         (0U)                
+#define ADR_FILT_CFG_FFAB_BIT_LEN            (1U)                
+#define ADR_FILT_CFG_FFAB_BIT_MASK           0x1U                 
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register  0x07
+/******************************************************************************
+* @brief Bit definitions for register SPICRC_CFG
 **/
-#define REG_07_ID_RESERVED      0x07
+#define SPICRC_CFG_ID                        0x18                 
+#define SPICRC_CFG_LEN                       (4U)                
+#define SPICRC_CFG_MASK                      0xFFFFFFFFUL        
+#define SPICRC_CFG_SPI_RD_CRC_BIT_OFFSET     (0U)                
+#define SPICRC_CFG_SPI_RD_CRC_BIT_LEN        (8U)                
+#define SPICRC_CFG_SPI_RD_CRC_BIT_MASK       0xffU                
 
-/****************************************************************************//**
- * @brief Bit definitions for register TX_FCTRL
+/******************************************************************************
+* @brief Bit definitions for register SYS_TIME
 **/
-#define TX_FCTRL_ID             0x08            /* Transmit Frame Control */
-#define TX_FCTRL_LEN            (5)             /* Note 40 bit register */
-/*masks (low 32 bit) */
-#define TX_FCTRL_TFLEN_MASK     0x0000007FUL    /* bit mask to access Transmit Frame Length */
-#define TX_FCTRL_TFLE_MASK      0x00000380UL    /* bit mask to access Transmit Frame Length Extension */
-#define TX_FCTRL_FLE_MASK       0x000003FFUL    /* bit mask to access Frame Length field */
-#define TX_FCTRL_TXBR_MASK      0x00006000UL    /* bit mask to access Transmit Bit Rate */
-#define TX_FCTRL_TXPRF_MASK     0x00030000UL    /* bit mask to access Transmit Pulse Repetition Frequency */
-#define TX_FCTRL_TXPSR_MASK     0x000C0000UL    /* bit mask to access Transmit Preamble Symbol Repetitions (PSR). */
-#define TX_FCTRL_PE_MASK        0x00300000UL    /* bit mask to access Preamble Extension */
-#define TX_FCTRL_TXPSR_PE_MASK  0x003C0000UL    /* bit mask to access Transmit Preamble Symbol Repetitions (PSR). */
-#define TX_FCTRL_SAFE_MASK_32   0xFFFFE3FFUL    /* FSCTRL has fields which should always be writen zero */
-/*offset 0 */
-/*offset 8 */
-#define TX_FCTRL_TXBR_110k      0x00000000UL    /* Transmit Bit Rate = 110k */
-#define TX_FCTRL_TXBR_850k      0x00002000UL    /* Transmit Bit Rate = 850k */
-#define TX_FCTRL_TXBR_6M        0x00004000UL    /* Transmit Bit Rate = 6.8M */
-#define TX_FCTRL_TXBR_SHFT      (13)            /* shift to access Data Rate field */
-#define TX_FCTRL_TR             0x00008000UL    /* Transmit Ranging enable */
-#define TX_FCTRL_TR_SHFT        (15)            /* shift to access Ranging bit */
-/*offset 16 */
-#define TX_FCTRL_TXPRF_SHFT     (16)            /* shift to access Pulse Repetition Frequency field */
-#define TX_FCTRL_TXPRF_4M       0x00000000UL    /* Transmit Pulse Repetition Frequency = 4 Mhz */
-#define TX_FCTRL_TXPRF_16M      0x00010000UL    /* Transmit Pulse Repetition Frequency = 16 Mhz */
-#define TX_FCTRL_TXPRF_64M      0x00020000UL    /* Transmit Pulse Repetition Frequency = 64 Mhz */
-#define TX_FCTRL_TXPSR_SHFT     (18)            /* shift to access Preamble Symbol Repetitions field */
-#define TX_FCTRL_PE_SHFT        (20)            /* shift to access Preamble length Extension to allow specification of non-standard values */
-#define TX_FCTRL_TXPSR_PE_16    0x00000000UL    /* bit mask to access Preamble Extension = 16 */
-#define TX_FCTRL_TXPSR_PE_64    0x00040000UL    /* bit mask to access Preamble Extension = 64 */
-#define TX_FCTRL_TXPSR_PE_128   0x00140000UL    /* bit mask to access Preamble Extension = 128 */
-#define TX_FCTRL_TXPSR_PE_256   0x00240000UL    /* bit mask to access Preamble Extension = 256 */
-#define TX_FCTRL_TXPSR_PE_512   0x00340000UL    /* bit mask to access Preamble Extension = 512 */
-#define TX_FCTRL_TXPSR_PE_1024  0x00080000UL    /* bit mask to access Preamble Extension = 1024 */
-#define TX_FCTRL_TXPSR_PE_1536  0x00180000UL    /* bit mask to access Preamble Extension = 1536 */
-#define TX_FCTRL_TXPSR_PE_2048  0x00280000UL    /* bit mask to access Preamble Extension = 2048 */
-#define TX_FCTRL_TXPSR_PE_4096  0x000C0000UL    /* bit mask to access Preamble Extension = 4096 */
-/*offset 22 */
-#define TX_FCTRL_TXBOFFS_SHFT   (22)            /* Shift to access transmit buffer index offset */
-#define TX_FCTRL_TXBOFFS_MASK   0xFFC00000UL    /* bit mask to access Transmit buffer index offset 10-bit field */
-/*offset 32 */
-#define TX_FCTRL_IFSDELAY_MASK  0xFF00000000ULL /* bit mask to access Inter-Frame Spacing field */
+#define SYS_TIME_ID                          0x1c                 
+#define SYS_TIME_LEN                         (4U)                
+#define SYS_TIME_MASK                        0xFFFFFFFFUL        
+#define SYS_TIME_SYS_TIME_BIT_OFFSET         (1U)                
+#define SYS_TIME_SYS_TIME_BIT_LEN            (31U)               
+#define SYS_TIME_SYS_TIME_BIT_MASK           0xfffffffeUL         
 
-/****************************************************************************//**
- * @brief Bit definitions for register TX_BUFFER
+/******************************************************************************
+* @brief Bit definitions for register TX_FCTRL
 **/
-#define TX_BUFFER_ID            0x09            /* Transmit Data Buffer */
-#define TX_BUFFER_LEN           (1024)
+#define TX_FCTRL_ID                          0x24                 
+#define TX_FCTRL_LEN                         (4U)                
+#define TX_FCTRL_MASK                        0xFFFFFFFFUL        
+#define TX_FCTRL_TXB_OFFSET_BIT_OFFSET       (16U)               
+#define TX_FCTRL_TXB_OFFSET_BIT_LEN          (10U)               
+#define TX_FCTRL_TXB_OFFSET_BIT_MASK         0x3ff0000UL          
+#define TX_FCTRL_TXPSR_BIT_OFFSET         (12U)               
+#define TX_FCTRL_TXPSR_BIT_LEN            (4U)                
+#define TX_FCTRL_TXPSR_BIT_MASK           0xf000U              
+#define TX_FCTRL_TR_BIT_OFFSET               (11U)               
+#define TX_FCTRL_TR_BIT_LEN                  (1U)                
+#define TX_FCTRL_TR_BIT_MASK                 0x800U               
+#define TX_FCTRL_TXBR_BIT_OFFSET             (10U)               
+#define TX_FCTRL_TXBR_BIT_LEN                (1U)                
+#define TX_FCTRL_TXBR_BIT_MASK               0x400U               
+#define TX_FCTRL_TXFLEN_BIT_OFFSET           (0U)                
+#define TX_FCTRL_TXFLEN_BIT_LEN              (10U)               
+#define TX_FCTRL_TXFLEN_BIT_MASK             0x3ffU               
 
-/****************************************************************************//**
- * @brief Bit definitions for register  DX_TIME
+/******************************************************************************
+* @brief Bit definitions for register TX_FCTRL_HI
 **/
-#define DX_TIME_ID              0x0A            /* Delayed Send or Receive Time (40-bit) */
-#define DX_TIME_LEN             (5)
+#define TX_FCTRL_HI_ID                       0x28                 
+#define TX_FCTRL_HI_LEN                      (4U)                
+#define TX_FCTRL_HI_MASK                     0xFFFFFFFFUL        
+#define TX_FCTRL_HI_FINE_PLEN_BIT_OFFSET     (8U)                
+#define TX_FCTRL_HI_FINE_PLEN_BIT_LEN        (8U)                
+#define TX_FCTRL_HI_FINE_PLEN_BIT_MASK       0xff00U              
 
-/****************************************************************************//**
- * @brief Bit definitions for register 0x08
+/******************************************************************************
+* @brief Bit definitions for register DX_TIME
 **/
-#define REG_0B_ID_RESERVED      0x0B
+#define DX_TIME_ID                           0x2c                 
+#define DX_TIME_LEN                          (4U)                
+#define DX_TIME_MASK                         0xFFFFFFFFUL        
+#define DX_TIME_DX_TIME_BIT_OFFSET           (1U)                
+#define DX_TIME_DX_TIME_BIT_LEN              (31U)               
+#define DX_TIME_DX_TIME_BIT_MASK             0xfffffffeUL         
 
-/****************************************************************************//**
- * @brief Bit definitions for register RX_FWTO
+/******************************************************************************
+* @brief Bit definitions for register DREF_TIME
 **/
-#define RX_FWTO_ID              0x0C            /* Receive Frame Wait Timeout Period */
-#define RX_FWTO_OFFSET          0x00
-#define RX_FWTO_LEN             (2)             /* doc bug*/
-/*mask and shift */
-#define RX_FWTO_MASK            0xFFFF
+#define DREF_TIME_ID                         0x30                 
+#define DREF_TIME_LEN                        (4U)                
+#define DREF_TIME_MASK                       0xFFFFFFFFUL        
+#define DREF_TIME_DREF_BIT_OFFSET            (1U)                
+#define DREF_TIME_DREF_BIT_LEN               (31U)               
+#define DREF_TIME_DREF_BIT_MASK              0xfffffffeUL         
 
-/****************************************************************************//**
- * @brief Bit definitions for register SYS_CTRL
+/******************************************************************************
+* @brief Bit definitions for register RX_FWTO
 **/
-#define SYS_CTRL_ID             0x0D            /* System Control Register */
-#define SYS_CTRL_OFFSET         0x00
-#define SYS_CTRL_LEN            (4)
-/*masks */
-#define SYS_CTRL_MASK_32        0x010003CFUL    /* System Control Register access mask (all unused fields should always be writen as zero) */
-/*offset 0 */
-#define SYS_CTRL_SFCST          0x00000001UL    /* Suppress Auto-FCS Transmission (on this frame) */
-#define SYS_CTRL_TXSTRT         0x00000002UL    /* Start Transmitting Now */
-#define SYS_CTRL_TXDLYS         0x00000004UL    /* Transmitter Delayed Sending (initiates sending when SYS_TIME == TXD_TIME */
-#define SYS_CTRL_CANSFCS        0x00000008UL    /* Cancel Suppression of auto-FCS transmission (on the current frame) */
-#define SYS_CTRL_TRXOFF         0x00000040UL    /* Transceiver Off. Force Transciever OFF abort TX or RX immediately */
-#define SYS_CTRL_WAIT4RESP      0x00000080UL    /* Wait for Response */
-/*offset 8 */
-#define SYS_CTRL_RXENAB         0x00000100UL    /* Enable Receiver Now */
-#define SYS_CTRL_RXDLYE         0x00000200UL    /* Receiver Delayed Enable (Enables Receiver when SY_TIME[0x??] == RXD_TIME[0x??] CHECK comment*/
-/*offset 16 */
-/*offset 24 */
-#define SYS_CTRL_HSRBTOGGLE     0x01000000UL    /* Host side receiver buffer pointer toggle - toggles 0/1 host side data set pointer */
-#define SYS_CTRL_HRBT           (SYS_CTRL_HSRBTOGGLE)
-#define SYS_CTRL_HRBT_OFFSET    (3)
+#define RX_FWTO_ID                           0x34                 
+#define RX_FWTO_LEN                          (4U)                
+#define RX_FWTO_MASK                         0xFFFFFFFFUL        
+#define RX_FWTO_FWTO_BIT_OFFSET              (0U)                
+#define RX_FWTO_FWTO_BIT_LEN                 (20U)               
+#define RX_FWTO_FWTO_BIT_MASK                0xfffffUL            
 
-/****************************************************************************//**
- * @brief Bit definitions for register  SYS_MASK
+/******************************************************************************
+* @brief Bit definitions for register SYS_ENABLE_LO
 **/
-#define SYS_MASK_ID             0x0E            /* System Event Mask Register */
-#define SYS_MASK_LEN            (4)
-/*masks */
-#define SYS_MASK_MASK_32        0x3FF7FFFEUL    /* System Event Mask Register access mask (all unused fields should always be writen as zero) */
-/*offset 0 */
-#define SYS_MASK_MCPLOCK        0x00000002UL    /* Mask clock PLL lock event    */
-#define SYS_MASK_MESYNCR        0x00000004UL    /* Mask clock PLL lock event    */
-#define SYS_MASK_MAAT           0x00000008UL    /* Mask automatic acknowledge trigger event */
-#define SYS_MASK_MTXFRB         0x00000010UL    /* Mask transmit frame begins event */
-#define SYS_MASK_MTXPRS         0x00000020UL    /* Mask transmit preamble sent event    */
-#define SYS_MASK_MTXPHS         0x00000040UL    /* Mask transmit PHY Header Sent event  */
-#define SYS_MASK_MTXFRS         0x00000080UL    /* Mask transmit frame sent event   */
-/*offset 8 */
-#define SYS_MASK_MRXPRD         0x00000100UL    /* Mask receiver preamble detected event    */
-#define SYS_MASK_MRXSFDD        0x00000200UL    /* Mask receiver SFD detected event */
-#define SYS_MASK_MLDEDONE       0x00000400UL    /* Mask LDE processing done event   */
-#define SYS_MASK_MRXPHD         0x00000800UL    /* Mask receiver PHY header detect event    */
-#define SYS_MASK_MRXPHE         0x00001000UL    /* Mask receiver PHY header error event */
-#define SYS_MASK_MRXDFR         0x00002000UL    /* Mask receiver data frame ready event */
-#define SYS_MASK_MRXFCG         0x00004000UL    /* Mask receiver FCS good event */
-#define SYS_MASK_MRXFCE         0x00008000UL    /* Mask receiver FCS error event    */
-/*offset 16 */
-#define SYS_MASK_MRXRFSL        0x00010000UL    /* Mask receiver Reed Solomon Frame Sync Loss event */
-#define SYS_MASK_MRXRFTO        0x00020000UL    /* Mask Receive Frame Wait Timeout event    */
-#define SYS_MASK_MLDEERR        0x00040000UL    /* Mask leading edge detection processing error event   */
-#define SYS_MASK_MRXOVRR        0x00100000UL    /* Mask Receiver Overrun event  */
-#define SYS_MASK_MRXPTO         0x00200000UL    /* Mask Preamble detection timeout event    */
-#define SYS_MASK_MGPIOIRQ       0x00400000UL    /* Mask GPIO interrupt event    */
-#define SYS_MASK_MSLP2INIT      0x00800000UL    /* Mask SLEEP to INIT event */
-/*offset 24*/
-#define SYS_MASK_MRFPLLLL       0x01000000UL    /* Mask RF PLL Loosing Lock warning event   */
-#define SYS_MASK_MCPLLLL        0x02000000UL    /* Mask Clock PLL Loosing Lock warning event    */
-#define SYS_MASK_MRXSFDTO       0x04000000UL    /* Mask Receive SFD timeout event   */
-#define SYS_MASK_MHPDWARN       0x08000000UL    /* Mask Half Period Delay Warning event */
-#define SYS_MASK_MTXBERR        0x10000000UL    /* Mask Transmit Buffer Error event */
-#define SYS_MASK_MAFFREJ        0x20000000UL    /* Mask Automatic Frame Filtering rejection event   */
+#define SYS_ENABLE_LO_ID                     0x3c                 
+#define SYS_ENABLE_LO_LEN                    (4U)                
+#define SYS_ENABLE_LO_MASK                   0xFFFFFFFFUL        
+#define SYS_ENABLE_LO_ARFE_ENABLE_BIT_OFFSET (29U)               
+#define SYS_ENABLE_LO_ARFE_ENABLE_BIT_LEN    (1U)                
+#define SYS_ENABLE_LO_ARFE_ENABLE_BIT_MASK   0x20000000UL         
+#define SYS_ENABLE_LO_CPERR_ENABLE_BIT_OFFSET (28U)               
+#define SYS_ENABLE_LO_CPERR_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_CPERR_ENABLE_BIT_MASK  0x10000000UL         
+#define SYS_ENABLE_LO_HPDWARN_ENABLE_BIT_OFFSET (27U)               
+#define SYS_ENABLE_LO_HPDWARN_ENABLE_BIT_LEN (1U)                
+#define SYS_ENABLE_LO_HPDWARN_ENABLE_BIT_MASK 0x8000000UL          
+#define SYS_ENABLE_LO_RXSTO_ENABLE_BIT_OFFSET (26U)               
+#define SYS_ENABLE_LO_RXSTO_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXSTO_ENABLE_BIT_MASK  0x4000000UL          
+#define SYS_ENABLE_LO_PLL_HILO_ENABLE_BIT_OFFSET (25U)               
+#define SYS_ENABLE_LO_PLL_HILO_ENABLE_BIT_LEN (1U)                
+#define SYS_ENABLE_LO_PLL_HILO_ENABLE_BIT_MASK 0x2000000UL          
+#define SYS_ENABLE_LO_RCINIT_ENABLE_BIT_OFFSET (24U)               
+#define SYS_ENABLE_LO_RCINIT_ENABLE_BIT_LEN  (1U)                
+#define SYS_ENABLE_LO_RCINIT_ENABLE_BIT_MASK 0x1000000UL          
+#define SYS_ENABLE_LO_SPIRDY_ENABLE_BIT_OFFSET (23U)               
+#define SYS_ENABLE_LO_SPIRDY_ENABLE_BIT_LEN  (1U)                
+#define SYS_ENABLE_LO_SPIRDY_ENABLE_BIT_MASK 0x800000UL           
+#define SYS_ENABLE_LO_RXPTO_ENABLE_BIT_OFFSET (21U)               
+#define SYS_ENABLE_LO_RXPTO_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXPTO_ENABLE_BIT_MASK  0x200000UL           
+#define SYS_ENABLE_LO_RXOVRR_ENABLE_BIT_OFFSET (20U)               
+#define SYS_ENABLE_LO_RXOVRR_ENABLE_BIT_LEN  (1U)                
+#define SYS_ENABLE_LO_RXOVRR_ENABLE_BIT_MASK 0x100000UL           
+#define SYS_ENABLE_LO_VWARN_ENABLE_BIT_OFFSET (19U)               
+#define SYS_ENABLE_LO_VWARN_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_VWARN_ENABLE_BIT_MASK  0x80000UL            
+#define SYS_ENABLE_LO_CIAERR_ENABLE_BIT_OFFSET (18U)               
+#define SYS_ENABLE_LO_CIAERR_ENABLE_BIT_LEN  (1U)                
+#define SYS_ENABLE_LO_CIAERR_ENABLE_BIT_MASK 0x40000UL            
+#define SYS_ENABLE_LO_RXFTO_ENABLE_BIT_OFFSET (17U)               
+#define SYS_ENABLE_LO_RXFTO_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXFTO_ENABLE_BIT_MASK  0x20000UL            
+#define SYS_ENABLE_LO_RXFSL_ENABLE_BIT_OFFSET (16U)               
+#define SYS_ENABLE_LO_RXFSL_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXFSL_ENABLE_BIT_MASK  0x10000UL            
+#define SYS_ENABLE_LO_RXFCE_ENABLE_BIT_OFFSET (15U)               
+#define SYS_ENABLE_LO_RXFCE_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXFCE_ENABLE_BIT_MASK  0x8000U              
+#define SYS_ENABLE_LO_RXFCG_ENABLE_BIT_OFFSET (14U)               
+#define SYS_ENABLE_LO_RXFCG_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXFCG_ENABLE_BIT_MASK  0x4000U              
+#define SYS_ENABLE_LO_RXFR_ENABLE_BIT_OFFSET (13U)               
+#define SYS_ENABLE_LO_RXFR_ENABLE_BIT_LEN    (1U)                
+#define SYS_ENABLE_LO_RXFR_ENABLE_BIT_MASK   0x2000U              
+#define SYS_ENABLE_LO_RXPHE_ENABLE_BIT_OFFSET (12U)               
+#define SYS_ENABLE_LO_RXPHE_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXPHE_ENABLE_BIT_MASK  0x1000U              
+#define SYS_ENABLE_LO_RXPHD_ENABLE_BIT_OFFSET (11U)               
+#define SYS_ENABLE_LO_RXPHD_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXPHD_ENABLE_BIT_MASK  0x800U               
+#define SYS_ENABLE_LO_CIADONE_ENABLE_BIT_OFFSET (10U)               
+#define SYS_ENABLE_LO_CIADONE_ENABLE_BIT_LEN (1U)                
+#define SYS_ENABLE_LO_CIADONE_ENABLE_BIT_MASK 0x400U               
+#define SYS_ENABLE_LO_RXSFDD_ENABLE_BIT_OFFSET (9U)                
+#define SYS_ENABLE_LO_RXSFDD_ENABLE_BIT_LEN  (1U)                
+#define SYS_ENABLE_LO_RXSFDD_ENABLE_BIT_MASK 0x200U               
+#define SYS_ENABLE_LO_RXPRD_ENABLE_BIT_OFFSET (8U)                
+#define SYS_ENABLE_LO_RXPRD_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_RXPRD_ENABLE_BIT_MASK  0x100U               
+#define SYS_ENABLE_LO_TXFRS_ENABLE_BIT_OFFSET (7U)                
+#define SYS_ENABLE_LO_TXFRS_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_TXFRS_ENABLE_BIT_MASK  0x80U                
+#define SYS_ENABLE_LO_TXPHS_ENABLE_BIT_OFFSET (6U)                
+#define SYS_ENABLE_LO_TXPHS_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_TXPHS_ENABLE_BIT_MASK  0x40U                
+#define SYS_ENABLE_LO_TXPRS_ENABLE_BIT_OFFSET (5U)                
+#define SYS_ENABLE_LO_TXPRS_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_TXPRS_ENABLE_BIT_MASK  0x20U                
+#define SYS_ENABLE_LO_TXFRB_ENABLE_BIT_OFFSET (4U)                
+#define SYS_ENABLE_LO_TXFRB_ENABLE_BIT_LEN   (1U)                
+#define SYS_ENABLE_LO_TXFRB_ENABLE_BIT_MASK  0x10U                
+#define SYS_ENABLE_LO_AAT_ENABLE_BIT_OFFSET  (3U)                
+#define SYS_ENABLE_LO_AAT_ENABLE_BIT_LEN     (1U)                
+#define SYS_ENABLE_LO_AAT_ENABLE_BIT_MASK    0x8U                 
+#define SYS_ENABLE_LO_SPICRCE_ENABLE_BIT_OFFSET (2U)                
+#define SYS_ENABLE_LO_SPICRCE_ENABLE_BIT_LEN    (1U)                
+#define SYS_ENABLE_LO_SPICRCE_ENABLE_BIT_MASK    0x4U                 
+#define SYS_ENABLE_LO_CP_LOCK_ENABLE_BIT_OFFSET (1U)                
+#define SYS_ENABLE_LO_CP_LOCK_ENABLE_BIT_LEN    (1U)                
+#define SYS_ENABLE_LO_CP_LOCK_ENABLE_BIT_MASK   0x2U                 
 
-/****************************************************************************//**
- * @brief Bit definitions for register SYS_STATUS
+/******************************************************************************
+* @brief Bit definitions for register SYS_ENABLE_HI
 **/
-#define SYS_STATUS_ID           0x0F            /* System event Status Register */
-#define SYS_STATUS_OFFSET       0x00
-#define SYS_STATUS_LEN          (5)             /* Note 40 bit register */
-/*masks */
-#define SYS_STATUS_MASK_32      0xFFF7FFFFUL    /* System event Status Register access mask (all unused fields should always be writen as zero) */
-/*offset 0 */
-#define SYS_STATUS_IRQS         0x00000001UL    /* Interrupt Request Status READ ONLY */
-#define SYS_STATUS_CPLOCK       0x00000002UL    /* Clock PLL Lock */
-#define SYS_STATUS_ESYNCR       0x00000004UL    /* External Sync Clock Reset */
-#define SYS_STATUS_AAT          0x00000008UL    /* Automatic Acknowledge Trigger */
-#define SYS_STATUS_TXFRB        0x00000010UL    /* Transmit Frame Begins */
-#define SYS_STATUS_TXPRS        0x00000020UL    /* Transmit Preamble Sent */
-#define SYS_STATUS_TXPHS        0x00000040UL    /* Transmit PHY Header Sent */
-#define SYS_STATUS_TXFRS        0x00000080UL    /* Transmit Frame Sent: This is set when the transmitter has completed the sending of a frame */
-/*offset 8 */
-#define SYS_STATUS_RXPRD        0x00000100UL    /* Receiver Preamble Detected status */
-#define SYS_STATUS_RXSFDD       0x00000200UL    /* Receiver Start Frame Delimiter Detected. */
-#define SYS_STATUS_LDEDONE      0x00000400UL    /* LDE processing done */
-#define SYS_STATUS_RXPHD        0x00000800UL    /* Receiver PHY Header Detect */
-#define SYS_STATUS_RXPHE        0x00001000UL    /* Receiver PHY Header Error */
-#define SYS_STATUS_RXDFR        0x00002000UL    /* Receiver Data Frame Ready */
-#define SYS_STATUS_RXFCG        0x00004000UL    /* Receiver FCS Good */
-#define SYS_STATUS_RXFCE        0x00008000UL    /* Receiver FCS Error */
-/*offset 16 */
-#define SYS_STATUS_RXRFSL       0x00010000UL    /* Receiver Reed Solomon Frame Sync Loss */
-#define SYS_STATUS_RXRFTO       0x00020000UL    /* Receive Frame Wait Timeout */
-#define SYS_STATUS_LDEERR       0x00040000UL    /* Leading edge detection processing error */
-#define SYS_STATUS_reserved     0x00080000UL    /* bit19 reserved */
-#define SYS_STATUS_RXOVRR       0x00100000UL    /* Receiver Overrun */
-#define SYS_STATUS_RXPTO        0x00200000UL    /* Preamble detection timeout */
-#define SYS_STATUS_GPIOIRQ      0x00400000UL    /* GPIO interrupt */
-#define SYS_STATUS_SLP2INIT     0x00800000UL    /* SLEEP to INIT */
-/*offset 24 */
-#define SYS_STATUS_RFPLL_LL     0x01000000UL    /* RF PLL Losing Lock */
-#define SYS_STATUS_CLKPLL_LL    0x02000000UL    /* Clock PLL Losing Lock */
-#define SYS_STATUS_RXSFDTO      0x04000000UL    /* Receive SFD timeout */
-#define SYS_STATUS_HPDWARN      0x08000000UL    /* Half Period Delay Warning */
-#define SYS_STATUS_TXBERR       0x10000000UL    /* Transmit Buffer Error */
-#define SYS_STATUS_AFFREJ       0x20000000UL    /* Automatic Frame Filtering rejection */
-#define SYS_STATUS_HSRBP        0x40000000UL    /* Host Side Receive Buffer Pointer */
-#define SYS_STATUS_ICRBP        0x80000000UL    /* IC side Receive Buffer Pointer READ ONLY */
-/*offset 32 */
-#define SYS_STATUS_RXRSCS       0x0100000000ULL /* Receiver Reed-Solomon Correction Status */
-#define SYS_STATUS_RXPREJ       0x0200000000ULL /* Receiver Preamble Rejection */
-#define SYS_STATUS_TXPUTE       0x0400000000ULL /* Transmit power up time error */
+#define SYS_ENABLE_HI_ID                     0x40                 
+#define SYS_ENABLE_HI_LEN                    (4U)                
+#define SYS_ENABLE_HI_MASK                   0xFFFFFFFFUL        
+#define SYS_ENABLE_HI_CCA_FAIL_ENABLE_BIT_OFFSET (12U)               
+#define SYS_ENABLE_HI_CCA_FAIL_ENABLE_BIT_LEN (1U)                
+#define SYS_ENABLE_HI_CCA_FAIL_ENABLE_BIT_MASK 0x1000U              
+#define SYS_ENABLE_HI_SPIERR_ENABLE_BIT_OFFSET (11U)               
+#define SYS_ENABLE_HI_SPIERR_ENABLE_BIT_LEN    (1U)                
+#define SYS_ENABLE_HI_SPIERR_ENABLE_BIT_MASK    0x800U               
+#define SYS_ENABLE_HI_SPI_UNF_ENABLE_BIT_OFFSET (10U)               
+#define SYS_ENABLE_HI_SPI_UNF_ENABLE_BIT_LEN    (1U)                
+#define SYS_ENABLE_HI_SPI_UNF_ENABLE_BIT_MASK    0x400U               
+#define SYS_ENABLE_HI_SPI_OVF_ENABLE_BIT_OFFSET (9U)                
+#define SYS_ENABLE_HI_SPI_OVF_ENABLE_BIT_LEN    (1U)                
+#define SYS_ENABLE_HI_SPI_OVF_ENABLE_BIT_MASK    0x200U               
+#define SYS_ENABLE_HI_CMD_ERR_ENABLE_BIT_OFFSET (8U)                
+#define SYS_ENABLE_HI_CMD_ERR_ENABLE_BIT_LEN (1U)                
+#define SYS_ENABLE_HI_CMD_ERR_ENABLE_BIT_MASK 0x100U               
+#define SYS_ENABLE_HI_AES_ERR_ENABLE_BIT_OFFSET (7U)                
+#define SYS_ENABLE_HI_AES_ERR_ENABLE_BIT_LEN (1U)                
+#define SYS_ENABLE_HI_AES_ERR_ENABLE_BIT_MASK 0x80U                
+#define SYS_ENABLE_HI_AES_DONE_ENABLE_BIT_OFFSET (6U)                
+#define SYS_ENABLE_HI_AES_DONE_ENABLE_BIT_LEN (1U)                
+#define SYS_ENABLE_HI_AES_DONE_ENABLE_BIT_MASK 0x40U                
+#define SYS_ENABLE_HI_GPIOIRQ_ENABLE_BIT_OFFSET (5U)                
+#define SYS_ENABLE_HI_GPIOIRQ_ENABLE_BIT_LEN    (1U)                
+#define SYS_ENABLE_HI_GPIOIRQ_ENABLE_BIT_MASK   0x20U                
+#define SYS_ENABLE_HI_VT_DET_ENABLE_BIT_OFFSET (4U)                
+#define SYS_ENABLE_HI_VT_DET_ENABLE_BIT_LEN  (1U)                
+#define SYS_ENABLE_HI_VT_DET_ENABLE_BIT_MASK 0x10U                
+#define SYS_ENABLE_HI_RXPREJ_ENABLE_BIT_OFFSET (1U)                
+#define SYS_ENABLE_HI_RXPREJ_ENABLE_BIT_LEN  (1U)                
+#define SYS_ENABLE_HI_RXPREJ_ENABLE_BIT_MASK 0x2U                 
+                 
 
-#define SYS_STATUS_TXERR        (0x0408)        /* These bits are the 16 high bits of status register TXPUTE and HPDWARN flags */
-
-/* All RX events after a correct packet reception mask. */
-#define SYS_STATUS_ALL_RX_GOOD (SYS_STATUS_RXDFR | SYS_STATUS_RXFCG | SYS_STATUS_RXPRD | \
-                                SYS_STATUS_RXSFDD | SYS_STATUS_RXPHD | SYS_STATUS_LDEDONE)
-
-/* All double buffer events mask. */
-#define SYS_STATUS_ALL_DBLBUFF (SYS_STATUS_RXDFR | SYS_STATUS_RXFCG)
-
-/* All RX errors mask. */
-#define SYS_STATUS_ALL_RX_ERR  (SYS_STATUS_RXPHE | SYS_STATUS_RXFCE | SYS_STATUS_RXRFSL | SYS_STATUS_RXSFDTO \
-                                | SYS_STATUS_AFFREJ | SYS_STATUS_LDEERR)
-
-/* User defined RX timeouts (frame wait timeout and preamble detect timeout) mask. */
-#define SYS_STATUS_ALL_RX_TO   (SYS_STATUS_RXRFTO | SYS_STATUS_RXPTO)
-
-/* All TX events mask. */
-#define SYS_STATUS_ALL_TX      (SYS_STATUS_AAT | SYS_STATUS_TXFRB | SYS_STATUS_TXPRS | \
-                                SYS_STATUS_TXPHS | SYS_STATUS_TXFRS )
-
-
-/****************************************************************************//**
- * @brief Bit definitions for register RX_FINFO
+/******************************************************************************
+* @brief Bit definitions for register SYS_STATUS
 **/
-#define RX_FINFO_ID             0x10            /* RX Frame Information (in double buffer set) */
-#define RX_FINFO_OFFSET         0x00
-#define RX_FINFO_LEN            (4)
-/*mask and shift */
-#define RX_FINFO_MASK_32        0xFFFFFBFFUL    /* System event Status Register access mask (all unused fields should always be writen as zero) */
-#define RX_FINFO_RXFLEN_MASK    0x0000007FUL    /* Receive Frame Length (0 to 127) */
-#define RX_FINFO_RXFLE_MASK     0x00000380UL    /* Receive Frame Length Extension (0 to 7)<<7 */
-#define RX_FINFO_RXFL_MASK_1023 0x000003FFUL    /* Receive Frame Length Extension (0 to 1023) */
+#define SYS_STATUS_ID                        0x44                 
+#define SYS_STATUS_LEN                       (4U)                
+#define SYS_STATUS_MASK                      0xFFFFFFFFUL        
+#define SYS_STATUS_ARFE_BIT_OFFSET           (29U)               
+#define SYS_STATUS_ARFE_BIT_LEN              (1U)                
+#define SYS_STATUS_ARFE_BIT_MASK             0x20000000UL         
+#define SYS_STATUS_CPERR_BIT_OFFSET          (28U)               
+#define SYS_STATUS_CPERR_BIT_LEN             (1U)                
+#define SYS_STATUS_CPERR_BIT_MASK            0x10000000UL         
+#define SYS_STATUS_HPDWARN_BIT_OFFSET        (27U)               
+#define SYS_STATUS_HPDWARN_BIT_LEN           (1U)                
+#define SYS_STATUS_HPDWARN_BIT_MASK          0x8000000UL          
+#define SYS_STATUS_RXSTO_BIT_OFFSET          (26U)               
+#define SYS_STATUS_RXSTO_BIT_LEN             (1U)                
+#define SYS_STATUS_RXSTO_BIT_MASK            0x4000000UL          
+#define SYS_STATUS_PLL_HILO_BIT_OFFSET       (25U)               
+#define SYS_STATUS_PLL_HILO_BIT_LEN          (1U)                
+#define SYS_STATUS_PLL_HILO_BIT_MASK         0x2000000UL          
+#define SYS_STATUS_RCINIT_BIT_OFFSET         (24U)               
+#define SYS_STATUS_RCINIT_BIT_LEN            (1U)                
+#define SYS_STATUS_RCINIT_BIT_MASK           0x1000000UL          
+#define SYS_STATUS_SPIRDY_BIT_OFFSET         (23U)               
+#define SYS_STATUS_SPIRDY_BIT_LEN            (1U)                
+#define SYS_STATUS_SPIRDY_BIT_MASK           0x800000UL                    
+#define SYS_STATUS_RXPTO_BIT_OFFSET          (21U)               
+#define SYS_STATUS_RXPTO_BIT_LEN             (1U)                
+#define SYS_STATUS_RXPTO_BIT_MASK            0x200000UL           
+#define SYS_STATUS_RXOVRR_BIT_OFFSET         (20U)               
+#define SYS_STATUS_RXOVRR_BIT_LEN            (1U)                
+#define SYS_STATUS_RXOVRR_BIT_MASK           0x100000UL           
+#define SYS_STATUS_VWARN_BIT_OFFSET          (19U)               
+#define SYS_STATUS_VWARN_BIT_LEN             (1U)                
+#define SYS_STATUS_VWARN_BIT_MASK            0x80000UL            
+#define SYS_STATUS_CIAERR_BIT_OFFSET         (18U)               
+#define SYS_STATUS_CIAERR_BIT_LEN            (1U)                
+#define SYS_STATUS_CIAERR_BIT_MASK           0x40000UL            
+#define SYS_STATUS_RXFTO_BIT_OFFSET          (17U)               
+#define SYS_STATUS_RXFTO_BIT_LEN             (1U)                
+#define SYS_STATUS_RXFTO_BIT_MASK            0x20000UL            
+#define SYS_STATUS_RXFSL_BIT_OFFSET          (16U)               
+#define SYS_STATUS_RXFSL_BIT_LEN             (1U)                
+#define SYS_STATUS_RXFSL_BIT_MASK            0x10000UL            
+#define SYS_STATUS_RXFCE_BIT_OFFSET          (15U)               
+#define SYS_STATUS_RXFCE_BIT_LEN             (1U)                
+#define SYS_STATUS_RXFCE_BIT_MASK            0x8000U              
+#define SYS_STATUS_RXFCG_BIT_OFFSET          (14U)               
+#define SYS_STATUS_RXFCG_BIT_LEN             (1U)                
+#define SYS_STATUS_RXFCG_BIT_MASK            0x4000U              
+#define SYS_STATUS_RXFR_BIT_OFFSET           (13U)               
+#define SYS_STATUS_RXFR_BIT_LEN              (1U)                
+#define SYS_STATUS_RXFR_BIT_MASK             0x2000U              
+#define SYS_STATUS_RXPHE_BIT_OFFSET          (12U)               
+#define SYS_STATUS_RXPHE_BIT_LEN             (1U)                
+#define SYS_STATUS_RXPHE_BIT_MASK            0x1000U              
+#define SYS_STATUS_RXPHD_BIT_OFFSET          (11U)               
+#define SYS_STATUS_RXPHD_BIT_LEN             (1U)                
+#define SYS_STATUS_RXPHD_BIT_MASK            0x800U               
+#define SYS_STATUS_CIADONE_BIT_OFFSET       (10U)               
+#define SYS_STATUS_CIADONE_BIT_LEN          (1U)                
+#define SYS_STATUS_CIADONE_BIT_MASK         0x400U               
+#define SYS_STATUS_RXSFDD_BIT_OFFSET         (9U)                
+#define SYS_STATUS_RXSFDD_BIT_LEN            (1U)                
+#define SYS_STATUS_RXSFDD_BIT_MASK           0x200U               
+#define SYS_STATUS_RXPRD_BIT_OFFSET          (8U)                
+#define SYS_STATUS_RXPRD_BIT_LEN             (1U)                
+#define SYS_STATUS_RXPRD_BIT_MASK            0x100U               
+#define SYS_STATUS_TXFRS_BIT_OFFSET          (7U)                
+#define SYS_STATUS_TXFRS_BIT_LEN             (1U)                
+#define SYS_STATUS_TXFRS_BIT_MASK            0x80U                
+#define SYS_STATUS_TXPHS_BIT_OFFSET          (6U)                
+#define SYS_STATUS_TXPHS_BIT_LEN             (1U)                
+#define SYS_STATUS_TXPHS_BIT_MASK            0x40U                
+#define SYS_STATUS_TXPRS_BIT_OFFSET          (5U)                
+#define SYS_STATUS_TXPRS_BIT_LEN             (1U)                
+#define SYS_STATUS_TXPRS_BIT_MASK            0x20U                
+#define SYS_STATUS_TXFRB_BIT_OFFSET          (4U)                
+#define SYS_STATUS_TXFRB_BIT_LEN             (1U)                
+#define SYS_STATUS_TXFRB_BIT_MASK            0x10U                
+#define SYS_STATUS_AAT_BIT_OFFSET            (3U)                
+#define SYS_STATUS_AAT_BIT_LEN               (1U)                
+#define SYS_STATUS_AAT_BIT_MASK              0x8U                 
+#define SYS_STATUS_SPICRCE_BIT_OFFSET      (2U)                
+#define SYS_STATUS_SPICRCE_BIT_LEN         (1U)                
+#define SYS_STATUS_SPICRCE_BIT_MASK        0x4U                 
+#define SYS_STATUS_CP_LOCK_BIT_OFFSET   (1U)                
+#define SYS_STATUS_CP_LOCK_BIT_LEN      (1U)                
+#define SYS_STATUS_CP_LOCK_BIT_MASK     0x2U                 
+#define SYS_STATUS_IRQS_BIT_OFFSET           (0U)                
+#define SYS_STATUS_IRQS_BIT_LEN              (1U)                
+#define SYS_STATUS_IRQS_BIT_MASK             0x1U                 
 
-#define RX_FINFO_RXNSPL_MASK    0x00001800UL    /* Receive Non-Standard Preamble Length */
-#define RX_FINFO_RXPSR_MASK     0x000C0000UL    /* RX Preamble Repetition. 00 = 16 symbols, 01 = 64 symbols, 10 = 1024 symbols, 11 = 4096 symbols */
-
-#define RX_FINFO_RXPEL_MASK     0x000C1800UL    /* Receive Preamble Length = RXPSR+RXNSPL */
-#define RX_FINFO_RXPEL_64       0x00040000UL    /* Receive Preamble length = 64 */
-#define RX_FINFO_RXPEL_128      0x00040800UL    /* Receive Preamble length = 128 */
-#define RX_FINFO_RXPEL_256      0x00041000UL    /* Receive Preamble length = 256 */
-#define RX_FINFO_RXPEL_512      0x00041800UL    /* Receive Preamble length = 512 */
-#define RX_FINFO_RXPEL_1024     0x00080000UL    /* Receive Preamble length = 1024 */
-#define RX_FINFO_RXPEL_1536     0x00080800UL    /* Receive Preamble length = 1536 */
-#define RX_FINFO_RXPEL_2048     0x00081000UL    /* Receive Preamble length = 2048 */
-#define RX_FINFO_RXPEL_4096     0x000C0000UL    /* Receive Preamble length = 4096 */
-
-#define RX_FINFO_RXBR_MASK      0x00006000UL    /* Receive Bit Rate report. This field reports the received bit rate */
-#define RX_FINFO_RXBR_110k      0x00000000UL    /* Received bit rate = 110 kbps */
-#define RX_FINFO_RXBR_850k      0x00002000UL    /* Received bit rate = 850 kbps */
-#define RX_FINFO_RXBR_6M        0x00004000UL    /* Received bit rate = 6.8 Mbps */
-#define RX_FINFO_RXBR_SHIFT     (13)
-
-#define RX_FINFO_RNG            0x00008000UL    /* Receiver Ranging. Ranging bit in the received PHY header identifying the frame as a ranging packet. */
-#define RX_FINFO_RNG_SHIFT      (15)
-
-#define RX_FINFO_RXPRF_MASK     0x00030000UL    /* RX Pulse Repetition Rate report */
-#define RX_FINFO_RXPRF_16M      0x00010000UL    /* PRF being employed in the receiver = 16M */
-#define RX_FINFO_RXPRF_64M      0x00020000UL    /* PRF being employed in the receiver = 64M */
-#define RX_FINFO_RXPRF_SHIFT    (16)
-
-#define RX_FINFO_RXPACC_MASK    0xFFF00000UL    /* Preamble Accumulation Count */
-#define RX_FINFO_RXPACC_SHIFT   (20)
-
-
-/****************************************************************************//**
- * @brief Bit definitions for register RX_BUFFER
+/******************************************************************************
+* @brief Bit definitions for register SYS_STATUS_HI
 **/
-#define RX_BUFFER_ID            0x11            /* Receive Data Buffer (in double buffer set) */
-#define RX_BUFFER_LEN           (1024)
+#define SYS_STATUS_HI_ID                     0x48                 
+#define SYS_STATUS_HI_LEN                    (4U)                
+#define SYS_STATUS_HI_MASK                   0xFFFFFFFFUL        
+#define SYS_STATUS_HI_CCA_FAIL_BIT_OFFSET    (12U)               
+#define SYS_STATUS_HI_CCA_FAIL_BIT_LEN       (1U)                
+#define SYS_STATUS_HI_CCA_FAIL_BIT_MASK      0x1000U              
+#define SYS_STATUS_HI_SPIERR_BIT_OFFSET (11U)               
+#define SYS_STATUS_HI_SPIERR_BIT_LEN  (1U)                
+#define SYS_STATUS_HI_SPIERR_BIT_MASK 0x800U               
+#define SYS_STATUS_HI_SPI_UNF_BIT_OFFSET     (10U)               
+#define SYS_STATUS_HI_SPI_UNF_BIT_LEN        (1U)                
+#define SYS_STATUS_HI_SPI_UNF_BIT_MASK       0x400U               
+#define SYS_STATUS_HI_SPI_OVF_BIT_OFFSET     (9U)                
+#define SYS_STATUS_HI_SPI_OVF_BIT_LEN        (1U)                
+#define SYS_STATUS_HI_SPI_OVF_BIT_MASK       0x200U               
+#define SYS_STATUS_HI_CMD_ERR_BIT_OFFSET     (8U)                
+#define SYS_STATUS_HI_CMD_ERR_BIT_LEN        (1U)                
+#define SYS_STATUS_HI_CMD_ERR_BIT_MASK       0x100U               
+#define SYS_STATUS_HI_AES_ERR_BIT_OFFSET     (7U)                
+#define SYS_STATUS_HI_AES_ERR_BIT_LEN        (1U)                
+#define SYS_STATUS_HI_AES_ERR_BIT_MASK       0x80U                
+#define SYS_STATUS_HI_AES_DONE_BIT_OFFSET    (6U)                
+#define SYS_STATUS_HI_AES_DONE_BIT_LEN       (1U)                
+#define SYS_STATUS_HI_AES_DONE_BIT_MASK      0x40U                
+#define SYS_STATUS_HI_GPIO_IRQ_BIT_OFFSET        (5U)                
+#define SYS_STATUS_HI_GPIO_IRQ_BIT_LEN           (1U)                
+#define SYS_STATUS_HI_GPIO_IRQ_BIT_MASK          0x20U                
+#define SYS_STATUS_HI_VT_DET_BIT_OFFSET      (4U)                
+#define SYS_STATUS_HI_VT_DET_BIT_LEN         (1U)                
+#define SYS_STATUS_HI_VT_DET_BIT_MASK        0x10U                
+#define SYS_STATUS_HI_RXPREJ_BIT_OFFSET      (1U)                
+#define SYS_STATUS_HI_RXPREJ_BIT_LEN         (1U)                
+#define SYS_STATUS_HI_RXPREJ_BIT_MASK        0x2U                 
+              
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register RX_FQUAL
+/******************************************************************************
+* @brief Bit definitions for register RX_FINFO
 **/
-#define RX_FQUAL_ID             0x12            /* Rx Frame Quality information (in double buffer set) */
-#define RX_FQUAL_LEN            (8)             /* note 64 bit register*/
-/*mask and shift */
-/*offset 0 */
-#define RX_EQUAL_STD_NOISE_MASK 0x0000FFFFULL   /* Standard Deviation of Noise */
-#define RX_EQUAL_STD_NOISE_SHIFT (0)
-#define STD_NOISE_MASK          RX_EQUAL_STD_NOISE_MASK
-#define STD_NOISE_SHIFT         RX_EQUAL_STD_NOISE_SHIFT
-/*offset 16 */
-#define RX_EQUAL_FP_AMPL2_MASK  0xFFFF0000ULL   /* First Path Amplitude point 2 */
-#define RX_EQUAL_FP_AMPL2_SHIFT (16)
-#define FP_AMPL2_MASK           RX_EQUAL_FP_AMPL2_MASK
-#define FP_AMPL2_SHIFT          RX_EQUAL_FP_AMPL2_SHIFT
-/*offset 32*/
-#define RX_EQUAL_PP_AMPL3_MASK  0x0000FFFF00000000ULL   /* First Path Amplitude point 3 */
-#define RX_EQUAL_PP_AMPL3_SHIFT (32)
-#define PP_AMPL3_MASK           RX_EQUAL_PP_AMPL3_MASK
-#define PP_AMPL3_SHIFT          RX_EQUAL_PP_AMPL3_SHIFT
-/*offset 48*/
-#define RX_EQUAL_CIR_MXG_MASK   0xFFFF000000000000ULL   /* Channel Impulse Response Max Growth */
-#define RX_EQUAL_CIR_MXG_SHIFT  (48)
-#define CIR_MXG_MASK            RX_EQUAL_CIR_MXG_MASK
-#define CIR_MXG_SHIFT           RX_EQUAL_CIR_MXG_SHIFT
+#define RX_FINFO_ID                          0x4c                 
+#define RX_FINFO_LEN                         (4U)                
+#define RX_FINFO_MASK                        0xFFFFFFFFUL        
+#define RX_FINFO_RXPACC_BIT_OFFSET           (20U)               
+#define RX_FINFO_RXPACC_BIT_LEN              (12U)               
+#define RX_FINFO_RXPACC_BIT_MASK             0xfff00000UL         
+#define RX_FINFO_RXPSR_BIT_OFFSET            (18U)               
+#define RX_FINFO_RXPSR_BIT_LEN               (2U)                
+#define RX_FINFO_RXPSR_BIT_MASK              0xc0000UL            
+#define RX_FINFO_RXPRF_BIT_OFFSET            (16U)               
+#define RX_FINFO_RXPRF_BIT_LEN               (2U)                
+#define RX_FINFO_RXPRF_BIT_MASK              0x30000UL            
+#define RX_FINFO_RNG_BIT_OFFSET              (15U)               
+#define RX_FINFO_RNG_BIT_LEN                 (1U)                
+#define RX_FINFO_RNG_BIT_MASK                0x8000U              
+#define RX_FINFO_RXBR_BIT_OFFSET             (13U)               
+#define RX_FINFO_RXBR_BIT_LEN                (1U)                
+#define RX_FINFO_RXBR_BIT_MASK               0x2000U              
+#define RX_FINFO_RXNSPL_BIT_OFFSET           (11U)               
+#define RX_FINFO_RXNSPL_BIT_LEN              (2U)                
+#define RX_FINFO_RXNSPL_BIT_MASK             0x1800U              
+#define RX_FINFO_RXFLEN_BIT_OFFSET           (0U)                
+#define RX_FINFO_RXFLEN_BIT_LEN              (10U)               
+#define RX_FINFO_RXFLEN_BIT_MASK             0x3ffU               
 
 
 
-/****************************************************************************//**
- * @brief Bit definitions for register RX_TTCKI
- *      The value here is the interval over which the timing offset reported
- *      in the RXTOFS field of Register file: 0x14 – RX_TTCKO is measured.
- *      The clock offset is calculated by dividing RXTTCKI by RXTOFS.
- *      The value in RXTTCKI will take just one of two values depending on the PRF: 0x01F00000 @ 16 MHz PRF,
- *      and 0x01FC0000 @ 64 MHz PRF.
+
+
+/******************************************************************************
+* @brief Bit definitions for register RX_TIME_0
 **/
-#define RX_TTCKI_ID             0x13            /* Receiver Time Tracking Interval (in double buffer set) */
-#define RX_TTCKI_LEN            (4)
+#define RX_TIME_0_ID                         0x64                 
+#define RX_TIME_0_LEN                        (4U)                
+#define RX_TIME_0_MASK                       0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register RX_TTCKO
+
+
+/******************************************************************************
+* @brief Bit definitions for register RX_TIME_RAW
 **/
-#define RX_TTCKO_ID             0x14            /* Receiver Time Tracking Offset (in double buffer set) */
-#define RX_TTCKO_LEN            (5)             /* Note 40 bit register */
-/*mask and shift */
-#define RX_TTCKO_MASK_32        0xFF07FFFFUL    /* Receiver Time Tracking Offset access mask (all unused fields should always be writen as zero) */
-/*offset 0 */
-#define RX_TTCKO_RXTOFS_MASK    0x0007FFFFUL    /* RX time tracking offset. This RXTOFS value is a 19-bit signed quantity*/
-/*offset 24 */
-#define RX_TTCKO_RSMPDEL_MASK   0xFF000000UL    /* This 8-bit field reports an internal re-sampler delay value */
-/*offset 32 */
-#define RX_TTCKO_RCPHASE_MASK   0x7F0000000000ULL   /* This 7-bit field reports the receive carrier phase adjustment at time the ranging timestamp is made. */
+#define RX_TIME_RAW_ID                         0x70                 
+#define RX_TIME_RAW_LEN                        (4U)                
+#define RX_TIME_RAW_MASK                       0xFFFFFFFFUL        
+#define RX_TIME_RX_RAWST_BIT_OFFSET (0U)                
+#define RX_TIME_RX_RAWST_BIT_LEN (32U)               
+#define RX_TIME_RX_RAWST_BIT_MASK 0xffffffffUL         
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register RX_TIME
+/******************************************************************************
+* @brief Bit definitions for register TX_TIME_LO
 **/
-#define RX_TIME_ID              0x15            /* Receive Message Time of Arrival (in double buffer set) */
-#define RX_TIME_LLEN            (14)
-#define RX_TIME_RX_STAMP_LEN    (5)             /* read only 5 bytes (the adjusted timestamp (40:0)) */
-#define RX_STAMP_LEN            RX_TIME_RX_STAMP_LEN
-/*mask and shift */
-#define RX_TIME_RX_STAMP_OFFSET  (0) /* byte 0..4 40 bit Reports the fully adjusted time of reception. */
-#define RX_TIME_FP_INDEX_OFFSET  (5)    /* byte 5..6 16 bit First path index. */
-#define RX_TIME_FP_AMPL1_OFFSET  (7)    /* byte 7..8 16 bit First Path Amplitude point 1 */   /* doc bug */
-#define RX_TIME_FP_RAWST_OFFSET  (9)    /* byte 9..13 40 bit Raw Timestamp for the frame */
+#define TX_TIME_LO_ID                        0x74                 
+#define TX_TIME_LO_LEN                       (4U)                
+#define TX_TIME_LO_MASK                      0xFFFFFFFFUL        
 
 
-/****************************************************************************//**
- * @brief Bit definitions for register
+/******************************************************************************
+* @brief Bit definitions for register TX_TIME_RAW
 **/
-#define REG_16_ID_RESERVED      0x16
+#define TX_TIME_RAW_ID                         0x10000              
+#define TX_TIME_RAW_LEN                        (4U)                
+#define TX_TIME_RAW_MASK                       0xFFFFFFFFUL        
+#define TX_TIME_TX_RAWST_BIT_OFFSET (0U)                
+#define TX_TIME_TX_RAWST_BIT_LEN (32U)               
+#define TX_TIME_TX_RAWST_BIT_MASK 0xffffffffUL         
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register
+/******************************************************************************
+* @brief Bit definitions for register TX_ANTD
 **/
-#define TX_TIME_ID              0x17            /* Transmit Message Time of Sending */
-#define TX_TIME_LLEN            (10)
-#define TX_TIME_TX_STAMP_LEN    (5)             /* 40-bits = 5 bytes */
-#define TX_STAMP_LEN            TX_TIME_TX_STAMP_LEN
-/*mask and shift */
-#define TX_TIME_TX_STAMP_OFFSET  (0) /* byte 0..4 40 bit Reports the fully adjusted time of transmission */
-#define TX_TIME_TX_RAWST_OFFSET  (5) /* byte 5..9 40 bit Raw Timestamp for the frame */
+#define TX_ANTD_ID                           0x10004              
+#define TX_ANTD_LEN                          (4U)                
+#define TX_ANTD_MASK                         0xFFFFFFFFUL        
 
-
-
-
-/****************************************************************************//**
- * @brief Bit definitions for register TX_ANTD
+/******************************************************************************
+* @brief Bit definitions for register ACK_RESP
 **/
-#define TX_ANTD_ID              0x18            /* 16-bit Delay from Transmit to Antenna */
-#define TX_ANTD_OFFSET          0x00
-#define TX_ANTD_LEN             (2)
+#define ACK_RESP_ID                          0x10008              
+#define ACK_RESP_LEN                         (4U)                
+#define ACK_RESP_MASK                        0xFFFFFFFFUL        
+#define ACK_RESP_W4R_TIM_BIT_OFFSET    (0U)                
+#define ACK_RESP_W4R_TIM_BIT_LEN       (20U)               
+#define ACK_RESP_W4R_TIM_BIT_MASK      0xfffffUL            
 
-
-
-
-/****************************************************************************//**
- * @brief Bit definitions for register SYS_STATES
- *        Register map register file 0x19 is reserved
- *
+/******************************************************************************
+* @brief Bit definitions for register TX_POWER
 **/
-#define SYS_STATE_ID            0x19            /* System State information READ ONLY */
-#define SYS_STATE_LEN           (5)
+#define TX_POWER_ID                          0x1000c              
+#define TX_POWER_LEN                         (4U)                
+#define TX_POWER_MASK                        0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register ACK_RESP_T
+/******************************************************************************
+* @brief Bit definitions for register CHAN_CTRL
 **/
-/* Acknowledge (31:24 preamble symbol delay before auto ACK is sent) and respose (19:0 - unit 1us) timer */
-#define ACK_RESP_T_ID           0x1A            /* Acknowledgement Time and Response Time */
-#define ACK_RESP_T_LEN          (4)
-/*mask and shift */
-#define ACK_RESP_T_MASK         0xFF0FFFFFUL    /* Acknowledgement Time and Response access mask */
-#define ACK_RESP_T_W4R_TIM_OFFSET 0             /* In bytes */
-#define ACK_RESP_T_W4R_TIM_MASK 0x000FFFFFUL    /* Wait-for-Response turn-around Time 20 bit field */
-#define W4R_TIM_MASK            ACK_RESP_T_W4R_TIM_MASK
-#define ACK_RESP_T_ACK_TIM_OFFSET 3             /* In bytes */
-#define ACK_RESP_T_ACK_TIM_MASK 0xFF000000UL    /* Auto-Acknowledgement turn-around Time */
-#define ACK_TIM_MASK            ACK_RESP_T_ACK_TIM_MASK
+#define CHAN_CTRL_ID                         0x10014              
+#define CHAN_CTRL_LEN                        (4U)                
+#define CHAN_CTRL_MASK                       0xFFFFFFFFUL        
+#define CHAN_CTRL_RX_PCODE_BIT_OFFSET        (8U)                
+#define CHAN_CTRL_RX_PCODE_BIT_LEN           (5U)                
+#define CHAN_CTRL_RX_PCODE_BIT_MASK          0x1f00U              
+#define CHAN_CTRL_TX_PCODE_BIT_OFFSET        (3U)                
+#define CHAN_CTRL_TX_PCODE_BIT_LEN           (5U)                
+#define CHAN_CTRL_TX_PCODE_BIT_MASK          0xf8U                
+#define CHAN_CTRL_SFD_TYPE_BIT_OFFSET        (1U)                
+#define CHAN_CTRL_SFD_TYPE_BIT_LEN           (2U)                
+#define CHAN_CTRL_SFD_TYPE_BIT_MASK          0x6U                 
+#define CHAN_CTRL_RF_CHAN_BIT_OFFSET         (0U)                
+#define CHAN_CTRL_RF_CHAN_BIT_LEN            (1U)                
+#define CHAN_CTRL_RF_CHAN_BIT_MASK           0x1U                 
 
-
-
-/****************************************************************************//**
- * @brief Bit definitions for register 0x1B 0x1C
+/******************************************************************************
+* @brief Bit definitions for register LE_PEND_01
 **/
-#define REG_1B_ID_RESERVED      0x1B
-#define REG_1C_ID_RESERVED      0x1C
+#define LE_PEND_01_ID                        0x10018              
+#define LE_PEND_01_LEN                       (4U)                
+#define LE_PEND_01_MASK                      0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register RX_SNIFF
- *        Sniff Mode Configuration or Pulsed Preamble Reception Configuration
+/******************************************************************************
+* @brief Bit definitions for register LE_PEND_23
 **/
-#define RX_SNIFF_ID             0x1D            /* Sniff Mode Configuration */
-#define RX_SNIFF_OFFSET         0x00
-#define RX_SNIFF_LEN            (4)
-/*mask and shift */
-#define RX_SNIFF_MASK           0x0000FF0FUL    /*  */
-#define RX_SNIFF_SNIFF_ONT_MASK 0x0000000FUL    /* SNIFF Mode ON time. Specified in units of PAC */
-#define SNIFF_ONT_MASK          RX_SNIFF_SNIFF_ONT_MASK
-#define RX_SNIFF_SNIFF_OFFT_MASK 0x0000FF00UL   /* SNIFF Mode OFF time specified in units of approximately 1mkS, or 128 system clock cycles.*/
-#define SNIFF_OFFT_MASK         RX_SNIFF_SNIFF_OFFT_MASK
+#define LE_PEND_23_ID                        0x1001c              
+#define LE_PEND_23_LEN                       (4U)                
+#define LE_PEND_23_MASK                      0xFFFFFFFFUL        
 
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register TX_POWER
+/******************************************************************************
+* @brief Bit definitions for register RDB_STATUS
 **/
-#define TX_POWER_ID             0x1E            /* TX Power Control */
-#define TX_POWER_LEN            (4)
-/*mask and shift definition for Smart Transmit Power Control*/
-#define TX_POWER_BOOSTNORM_MASK 0x00000000UL    /* This is the normal power setting used for frames that do not fall */
-#define BOOSTNORM_MASK          TX_POWER_BOOSTNORM_MASK
-#define TX_POWER_BOOSTNORM_SHIFT (0)
-#define TX_POWER_BOOSTP500_MASK 0x00000000UL    /* This value sets the power applied during transmission at the 6.8 Mbps data rate frames that are less than 0.5 ms duration */
-#define BOOSTP500_MASK          TX_POWER_BOOSTP500_MASK
-#define TX_POWER_BOOSTP500_SHIFT (8)
-#define TX_POWER_BOOSTP250_MASK 0x00000000UL    /* This value sets the power applied during transmission at the 6.8 Mbps data rate frames that are less than 0.25 ms duration */
-#define BOOSTP250_MASK          TX_POWER_BOOSTP250_MASK
-#define TX_POWER_BOOSTP250_SHIFT (16)
-#define TX_POWER_BOOSTP125_MASK 0x00000000UL    /* This value sets the power applied during transmission at the 6.8 Mbps data rate frames that are less than 0.125 ms */
-#define BOOSTP125_MASK          TX_POWER_BOOSTP125_MASK
-#define TX_POWER_BOOSTP125_SHIFT (24)
-/*mask and shift definition for Manual Transmit Power Control (DIS_STXP=1 in SYS_CFG)*/
-#define TX_POWER_MAN_DEFAULT    0x0E080222UL
-#define TX_POWER_TXPOWPHR_MASK  0x0000FF00UL    /* This power setting is applied during the transmission of the PHY header (PHR) portion of the frame. */
-#define TX_POWER_TXPOWSD_MASK   0x00FF0000UL    /* This power setting is applied during the transmission of the synchronisation header (SHR) and data portions of the frame. */
+#define RDB_STATUS_ID                        0x10024              
+#define RDB_STATUS_LEN                       (4U)                
+#define RDB_STATUS_MASK                      0xFFFFFFFFUL        
+#define RDB_STATUS_CP_ERR1_BIT_OFFSET        (7U)                
+#define RDB_STATUS_CP_ERR1_BIT_LEN           (1U)                
+#define RDB_STATUS_CP_ERR1_BIT_MASK          0x80U                
+#define RDB_STATUS_CIADONE1_BIT_OFFSET       (6U)                
+#define RDB_STATUS_CIADONE1_BIT_LEN          (1U)                
+#define RDB_STATUS_CIADONE1_BIT_MASK         0x40U                
+#define RDB_STATUS_RXFR1_BIT_OFFSET          (5U)                
+#define RDB_STATUS_RXFR1_BIT_LEN             (1U)                
+#define RDB_STATUS_RXFR1_BIT_MASK            0x20U                
+#define RDB_STATUS_RXFCG1_BIT_OFFSET         (4U)                
+#define RDB_STATUS_RXFCG1_BIT_LEN            (1U)                
+#define RDB_STATUS_RXFCG1_BIT_MASK           0x10U                
+#define RDB_STATUS_CP_ERR0_BIT_OFFSET        (3U)                
+#define RDB_STATUS_CP_ERR0_BIT_LEN           (1U)                
+#define RDB_STATUS_CP_ERR0_BIT_MASK          0x8U                 
+#define RDB_STATUS_CIADONE0_BIT_OFFSET       (2U)                
+#define RDB_STATUS_CIADONE0_BIT_LEN          (1U)                
+#define RDB_STATUS_CIADONE0_BIT_MASK         0x4U                 
+#define RDB_STATUS_RXFR0_BIT_OFFSET          (1U)                
+#define RDB_STATUS_RXFR0_BIT_LEN             (1U)                
+#define RDB_STATUS_RXFR0_BIT_MASK            0x2U                 
+#define RDB_STATUS_RXFCG0_BIT_OFFSET         (0U)                
+#define RDB_STATUS_RXFCG0_BIT_LEN            (1U)                
+#define RDB_STATUS_RXFCG0_BIT_MASK           0x1U                 
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register CHAN_CTRL
+/******************************************************************************
+* @brief Bit definitions for register RDB_DIAG_MODE
 **/
-#define CHAN_CTRL_ID            0x1F            /* Channel Control */
-#define CHAN_CTRL_LEN           (4)
-/*mask and shift */
-#define CHAN_CTRL_MASK          0xFFFF00FFUL    /* Channel Control Register access mask */
-#define CHAN_CTRL_TX_CHAN_MASK  0x0000000FUL    /* Supported channels are 1, 2, 3, 4, 5, and 7.*/
-#define CHAN_CTRL_TX_CHAN_SHIFT (0)             /* Bits 0..3        TX channel number 0-15 selection */
-
-#define CHAN_CTRL_RX_CHAN_MASK  0x000000F0UL
-#define CHAN_CTRL_RX_CHAN_SHIFT (4)             /* Bits 4..7        RX channel number 0-15 selection */
-
-#define CHAN_CTRL_RXFPRF_MASK   0x000C0000UL    /* Bits 18..19      Specify (Force) RX Pulse Repetition Rate: 00 = 4 MHz, 01 = 16 MHz, 10 = 64MHz. */
-#define CHAN_CTRL_RXFPRF_SHIFT  (18)
-/* Specific RXFPRF configuration */
-#define CHAN_CTRL_RXFPRF_4      0x00000000UL    /* Specify (Force) RX Pulse Repetition Rate: 00 = 4 MHz, 01 = 16 MHz, 10 = 64MHz. */
-#define CHAN_CTRL_RXFPRF_16     0x00040000UL    /* Specify (Force) RX Pulse Repetition Rate: 00 = 4 MHz, 01 = 16 MHz, 10 = 64MHz. */
-#define CHAN_CTRL_RXFPRF_64     0x00080000UL    /* Specify (Force) RX Pulse Repetition Rate: 00 = 4 MHz, 01 = 16 MHz, 10 = 64MHz. */
-#define CHAN_CTRL_TX_PCOD_MASK  0x07C00000UL    /* Bits 22..26      TX Preamble Code selection, 1 to 24. */
-#define CHAN_CTRL_TX_PCOD_SHIFT (22)
-#define CHAN_CTRL_RX_PCOD_MASK  0xF8000000UL    /* Bits 27..31      RX Preamble Code selection, 1 to 24. */
-#define CHAN_CTRL_RX_PCOD_SHIFT (27)
-/*offset 16 */
-#define CHAN_CTRL_DWSFD         0x00020000UL    /* Bit 17 This bit enables a non-standard DecaWave proprietary SFD sequence. */
-#define CHAN_CTRL_DWSFD_SHIFT   (17)
-#define CHAN_CTRL_TNSSFD        0x00100000UL    /* Bit 20 Non-standard SFD in the transmitter */
-#define CHAN_CTRL_TNSSFD_SHIFT  (20)
-#define CHAN_CTRL_RNSSFD        0x00200000UL    /* Bit 21 Non-standard SFD in the receiver */
-#define CHAN_CTRL_RNSSFD_SHIFT  (21)
+#define RDB_DIAG_MODE_ID                     0x10028              
+#define RDB_DIAG_MODE_LEN                    (4U)                
+#define RDB_DIAG_MODE_MASK                   0xFFFFFFFFUL        
+#define RDB_DIAG_MODE_RDB_DMODE_BIT_OFFSET (0U)                
+#define RDB_DIAG_MODE_RDB_DMODE_BIT_LEN  (3U)                
+#define RDB_DIAG_MODE_RDB_DMODE_BIT_MASK 0x7U                 
 
 
-
-
-/****************************************************************************//**
- * @brief Bit definitions for register 0x20
+/******************************************************************************
+* @brief Bit definitions for register AES_CFG
 **/
-#define REG_20_ID_RESERVED      0x20
+#define AES_CFG_ID                           0x10030              
+#define AES_CFG_LEN                          (4U)                
+#define AES_CFG_MASK                         0xFFFFFFFFUL        
+#define AES_CFG_KEY_OTP_BIT_OFFSET       (12U)               
+#define AES_CFG_KEY_OTP_BIT_LEN          (1U)                
+#define AES_CFG_KEY_OTP_BIT_MASK         0x1000U              
+#define AES_CFG_CORE_SEL_BIT_OFFSET      (11U)               
+#define AES_CFG_CORE_SEL_BIT_LEN         (1U)                
+#define AES_CFG_CORE_SEL_BIT_MASK        0x800U               
+#define AES_CFG_TAG_SIZE_BIT_OFFSET      (8U)                
+#define AES_CFG_TAG_SIZE_BIT_LEN         (3U)                
+#define AES_CFG_TAG_SIZE_BIT_MASK        0x700U               
+#define AES_CFG_KEY_SRC_BIT_OFFSET       (7U)                
+#define AES_CFG_KEY_SRC_BIT_LEN          (1U)                
+#define AES_CFG_KEY_SRC_BIT_MASK         0x80U                
+#define AES_CFG_KEY_LOAD_BIT_OFFSET      (6U)                
+#define AES_CFG_KEY_LOAD_BIT_LEN         (1U)                
+#define AES_CFG_KEY_LOAD_BIT_MASK        0x40U                
+#define AES_CFG_KEY_ADDR_BIT_OFFSET      (3U)                
+#define AES_CFG_KEY_ADDR_BIT_LEN         (3U)                
+#define AES_CFG_KEY_ADDR_BIT_MASK        0x38U                
+#define AES_CFG_KEY_SIZE_BIT_OFFSET      (1U)                
+#define AES_CFG_KEY_SIZE_BIT_LEN         (2U)                
+#define AES_CFG_KEY_SIZE_BIT_MASK        0x6U                 
+#define AES_CFG_MODE_BIT_OFFSET          (0U)                
+#define AES_CFG_MODE_BIT_LEN             (1U)                
+#define AES_CFG_MODE_BIT_MASK            0x1U                 
 
-/****************************************************************************//**
- * @brief Bit definitions for register USR_SFD
- *        Please read User Manual : User defined SFD sequence
+/******************************************************************************
+* @brief Bit definitions for register AES_IV0
 **/
-#define USR_SFD_ID              0x21            /* User-specified short/long TX/RX SFD sequences */
-#define USR_SFD_LEN             (41)
-#define DW_NS_SFD_LEN_110K      64              /* Decawave non-standard SFD length for 110 kbps */
-#define DW_NS_SFD_LEN_850K      16              /* Decawave non-standard SFD length for 850 kbps */
-#define DW_NS_SFD_LEN_6M8       8               /* Decawave non-standard SFD length for 6.8 Mbps */
+#define AES_IV0_ID                           0x10034              
+#define AES_IV0_LEN                          (4U)                
+#define AES_IV0_MASK                         0xFFFFFFFFUL        
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register
+/******************************************************************************
+* @brief Bit definitions for register AES_IV1
 **/
-#define REG_22_ID_RESERVED      0x22
+#define AES_IV1_ID                           0x10038              
+#define AES_IV1_LEN                          (4U)                
+#define AES_IV1_MASK                         0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register AGC_CTRL
- * Please take care to write to this register as doing so may cause the DW1000 to malfunction
+/******************************************************************************
+* @brief Bit definitions for register AES_IV2
 **/
-#define AGC_CTRL_ID             0x23            /* Automatic Gain Control configuration */
-#define AGC_CTRL_LEN            (32)
-#define AGC_CFG_STS_ID          AGC_CTRL_ID
-/* offset from AGC_CTRL_ID in bytes */
-#define AGC_CTRL1_OFFSET        (0x02)
-#define AGC_CTRL1_LEN           (2)
-#define AGC_CTRL1_MASK          0x0001          /* access mask to AGC configuration and control register */
-#define AGC_CTRL1_DIS_AM        0x0001          /* Disable AGC Measurement. The DIS_AM bit is set by default. */
-/* offset from AGC_CTRL_ID in bytes */
-/* Please take care not to write other values to this register as doing so may cause the DW1000 to malfunction */
-#define AGC_TUNE1_OFFSET        (0x04)
-#define AGC_TUNE1_LEN           (2)
-#define AGC_TUNE1_MASK          0xFFFF          /* It is a 16-bit tuning register for the AGC. */
-#define AGC_TUNE1_16M           0x8870
-#define AGC_TUNE1_64M           0x889B
-/* offset from AGC_CTRL_ID in bytes */
-/* Please take care not to write other values to this register as doing so may cause the DW1000 to malfunction */
-#define AGC_TUNE2_OFFSET        (0x0C)
-#define AGC_TUNE2_LEN           (4)
-#define AGC_TUNE2_MASK          0xFFFFFFFFUL
-#define AGC_TUNE2_VAL           0X2502A907UL
-/* offset from AGC_CTRL_ID in bytes */
-/* Please take care not to write other values to this register as doing so may cause the DW1000 to malfunction */
-#define AGC_TUNE3_OFFSET        (0x12)
-#define AGC_TUNE3_LEN           (2)
-#define AGC_TUNE3_MASK          0xFFFF
-#define AGC_TUNE3_VAL           0X0055
-/* offset from AGC_CTRL_ID in bytes */
-#define AGC_STAT1_OFFSET        (0x1E)
-#define AGC_STAT1_LEN           (3)
-#define AGC_STAT1_MASK          0x0FFFFF
-#define AGC_STAT1_EDG1_MASK     0x0007C0        /* This 5-bit gain value relates to input noise power measurement. */
-#define AGC_STAT1_EDG2_MASK     0x0FF800        /* This 9-bit value relates to the input noise power measurement. */
+#define AES_IV2_ID                           0x1003c              
+#define AES_IV2_LEN                          (4U)                
+#define AES_IV2_MASK                         0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register EXT_SYNC
+/******************************************************************************
+* @brief Bit definitions for register AES_IV3
 **/
-#define EXT_SYNC_ID             0x24            /* External synchronisation control */
-#define EXT_SYNC_LEN            (12)
-/* offset from EXT_SYNC_ID in bytes */
-#define EC_CTRL_OFFSET          (0x00)
-#define EC_CTRL_LEN             (4)
-#define EC_CTRL_MASK            0x00000FFBUL    /* sub-register 0x00 is the External clock synchronisation counter configuration register */
-#define EC_CTRL_OSTSM           0x00000001UL    /* External transmit synchronisation mode enable */
-#define EC_CTRL_OSRSM           0x00000002UL    /* External receive synchronisation mode enable */
-#define EC_CTRL_PLLLCK          0x04            /* PLL lock detect enable */
-#define EC_CTRL_OSTRM           0x00000800UL    /* External timebase reset mode enable */
-#define EC_CTRL_WAIT_MASK       0x000007F8UL    /* Wait counter used for external transmit synchronisation and external timebase reset */
-/* offset from EXT_SYNC_ID in bytes */
-#define EC_RXTC_OFFSET          (0x04)
-#define EC_RXTC_LEN             (4)
-#define EC_RXTC_MASK            0xFFFFFFFFUL    /* External clock synchronisation counter captured on RMARKER */
-/* offset from EXT_SYNC_ID in bytes */
-#define EC_GOLP                 (0x08)
-#define EC_GOLP_LEN             (4)
-#define EC_GOLP_MASK            0x0000003FUL    /* sub-register 0x08 is the External clock offset to first path 1 GHz counter, EC_GOLP */
-#define EC_GOLP_OFFSET_EXT_MASK 0x0000003FUL    /* This register contains the 1 GHz count from the arrival of the RMARKER and the next edge of the external clock. */
+#define AES_IV3_ID                           0x10040              
+#define AES_IV3_LEN                          (4U)                
+#define AES_IV3_MASK                         0xFFFFFFFFUL        
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register ACC_MEM
+/******************************************************************************
+* @brief Bit definitions for register DMA_CFG0
 **/
-#define ACC_MEM_ID              0x25            /* Read access to accumulator data */
-#define ACC_MEM_LEN             (4064)
+#define DMA_CFG0_ID                          0x10044              
+#define DMA_CFG0_LEN                         (4U)                
+#define DMA_CFG0_MASK                        0xFFFFFFFFUL        
+#define DMA_CFG0_CP_END_SEL_BIT_OFFSET   (26U)               
+#define DMA_CFG0_CP_END_SEL_BIT_LEN      (1U)                
+#define DMA_CFG0_CP_END_SEL_BIT_MASK     0x4000000UL          
+#define DMA_CFG0_DST_ADDR_BIT_OFFSET     (16U)               
+#define DMA_CFG0_DST_ADDR_BIT_LEN        (10U)               
+#define DMA_CFG0_DST_ADDR_BIT_MASK       0x3ff0000UL          
+#define DMA_CFG0_DST_PORT_BIT_OFFSET     (13U)               
+#define DMA_CFG0_DST_PORT_BIT_LEN        (3U)                
+#define DMA_CFG0_DST_PORT_BIT_MASK       0xe000U              
+#define DMA_CFG0_SRC_ADDR_BIT_OFFSET     (3U)                
+#define DMA_CFG0_SRC_ADDR_BIT_LEN        (10U)               
+#define DMA_CFG0_SRC_ADDR_BIT_MASK       0x1ff8U              
+#define DMA_CFG0_SRC_PORT_BIT_OFFSET     (0U)                
+#define DMA_CFG0_SRC_PORT_BIT_LEN        (3U)                
+#define DMA_CFG0_SRC_PORT_BIT_MASK       0x7U                 
 
-
-/****************************************************************************//**
- * @brief Bit definitions for register GPIO_CTRL
+/******************************************************************************
+* @brief Bit definitions for register DMA_CFG1
 **/
-#define GPIO_CTRL_ID            0x26            /* Peripheral register bus 1 access - GPIO control */
-#define GPIO_CTRL_LEN           (44)
+#define DMA_CFG1_ID                          0x10048              
+#define DMA_CFG1_LEN                         (4U)                
+#define DMA_CFG1_MASK                        0xFFFFFFFFUL        
+#define DMA_CFG1_PYLD_SIZE_BIT_OFFSET    (7U)                
+#define DMA_CFG1_PYLD_SIZE_BIT_LEN       (10U)               
+#define DMA_CFG1_PYLD_SIZE_BIT_MASK      0x1ff80UL            
+#define DMA_CFG1_HDR_SIZE_BIT_OFFSET     (0U)                
+#define DMA_CFG1_HDR_SIZE_BIT_LEN        (7U)                
+#define DMA_CFG1_HDR_SIZE_BIT_MASK       0x7fU                
 
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_MODE_OFFSET        0x00            /* sub-register 0x00 is the GPIO Mode Control Register */
-#define GPIO_MODE_LEN           (4)
-#define GPIO_MODE_MASK          0x00FFFFC0UL
-
-#define GPIO_MSGP0_MASK         0x000000C0UL    /* Mode Selection for GPIO0/RXOKLED */
-#define GPIO_MSGP1_MASK         0x00000300UL    /* Mode Selection for GPIO1/SFDLED */
-#define GPIO_MSGP2_MASK         0x00000C00UL    /* Mode Selection for GPIO2/RXLED */
-#define GPIO_MSGP3_MASK         0x00003000UL    /* Mode Selection for GPIO3/TXLED */
-#define GPIO_MSGP4_MASK         0x0000C000UL    /* Mode Selection for GPIO4/EXTPA */
-#define GPIO_MSGP5_MASK         0x00030000UL    /* Mode Selection for GPIO5/EXTTXE */
-#define GPIO_MSGP6_MASK         0x000C0000UL    /* Mode Selection for GPIO6/EXTRXE */
-#define GPIO_MSGP7_MASK         0x00300000UL    /* Mode Selection for SYNC/GPIO7 */
-#define GPIO_MSGP8_MASK         0x00C00000UL    /* Mode Selection for IRQ/GPIO8 */
-
-#define GPIO_PIN2_RXLED         0x00000400UL    /* The pin operates as the RXLED output */
-#define GPIO_PIN3_TXLED         0x00001000UL    /* The pin operates as the TXLED output */
-#define GPIO_PIN4_EXTPA         0x00004000UL    /* The pin operates as the EXTPA output */
-#define GPIO_PIN5_EXTTXE        0x00010000UL    /* The pin operates as the EXTTXE output */
-#define GPIO_PIN6_EXTRXE        0x00040000UL    /* The pin operates as the EXTRXE output */
-
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_DIR_OFFSET         0x08            /* sub-register 0x08 is the GPIO Direction Control Register */
-#define GPIO_DIR_LEN            (3)
-#define GPIO_DIR_MASK           0x0011FFFFUL
-
-#define GxP0                    0x00000001UL    /* GPIO0 Only changed if the GxM0 mask bit has a value of 1 for the write operation*/
-#define GxP1                    0x00000002UL    /* GPIO1. (See GDP0). */
-#define GxP2                    0x00000004UL    /* GPIO2. (See GDP0). */
-#define GxP3                    0x00000008UL    /* GPIO3. (See GDP0). */
-#define GxP4                    0x00000100UL    /* GPIO4. (See GDP0). */
-#define GxP5                    0x00000200UL    /* GPIO5. (See GDP0). */
-#define GxP6                    0x00000400UL    /* GPIO6. (See GDP0). */
-#define GxP7                    0x00000800UL    /* GPIO7. (See GDP0). */
-#define GxP8                    0x00010000UL    /* GPIO8 */
-
-#define GxM0                    0x00000010UL    /* Mask for GPIO0 */
-#define GxM1                    0x00000020UL    /* Mask for GPIO1. (See GDM0). */
-#define GxM2                    0x00000040UL    /* Mask for GPIO2. (See GDM0). */
-#define GxM3                    0x00000080UL    /* Mask for GPIO3. (See GDM0). */
-#define GxM4                    0x00001000UL    /* Mask for GPIO4. (See GDM0). */
-#define GxM5                    0x00002000UL    /* Mask for GPIO5. (See GDM0). */
-#define GxM6                    0x00004000UL    /* Mask for GPIO6. (See GDM0). */
-#define GxM7                    0x00008000UL    /* Mask for GPIO7. (See GDM0). */
-#define GxM8                    0x00100000UL    /* Mask for GPIO8. (See GDM0). */
-
-#define GDP0    GxP0    /* Direction Selection for GPIO0. 1 = input, 0 = output. Only changed if the GDM0 mask bit has a value of 1 for the write operation*/
-#define GDP1    GxP1    /* Direction Selection for GPIO1. (See GDP0). */
-#define GDP2    GxP2    /* Direction Selection for GPIO2. (See GDP0). */
-#define GDP3    GxP3    /* Direction Selection for GPIO3. (See GDP0). */
-#define GDP4    GxP4    /* Direction Selection for GPIO4. (See GDP0). */
-#define GDP5    GxP5    /* Direction Selection for GPIO5. (See GDP0). */
-#define GDP6    GxP6    /* Direction Selection for GPIO6. (See GDP0). */
-#define GDP7    GxP7    /* Direction Selection for GPIO7. (See GDP0). */
-#define GDP8    GxP8    /* Direction Selection for GPIO8 */
-
-#define GDM0    GxM0    /* Mask for setting the direction of GPIO0 */
-#define GDM1    GxM1    /* Mask for setting the direction of GPIO1. (See GDM0). */
-#define GDM2    GxM2    /* Mask for setting the direction of GPIO2. (See GDM0). */
-#define GDM3    GxM3    /* Mask for setting the direction of GPIO3. (See GDM0). */
-#define GDM4    GxM4    /* Mask for setting the direction of GPIO4. (See GDM0). */
-#define GDM5    GxM5    /* Mask for setting the direction of GPIO5. (See GDM0). */
-#define GDM6    GxM6    /* Mask for setting the direction of GPIO6. (See GDM0). */
-#define GDM7    GxM7    /* Mask for setting the direction of GPIO7. (See GDM0). */
-#define GDM8    GxM8    /* Mask for setting the direction of GPIO8. (See GDM0). */
-
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_DOUT_OFFSET        0x0C            /* sub-register 0x0C is the GPIO data output register. */
-#define GPIO_DOUT_LEN           (3)
-#define GPIO_DOUT_MASK          GPIO_DIR_MASK
-
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_IRQE_OFFSET        0x10            /* sub-register 0x10 is the GPIO interrupt enable register */
-#define GPIO_IRQE_LEN           (4)
-#define GPIO_IRQE_MASK          0x000001FFUL
-#define GIRQx0                  0x00000001UL    /* IRQ bit0 */
-#define GIRQx1                  0x00000002UL    /* IRQ bit1 */
-#define GIRQx2                  0x00000004UL    /* IRQ bit2 */
-#define GIRQx3                  0x00000008UL    /* IRQ bit3 */
-#define GIRQx4                  0x00000010UL    /* IRQ bit4 */
-#define GIRQx5                  0x00000020UL    /* IRQ bit5 */
-#define GIRQx6                  0x00000040UL    /* IRQ bit6 */
-#define GIRQx7                  0x00000080UL    /* IRQ bit7 */
-#define GIRQx8                  0x00000100UL    /* IRQ bit8 */
-#define GIRQE0  GIRQx0  /* GPIO IRQ Enable for GPIO0 input. Value 1 = enable, 0 = disable*/
-#define GIRQE1  GIRQx1  /*  */
-#define GIRQE2  GIRQx2  /*  */
-#define GIRQE3  GIRQx3  /*  */
-#define GIRQE4  GIRQx4  /*  */
-#define GIRQE5  GIRQx5  /*  */
-#define GIRQE6  GIRQx6  /*  */
-#define GIRQE7  GIRQx7  /*  */
-#define GIRQE8  GIRQx8  /* Value 1 = enable, 0 = disable */
-
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_ISEN_OFFSET        0x14    /* sub-register 0x14 is the GPIO interrupt sense selection register */
-#define GPIO_ISEN_LEN           (4)
-#define GPIO_ISEN_MASK          GPIO_IRQE_MASK
-#define GISEN0  GIRQx0  /* GPIO IRQ Sense selection GPIO0 input. Value 0 = High or Rising-Edge, 1 = Low or falling-edge.*/
-#define GISEN1  GIRQx1  /*  */
-#define GISEN2  GIRQx2  /*  */
-#define GISEN3  GIRQx3  /*  */
-#define GISEN4  GIRQx4  /*  */
-#define GISEN5  GIRQx5  /*  */
-#define GISEN6  GIRQx6  /*  */
-#define GISEN7  GIRQx7  /*  */
-#define GISEN8  GIRQx8  /* Value 0 = High or Rising-Edge, 1 = Low or falling-edge */
-
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_IMODE_OFFSET       0x18    /* sub-register 0x18 is the GPIO interrupt mode selection register */
-#define GPIO_IMODE_LEN          (4)
-#define GPIO_IMODE_MASK         GPIO_IRQE_MASK
-#define GIMOD0  GIRQx0  /* GPIO IRQ Mode selection for GPIO0 input. Value 0 = Level sensitive interrupt. Value 1 = Edge triggered interrupt */
-#define GIMOD1  GIRQx1  /*  */
-#define GIMOD2  GIRQx2  /*  */
-#define GIMOD3  GIRQx3  /*  */
-#define GIMOD4  GIRQx4  /*  */
-#define GIMOD5  GIRQx5  /*  */
-#define GIMOD6  GIRQx6  /*  */
-#define GIMOD7  GIRQx7  /*  */
-#define GIMOD8  GIRQx8  /* Value 0 = Level, 1 = Edge. */
-
-/* offset from EXT_SYNC_ID in bytes */
-#define GPIO_IBES_OFFSET        0x1C    /* sub-register 0x1C is the GPIO interrupt “Both Edge” selection register */
-#define GPIO_IBES_LEN           (4)
-#define GPIO_IBES_MASK          GPIO_IRQE_MASK  /*  */
-#define GIBES0  GIRQx0  /* GPIO IRQ “Both Edge” selection for GPIO0 input. Value 0 = GPIO_IMODE register selects the edge. Value 1 = Both edges trigger the interrupt. */
-#define GIBES1  GIRQx1  /*  */
-#define GIBES2  GIRQx2  /*  */
-#define GIBES3  GIRQx3  /*  */
-#define GIBES4  GIRQx4  /*  */
-#define GIBES5  GIRQx5  /*  */
-#define GIBES6  GIRQx6  /*  */
-#define GIBES7  GIRQx7  /*  */
-#define GIBES8  GIRQx8  /* Value 0 = use GPIO_IMODE, 1 = Both Edges */
-
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_ICLR_OFFSET        0x20    /* sub-register 0x20 is the GPIO interrupt clear register */
-#define GPIO_ICLR_LEN           (4)
-#define GPIO_ICLR_MASK          GPIO_IRQE_MASK  /*  */
-#define GICLR0  GIRQx0  /* GPIO IRQ latch clear for GPIO0 input. Write 1 to clear the GPIO0 interrupt latch. Writing 0 has no effect. Reading returns zero */
-#define GICLR1  GIRQx1  /*  */
-#define GICLR2  GIRQx2  /*  */
-#define GICLR3  GIRQx3  /*  */
-#define GICLR4  GIRQx4  /*  */
-#define GICLR5  GIRQx5  /*  */
-#define GICLR6  GIRQx6  /*  */
-#define GICLR7  GIRQx7  /*  */
-#define GICLR8  GIRQx8  /* Write 1 to clear the interrupt latch */
-
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_IDBE_OFFSET        0x24    /* sub-register 0x24 is the GPIO interrupt de-bounce enable register */
-#define GPIO_IDBE_LEN           (4)
-#define GPIO_IDBE_MASK          GPIO_IRQE_MASK
-#define GIDBE0  GIRQx0  /* GPIO IRQ de-bounce enable for GPIO0. Value 1 = de-bounce enabled. Value 0 = de-bounce disabled */
-#define GIDBE1  GIRQx1  /*  */
-#define GIDBE2  GIRQx2  /*  */
-#define GIDBE3  GIRQx3  /*  */
-#define GIDBE4  GIRQx4  /*  */
-#define GIDBE5  GIRQx5  /*  */
-#define GIDBE6  GIRQx6  /*  */
-#define GIDBE7  GIRQx7  /*  */
-#define GIDBE8  GIRQx8  /* Value 1 = de-bounce enabled, 0 = de-bounce disabled */
-
-/* offset from GPIO_CTRL in bytes */
-#define GPIO_RAW_OFFSET         0x28    /* sub-register 0x28 allows the raw state of the GPIO pin to be read. */
-#define GPIO_RAW_LEN            (4)
-#define GPIO_RAW_MASK           GPIO_IRQE_MASK
-#define GRAWP0  GIRQx0  /* This bit reflects the raw state of GPIO0 */
-#define GRAWP1  GIRQx1  /*  */
-#define GRAWP2  GIRQx2  /*  */
-#define GRAWP3  GIRQx3  /*  */
-#define GRAWP4  GIRQx4  /*  */
-#define GRAWP5  GIRQx5  /*  */
-#define GRAWP6  GIRQx6  /*  */
-#define GRAWP7  GIRQx7  /*  */
-#define GRAWP8  GIRQx8  /* This bit reflects the raw state of GPIO8 */
-
-/****************************************************************************//**
- * @brief Bit definitions for register  DRX_CONF
- * Digital Receiver configuration block
+/******************************************************************************
+* @brief Bit definitions for register AES_START
 **/
-#define DRX_CONF_ID             0x27            /* Digital Receiver configuration */
-#define DRX_CONF_LEN            (44)
-/* offset from DRX_CONF_ID in bytes */
-#define DRX_TUNE0b_OFFSET       (0x02)  /* sub-register 0x02 is a 16-bit tuning register. */
-#define DRX_TUNE0b_LEN          (2)
-#define DRX_TUNE0b_MASK         0xFFFF  /* 7.2.40.2 Sub-Register 0x27:02 – DRX_TUNE0b */
-#define DRX_TUNE0b_110K_STD     0x000A
-#define DRX_TUNE0b_110K_NSTD    0x0016
-#define DRX_TUNE0b_850K_STD     0x0001
-#define DRX_TUNE0b_850K_NSTD    0x0006
-#define DRX_TUNE0b_6M8_STD      0x0001
-#define DRX_TUNE0b_6M8_NSTD     0x0002
+#define AES_START_ID                         0x1004c              
+#define AES_START_LEN                        (4U)                
+#define AES_START_MASK                       0xFFFFFFFFUL        
+#define AES_START_AES_START_BIT_OFFSET       (0U)                
+#define AES_START_AES_START_BIT_LEN          (1U)                
+#define AES_START_AES_START_BIT_MASK         0x1U                 
 
-/* offset from DRX_CONF_ID in bytes */
-#define DRX_TUNE1a_OFFSET       0x04    /* 7.2.40.3 Sub-Register 0x27:04 – DRX_TUNE1a */
-#define DRX_TUNE1a_LEN          (2)
-#define DRX_TUNE1a_MASK         0xFFFF
-#define DRX_TUNE1a_PRF16        0x0087
-#define DRX_TUNE1a_PRF64        0x008D
-
-/* offset from DRX_CONF_ID in bytes */
-#define DRX_TUNE1b_OFFSET       0x06    /* 7.2.40.4 Sub-Register 0x27:06 – DRX_TUNE1b */
-#define DRX_TUNE1b_LEN          (2)
-#define DRX_TUNE1b_MASK         0xFFFF
-#define DRX_TUNE1b_110K         0x0064
-#define DRX_TUNE1b_850K_6M8     0x0020
-#define DRX_TUNE1b_6M8_PRE64    0x0010
-
-/* offset from DRX_CONF_ID in bytes */
-#define DRX_TUNE2_OFFSET        0x08    /* 7.2.40.5 Sub-Register 0x27:08 – DRX_TUNE2 */
-#define DRX_TUNE2_LEN           (4)
-#define DRX_TUNE2_MASK          0xFFFFFFFFUL
-#define DRX_TUNE2_PRF16_PAC8    0x311A002DUL
-#define DRX_TUNE2_PRF16_PAC16   0x331A0052UL
-#define DRX_TUNE2_PRF16_PAC32   0x351A009AUL
-#define DRX_TUNE2_PRF16_PAC64   0x371A011DUL
-#define DRX_TUNE2_PRF64_PAC8    0x313B006BUL
-#define DRX_TUNE2_PRF64_PAC16   0x333B00BEUL
-#define DRX_TUNE2_PRF64_PAC32   0x353B015EUL
-#define DRX_TUNE2_PRF64_PAC64   0x373B0296UL
-
-/* offset from DRX_CONF_ID in bytes */
-/* WARNING: Please do NOT set DRX_SFDTOC to zero (disabling SFD detection timeout)
- * since this risks IC malfunction due to prolonged receiver activity in the event of false preamble detection.
- */
-#define DRX_SFDTOC_OFFSET       0x20    /* 7.2.40.7 Sub-Register 0x27:20 – DRX_SFDTOC */
-#define DRX_SFDTOC_LEN          (2)
-#define DRX_SFDTOC_MASK         0xFFFF
-
-/* offset from DRX_CONF_ID in bytes */
-#define DRX_PRETOC_OFFSET       0x24    /* 7.2.40.9 Sub-Register 0x27:24 – DRX_PRETOC */
-#define DRX_PRETOC_LEN          (2)
-#define DRX_PRETOC_MASK         0xFFFF
-
-/* offset from DRX_CONF_ID in bytes */
-#define DRX_TUNE4H_OFFSET       0x26    /* 7.2.40.10 Sub-Register 0x27:26 – DRX_TUNE4H */
-#define DRX_TUNE4H_LEN          (2)
-#define DRX_TUNE4H_MASK         0xFFFF
-#define DRX_TUNE4H_PRE64        0x0010
-#define DRX_TUNE4H_PRE128PLUS   0x0028
-
-
-/****************************************************************************//**
- * @brief Bit definitions for register  RF_CONF
- * Analog RF Configuration block
- * Refer to section 7.2.41 Register file: 0x28 – Analog RF configuration block
+/******************************************************************************
+* @brief Bit definitions for register AES_STS
 **/
-#define RF_CONF_ID              0x28            /* Analog RF Configuration */
-#define RF_CONF_LEN             (58)
-#define RF_CONF_TXEN_MASK       0x00400000UL   /* TX enable */
-#define RF_CONF_RXEN_MASK       0x00200000UL   /* RX enable */
-#define RF_CONF_TXPOW_MASK      0x001F0000UL   /* turn on power all LDOs */
-#define RF_CONF_PLLEN_MASK      0x0000E000UL   /* enable PLLs */
-#define RF_CONF_PGMIXBIASEN_MASK    0x0000A700UL    /* Enable TX mixer bias and pulse gen */
-#define RF_CONF_TXBLOCKSEN_MASK 0x00001F00UL   /* enable TX blocks */
-#define RF_CONF_TXPLLPOWEN_MASK (RF_CONF_PLLEN_MASK | RF_CONF_TXPOW_MASK)
-#define RF_CONF_TXALLEN_MASK    (RF_CONF_TXEN_MASK | RF_CONF_TXPOW_MASK | RF_CONF_PLLEN_MASK | RF_CONF_TXBLOCKSEN_MASK)
-/* offset from TX_CAL_ID in bytes */
-#define RF_RXCTRLH_OFFSET       0x0B            /* Analog RX Control Register */
-#define RF_RXCTRLH_LEN          (1)
-#define RF_RXCTRLH_NBW          0xD8            /* RXCTRLH value for narrow bandwidth channels */
-#define RF_RXCTRLH_WBW          0xBC            /* RXCTRLH value for wide bandwidth channels */
-/* offset from TX_CAL_ID in bytes */
-#define RF_TXCTRL_OFFSET        0x0C            /* Analog TX Control Register */
-#define RF_TXCTRL_LEN           (4)
-#define RF_TXCTRL_TXMTUNE_MASK  0x000001E0UL    /* Transmit mixer tuning register */
-#define RF_TXCTRL_TXTXMQ_MASK   0x00000E00UL    /* Transmit mixer Q-factor tuning register */
-#define RF_TXCTRL_CH1           0x00005C40UL    /* 32-bit value to program to Sub-Register 0x28:0C – RF_TXCTRL */
-#define RF_TXCTRL_CH2           0x00045CA0UL    /* 32-bit value to program to Sub-Register 0x28:0C – RF_TXCTRL */
-#define RF_TXCTRL_CH3           0x00086CC0UL    /* 32-bit value to program to Sub-Register 0x28:0C – RF_TXCTRL */
-#define RF_TXCTRL_CH4           0x00045C80UL    /* 32-bit value to program to Sub-Register 0x28:0C – RF_TXCTRL */
-#define RF_TXCTRL_CH5           0x001E3FE0UL    /* 32-bit value to program to Sub-Register 0x28:0C – RF_TXCTRL */
-#define RF_TXCTRL_CH7           0x001E7DE0UL    /* 32-bit value to program to Sub-Register 0x28:0C – RF_TXCTRL */
+#define AES_STS_ID                           0x10050              
+#define AES_STS_LEN                          (4U)                
+#define AES_STS_MASK                         0xFFFFFFFFUL        
+#define AES_STS_RAM_FULL_BIT_OFFSET          (5U)
+#define AES_STS_RAM_FULL_BIT_LEN             (1U)
+#define AES_STS_RAM_FULL_BIT_MASK            0x20U
+#define AES_STS_RAM_EMPTY_BIT_OFFSET         (4U)
+#define AES_STS_RAM_EMPTY_BIT_LEN            (1U)
+#define AES_STS_RAM_EMPTY_BIT_MASK           0x10U
+#define AES_STS_MEM_CONF_BIT_OFFSET          (3U)
+#define AES_STS_MEM_CONF_BIT_LEN             (1U)
+#define AES_STS_MEM_CONF_BIT_MASK            0x8U
+#define AES_STS_TRANS_ERR_BIT_OFFSET         (2U)
+#define AES_STS_TRANS_ERR_BIT_LEN            (1U)
+#define AES_STS_TRANS_ERR_BIT_MASK           0x4U
+#define AES_STS_AUTH_ERR_BIT_OFFSET          (1U)
+#define AES_STS_AUTH_ERR_BIT_LEN             (1U)
+#define AES_STS_AUTH_ERR_BIT_MASK            0x2U
+#define AES_STS_AES_DONE_BIT_OFFSET          (0U)                
+#define AES_STS_AES_DONE_BIT_LEN             (1U)                
+#define AES_STS_AES_DONE_BIT_MASK            0x1U                 
 
-/* offset from TX_CAL_ID in bytes */
-#define RF_STATUS_OFFSET        0x2C
-
-/****************************************************************************//**
- * @brief Bit definitions for register
+/******************************************************************************
+* @brief Bit definitions for register AES_KEY0
 **/
-#define REG_29_ID_RESERVED      0x29
+#define AES_KEY0_ID                          0x10054              
+#define AES_KEY0_LEN                         (4U)                
+#define AES_KEY0_MASK                        0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register TX_CAL
- * Refer to section 7.2.43 Register file: 0x2A – Transmitter Calibration block
+/******************************************************************************
+* @brief Bit definitions for register AES_KEY1
 **/
-#define TX_CAL_ID                   0x2A        /* Transmitter calibration block */
-#define TX_CAL_LEN                  (52)
-/* offset from TX_CAL_ID in bytes */
-#define TC_SARL_SAR_C               (0)         /* SAR control */
-/*cause bug in register block TX_CAL, we need to read 1 byte in a time*/
-#define TC_SARL_SAR_LVBAT_OFFSET    (3)         /* Latest SAR reading for Voltage level */
-#define TC_SARL_SAR_LTEMP_OFFSET    (4)         /* Latest SAR reading for Temperature level */
-#define TC_SARW_SAR_WTEMP_OFFSET    0x06        /* SAR reading of Temperature level taken at last wakeup event */
-#define TC_SARW_SAR_WVBAT_OFFSET    0x07        /* SAR reading of Voltage level taken at last wakeup event */
+#define AES_KEY1_ID                          0x10058              
+#define AES_KEY1_LEN                         (4U)                
+#define AES_KEY1_MASK                        0xFFFFFFFFUL        
 
-#define TC_PGCCTRL_OFFSET       0x08        /* Pulse Generator Calibration control */
-#define TC_PGCCTRL_LEN          (1)
-#define TC_PGCCTRL_CALSTART     0x01        /* Start PG cal procedure */
-#define TC_PGCCTRL_AUTOCAL      0x02        /* Starts a PG autocalibration loop */
-#define TC_PGCCTRL_TMEAS_MASK   0x3C        /* Mask to retrieve number of clock cycles over which to run PG cal counter */
-#define TC_PGCCTRL_ON_TX        0x40        /* Perform autocal on each TX enable */
-#define TC_PGCCTRL_DIR_CONV     0x80        /* Direction (converging) of autocal binary search */
-
-#define TC_PGCAL_STATUS_OFFSET      0x09    /* Status register from PG calibration block */
-#define TC_PGCAL_STATUS_LEN         (1)
-#define TC_PGCAL_STATUS_DELAY_MASK  0xFFF   /* Mask to retrieve PG delay count from calibration */
-
-/* offset from TX_CAL_ID in bytes */
-#define TC_PGDELAY_OFFSET       0x0B            /* Transmitter Calibration – Pulse Generator Delay */
-#define TC_PGDELAY_LEN          (1)
-#define TC_PGDELAY_CH1          0xC9            /* Recommended value for channel 1 */
-#define TC_PGDELAY_CH2          0xC2            /* Recommended value for channel 2 */
-#define TC_PGDELAY_CH3          0xC5            /* Recommended value for channel 3 */
-#define TC_PGDELAY_CH4          0x95            /* Recommended value for channel 4 */
-#define TC_PGDELAY_CH5          0xC0            /* Recommended value for channel 5 */
-#define TC_PGDELAY_CH7          0x93            /* Recommended value for channel 7 */
-/* offset from TX_CAL_ID in bytes */
-#define TC_PGTEST_OFFSET        0x0C            /* Transmitter Calibration – Pulse Generator Test */
-#define TC_PGTEST_LEN           (1)
-#define TC_PGTEST_NORMAL        0x00            /* Normal operation */
-#define TC_PGTEST_CW            0x13            /* Continuous Wave (CW) Test Mode */
-
-/****************************************************************************//**
- * @brief Bit definitions for register
- * Refer to section 7.2.44 Register file: 0x2B – Frequency synthesiser control block
+/******************************************************************************
+* @brief Bit definitions for register AES_KEY2
 **/
-#define FS_CTRL_ID              0x2B            /* Frequency synthesiser control block */
-#define FS_CTRL_LEN             (21)
-/* offset from FS_CTRL_ID in bytes */
-#define FS_RES1_OFFSET          0x00            /* reserved area. Please take care not to write to this area as doing so may cause the DW1000 to malfunction. */
-#define FS_RES1_LEN             (7)
-/* offset from FS_CTRL_ID in bytes */
-#define FS_PLLCFG_OFFSET        0x07            /* Frequency synthesiser – PLL configuration */
-#define FS_PLLCFG_LEN           (5)
-#define FS_PLLCFG_CH1           0x09000407UL    /* Operating Channel 1 */
-#define FS_PLLCFG_CH2           0x08400508UL    /* Operating Channel 2 */
-#define FS_PLLCFG_CH3           0x08401009UL    /* Operating Channel 3 */
-#define FS_PLLCFG_CH4           FS_PLLCFG_CH2   /* Operating Channel 4 (same as 2) */
-#define FS_PLLCFG_CH5           0x0800041DUL    /* Operating Channel 5 */
-#define FS_PLLCFG_CH7           FS_PLLCFG_CH5   /* Operating Channel 7 (same as 5) */
-/* offset from FS_CTRL_ID in bytes */
-#define FS_PLLTUNE_OFFSET       0x0B            /* Frequency synthesiser – PLL Tuning */
-#define FS_PLLTUNE_LEN          (1)
-#define FS_PLLTUNE_CH1          0x1E            /* Operating Channel 1 */
-#define FS_PLLTUNE_CH2          0x26            /* Operating Channel 2 */
-#define FS_PLLTUNE_CH3          0x56            /* Operating Channel 3 */
-#define FS_PLLTUNE_CH4          FS_PLLTUNE_CH2  /* Operating Channel 4 (same as 2) */
-#define FS_PLLTUNE_CH5          0xBE            /* Operating Channel 5 */
-#define FS_PLLTUNE_CH7          FS_PLLTUNE_CH5  /* Operating Channel 7 (same as 5) */
-/* offset from FS_CTRL_ID in bytes */
-#define FS_RES2_OFFSET          0x0C    /* reserved area. Please take care not to write to this area as doing so may cause the DW1000 to malfunction. */
-#define FS_RES2_LEN             (2)
-/* offset from FS_CTRL_ID in bytes */
-#define FS_XTALT_OFFSET         0x0E    /* Frequency synthesiser – Crystal trim */
-#define FS_XTALT_LEN            (1)
-#define FS_XTALT_MASK           0x1F    /* Crystal Trim. Crystals may be trimmed using this register setting to tune out errors, see 8.1 – IC Calibration – Crystal Oscillator Trim. */
-#define FS_XTALT_MIDRANGE       0x10
-/* offset from FS_CTRL_ID in bytes */
-#define FS_RES3_OFFSET          0x0F    /* reserved area. Please take care not to write to this area as doing so may cause the DW1000 to malfunction. */
-#define FS_RES3_LEN             (6)
+#define AES_KEY2_ID                          0x1005c              
+#define AES_KEY2_LEN                         (4U)                
+#define AES_KEY2_MASK                        0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register
+/******************************************************************************
+* @brief Bit definitions for register AES_KEY3
 **/
-#define AON_ID                  0x2C            /* Always-On register set */
-#define AON_LEN                 (12)
-/* offset from AON_ID in bytes */
-#define AON_WCFG_OFFSET         0x00    /* used to control what the DW1000 IC does as it wakes up from low-power SLEEP or DEEPSLEEPstates. */
-#define AON_WCFG_LEN            (2)
-#define AON_WCFG_MASK           0x09CB  /* access mask to AON_WCFG register*/
-#define AON_WCFG_ONW_RADC       0x0001  /* On Wake-up Run the (temperature and voltage) Analog-to-Digital Convertors */
-#define AON_WCFG_ONW_RX         0x0002  /* On Wake-up turn on the Receiver */
-#define AON_WCFG_ONW_LEUI       0x0008  /* On Wake-up load the EUI from OTP memory into Register file: 0x01 – Extended Unique Identifier. */
-#define AON_WCFG_ONW_LDC        0x0040  /* On Wake-up load configurations from the AON memory into the host interface register set */
-#define AON_WCFG_ONW_L64P       0x0080  /* On Wake-up load the Length64 receiver operating parameter set */
-#define AON_WCFG_PRES_SLEEP     0x0100  /* Preserve Sleep. This bit determines what the DW1000 does with respect to the ARXSLP and ATXSLP sleep controls */
-#define AON_WCFG_ONW_LLDE       0x0800  /* On Wake-up load the LDE microcode. */
-#define AON_WCFG_ONW_LLDO       0x1000  /* On Wake-up load the LDO tune value. */
-/* offset from AON_ID in bytes */
-#define AON_CTRL_OFFSET         0x02    /* The bits in this register in general cause direct activity within the AON block with respect to the stored AON memory */
-#define AON_CTRL_LEN            (1)
-#define AON_CTRL_MASK           0x8F    /* access mask to AON_CTRL register */
-#define AON_CTRL_RESTORE        0x01    /* When this bit is set the DW1000 will copy the user configurations from the AON memory to the host interface register set. */
-#define AON_CTRL_SAVE           0x02    /* When this bit is set the DW1000 will copy the user configurations from the host interface register set into the AON memory */
-#define AON_CTRL_UPL_CFG        0x04    /* Upload the AON block configurations to the AON  */
-#define AON_CTRL_DCA_READ       0x08    /* Direct AON memory access read */
-#define AON_CTRL_DCA_ENAB       0x80    /* Direct AON memory access enable bit */
-/* offset from AON_ID in bytes */
-#define AON_RDAT_OFFSET         0x03    /* AON Direct Access Read Data Result */
-#define AON_RDAT_LEN            (1)
-/* offset from AON_ID in bytes */
-#define AON_ADDR_OFFSET         0x04    /* AON Direct Access Address */
-#define AON_ADDR_LEN            (1)
-#define AON_ADDR_LPOSC_CAL_0    117     /* Address of low-power oscillator calibration value (lower byte) */
-#define AON_ADDR_LPOSC_CAL_1    118     /* Address of low-power oscillator calibration value (lower byte) */
+#define AES_KEY3_ID                          0x10060              
+#define AES_KEY3_LEN                         (4U)                
+#define AES_KEY3_MASK                        0xFFFFFFFFUL        
 
-/* offset from AON_ID in bytes */
-#define AON_CFG0_OFFSET             0x06    /* 32-bit configuration register for the always on block. */
-#define AON_CFG0_LEN                (4)
-#define AON_CFG0_SLEEP_EN           0x00000001UL    /* This is the sleep enable configuration bit */
-#define AON_CFG0_WAKE_PIN           0x00000002UL    /* Wake using WAKEUP pin */
-#define AON_CFG0_WAKE_SPI           0x00000004UL    /* Wake using SPI access SPICSn */
-#define AON_CFG0_WAKE_CNT           0x00000008UL    /* Wake when sleep counter elapses */
-#define AON_CFG0_LPDIV_EN           0x00000010UL    /* Low power divider enable configuration */
-#define AON_CFG0_LPCLKDIVA_MASK     0x0000FFE0UL    /* divider count for dividing the raw DW1000 XTAL oscillator frequency to set an LP clock frequency */
-#define AON_CFG0_LPCLKDIVA_SHIFT    (5)
-#define AON_CFG0_SLEEP_TIM          0xFFFF0000UL    /* Sleep time. This field configures the sleep time count elapse value */
-#define AON_CFG0_SLEEP_SHIFT        (16)
-#define AON_CFG0_SLEEP_TIM_OFFSET   2               /* In bytes */
-/* offset from AON_ID in bytes */
-#define AON_CFG1_OFFSET         0x0A
-#define AON_CFG1_LEN            (2)
-#define AON_CFG1_MASK           0x0007  /* aceess mask to AON_CFG1 */
-#define AON_CFG1_SLEEP_CEN      0x0001  /* This bit enables the sleep counter */
-#define AON_CFG1_SMXX           0x0002  /* This bit needs to be set to 0 for correct operation in the SLEEP state within the DW1000 */
-#define AON_CFG1_LPOSC_CAL      0x0004  /* This bit enables the calibration function that measures the period of the IC’s internal low powered oscillator */
-
-/****************************************************************************//**
- * @brief Bit definitions for register OTP_IF
- * Refer to section 7.2.46 Register file: 0x2D – OTP Memory Interface
+/******************************************************************************
+* @brief Bit definitions for register STS_CFG0
 **/
-#define OTP_IF_ID               0x2D            /* One Time Programmable Memory Interface */
-#define OTP_IF_LEN              (18)
-/* offset from OTP_IF_ID in bytes */
-#define OTP_WDAT                0x00            /* 32-bit register. The data value to be programmed into an OTP location  */
-#define OTP_WDAT_LEN            (4)
-/* offset from OTP_IF_ID in bytes */
-#define OTP_ADDR                0x04            /* 16-bit register used to select the address within the OTP memory block */
-#define OTP_ADDR_LEN            (2)
-#define OTP_ADDR_MASK           0x07FF          /* This 11-bit field specifies the address within OTP memory that will be accessed read or written. */
-/* offset from OTP_IF_ID in bytes */
-#define OTP_CTRL                0x06            /* used to control the operation of the OTP memory */
-#define OTP_CTRL_LEN            (2)
-#define OTP_CTRL_MASK           0x8002
-#define OTP_CTRL_OTPRDEN        0x0001          /* This bit forces the OTP into manual read mode */
-#define OTP_CTRL_OTPREAD        0x0002          /* This bit commands a read operation from the address specified in the OTP_ADDR register */
-#define OTP_CTRL_LDELOAD        0x8000          /* This bit forces a load of LDE microcode */
-#define OTP_CTRL_OTPPROG        0x0040          /* Setting this bit will cause the contents of OTP_WDAT to be written to OTP_ADDR. */
-/* offset from OTP_IF_ID in bytes */
-#define OTP_STAT                0x08
-#define OTP_STAT_LEN            (2)
-#define OTP_STAT_MASK           0x0003
-#define OTP_STAT_OTPPRGD        0x0001          /* OTP Programming Done */
-#define OTP_STAT_OTPVPOK        0x0002          /* OTP Programming Voltage OK */
-/* offset from OTP_IF_ID in bytes */
-#define OTP_RDAT                0x0A            /* 32-bit register. The data value read from an OTP location will appear here */
-#define OTP_RDAT_LEN            (4)
-/* offset from OTP_IF_ID in bytes */
-#define OTP_SRDAT               0x0E            /* 32-bit register. The data value stored in the OTP SR (0x400) location will appear here after power up */
-#define OTP_SRDAT_LEN           (4)
-/* offset from OTP_IF_ID in bytes */
-#define OTP_SF                  0x12            /*8-bit special function register used to select and load special receiver operational parameter */
-#define OTP_SF_LEN              (1)
-#define OTP_SF_MASK             0x63
-#define OTP_SF_OPS_KICK         0x01            /* This bit when set initiates a load of the operating parameter set selected by the OPS_SEL */
-#define OTP_SF_LDO_KICK         0x02            /* This bit when set initiates a load of the LDO tune code */
-#define OTP_SF_OPS_SEL_SHFT     5
-#define OTP_SF_OPS_SEL_MASK     0x60
-#define OTP_SF_OPS_SEL_L64      0x00            /* Operating parameter set selection: Length64 */
-#define OTP_SF_OPS_SEL_TIGHT    0x40            /* Operating parameter set selection: Tight */
+#define STS_CFG0_ID                           0x20000              
+#define STS_CFG0_LEN                          (4U)                
+#define STS_CFG0_MASK                         0xFFFFFFFFUL        
+#define STS_CFG0_CPS_LEN_BIT_OFFSET         (0U)                
+#define STS_CFG0_CPS_LEN_BIT_LEN            (8U)                
+#define STS_CFG0_CPS_LEN_BIT_MASK           0xffU                
 
-/****************************************************************************//**
- * @brief Bit definitions for register LDE_IF
- * Refer to section 7.2.47 Register file: 0x2E – Leading Edge Detection Interface
- * PLEASE NOTE: Other areas within the address space of Register file: 0x2E – Leading Edge Detection Interface
- * are reserved. To ensure proper operation of the LDE algorithm (i.e. to avoid loss of performance or a malfunction),
- * care must be taken not to write to any byte locations other than those defined in the sub-sections below.
+/******************************************************************************
+* @brief Bit definitions for register STS_CTRL
 **/
-#define LDE_IF_ID               0x2E            /* Leading edge detection control block */
-#define LDE_IF_LEN              (0)
-/* offset from LDE_IF_ID in bytes */
-#define LDE_THRESH_OFFSET       0x0000  /* 16-bit status register reporting the threshold that was used to find the first path */
-#define LDE_THRESH_LEN          (2)
-/* offset from LDE_IF_ID in bytes */
-#define LDE_CFG1_OFFSET         0x0806  /*8-bit configuration register*/
-#define LDE_CFG1_LEN            (1)
-#define LDE_CFG1_NSTDEV_MASK    0x1F    /* Number of Standard Deviations mask. */
-#define LDE_CFG1_PMULT_MASK     0xE0    /* Peak Multiplier mask. */
-/* offset from LDE_IF_ID in bytes */
-#define LDE_PPINDX_OFFSET       0x1000  /* reporting the position within the accumulator that the LDE algorithm has determined to contain the maximum */
-#define LDE_PPINDX_LEN          (2)
-/* offset from LDE_IF_ID in bytes */
-#define LDE_PPAMPL_OFFSET       0x1002  /* reporting the magnitude of the peak signal seen in the accumulator data memory */
-#define LDE_PPAMPL_LEN          (2)
-/* offset from LDE_IF_ID in bytes */
-#define LDE_RXANTD_OFFSET       0x1804  /* 16-bit configuration register for setting the receive antenna delay */
-#define LDE_RXANTD_LEN          (2)
-/* offset from LDE_IF_ID in bytes */
-#define LDE_CFG2_OFFSET         0x1806  /* 16-bit LDE configuration tuning register */
-#define LDE_CFG2_LEN            (2)
-/* offset from LDE_IF_ID in bytes */
-#define LDE_REPC_OFFSET         0x2804  /* 16-bit configuration register for setting the replica avoidance coefficient */
-#define LDE_REPC_LEN            (2)
-#define LDE_REPC_PCODE_1        0x5998
-#define LDE_REPC_PCODE_2        0x5998
-#define LDE_REPC_PCODE_3        0x51EA
-#define LDE_REPC_PCODE_4        0x428E
-#define LDE_REPC_PCODE_5        0x451E
-#define LDE_REPC_PCODE_6        0x2E14
-#define LDE_REPC_PCODE_7        0x8000
-#define LDE_REPC_PCODE_8        0x51EA
-#define LDE_REPC_PCODE_9        0x28F4
-#define LDE_REPC_PCODE_10       0x3332
-#define LDE_REPC_PCODE_11       0x3AE0
-#define LDE_REPC_PCODE_12       0x3D70
-#define LDE_REPC_PCODE_13       0x3AE0
-#define LDE_REPC_PCODE_14       0x35C2
-#define LDE_REPC_PCODE_15       0x2B84
-#define LDE_REPC_PCODE_16       0x35C2
-#define LDE_REPC_PCODE_17       0x3332
-#define LDE_REPC_PCODE_18       0x35C2
-#define LDE_REPC_PCODE_19       0x35C2
-#define LDE_REPC_PCODE_20       0x47AE
-#define LDE_REPC_PCODE_21       0x3AE0
-#define LDE_REPC_PCODE_22       0x3850
-#define LDE_REPC_PCODE_23       0x30A2
-#define LDE_REPC_PCODE_24       0x3850
+#define STS_CTRL_ID                           0x20004              
+#define STS_CTRL_LEN                          (4U)                
+#define STS_CTRL_MASK                         0xFFFFFFFFUL        
+#define STS_CTRL_RST_LAST_BIT_OFFSET (1U)                
+#define STS_CTRL_RST_LAST_BIT_LEN (1U)                
+#define STS_CTRL_RST_LAST_BIT_MASK 0x2U                 
+#define STS_CTRL_LOAD_IV_BIT_OFFSET        (0U)                
+#define STS_CTRL_LOAD_IV_BIT_LEN           (1U)                
+#define STS_CTRL_LOAD_IV_BIT_MASK          0x1U                 
 
-/****************************************************************************//**
- * @brief Bit definitions for register DIG_DIAG
- * Digital Diagnostics interface.
- * It contains a number of sub-registers that give diagnostics information.
+/******************************************************************************
+* @brief Bit definitions for register STS_STS
 **/
-#define DIG_DIAG_ID             0x2F        /* Digital Diagnostics Interface */
-#define DIG_DIAG_LEN            (41)
+#define STS_STS_ID                            0x20008              
+#define STS_STS_LEN                           (4U)                
+#define STS_STS_MASK                          0xFFFFFFFFUL        
+#define STS_STS_ACC_QUAL_BIT_OFFSET           (0U)                
+#define STS_STS_ACC_QUAL_BIT_LEN              (12U)               
+#define STS_STS_ACC_QUAL_BIT_MASK             0xfffU               
 
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_CTRL_OFFSET         0x00        /* Event Counter Control */
-#define EVC_CTRL_LEN            (4)
-#define EVC_CTRL_MASK           0x00000003UL/* access mask to Register for bits should always be set to zero to avoid any malfunction of the device. */
-#define EVC_EN                  0x00000001UL/* Event Counters Enable bit */
-#define EVC_CLR                 0x00000002UL
-
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_PHE_OFFSET          0x04        /* PHR Error Event Counter */
-#define EVC_PHE_LEN             (2)
-#define EVC_PHE_MASK            0x0FFF
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_RSE_OFFSET          0x06        /* Reed Solomon decoder (Frame Sync Loss) Error Event Counter */
-#define EVC_RSE_LEN             (2)
-#define EVC_RSE_MASK            0x0FFF
-
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_FCG_OFFSET          0x08        /* The EVC_FCG field is a 12-bit counter of the frames received with good CRC/FCS sequence. */
-#define EVC_FCG_LEN             (2)
-#define EVC_FCG_MASK            0x0FFF
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_FCE_OFFSET          0x0A        /* The EVC_FCE field is a 12-bit counter of the frames received with bad CRC/FCS sequence. */
-#define EVC_FCE_LEN             (2)
-#define EVC_FCE_MASK            0x0FFF
-
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_FFR_OFFSET          0x0C        /* The EVC_FFR field is a 12-bit counter of the frames rejected by the receive frame filtering function. */
-#define EVC_FFR_LEN             (2)
-#define EVC_FFR_MASK            0x0FFF
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_OVR_OFFSET          0x0E        /* The EVC_OVR field is a 12-bit counter of receive overrun events */
-#define EVC_OVR_LEN             (2)
-#define EVC_OVR_MASK            0x0FFF
-
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_STO_OFFSET          0x10        /* The EVC_STO field is a 12-bit counter of SFD Timeout Error events */
-#define EVC_OVR_LEN             (2)
-#define EVC_OVR_MASK            0x0FFF
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_PTO_OFFSET          0x12        /* The EVC_PTO field is a 12-bit counter of Preamble detection Timeout events */
-#define EVC_PTO_LEN             (2)
-#define EVC_PTO_MASK            0x0FFF
-
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_FWTO_OFFSET         0x14        /* The EVC_FWTO field is a 12-bit counter of receive frame wait timeout events */
-#define EVC_FWTO_LEN            (2)
-#define EVC_FWTO_MASK           0x0FFF
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_TXFS_OFFSET         0x16        /* The EVC_TXFS field is a 12-bit counter of transmit frames sent. This is incremented every time a frame is sent */
-#define EVC_TXFS_LEN            (2)
-#define EVC_TXFS_MASK           0x0FFF
-
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_HPW_OFFSET          0x18        /* The EVC_HPW field is a 12-bit counter of “Half Period Warnings”. */
-#define EVC_HPW_LEN             (2)
-#define EVC_HPW_MASK            0x0FFF
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_TPW_OFFSET          0x1A        /* The EVC_TPW field is a 12-bit counter of “Transmitter Power-Up Warnings”. */
-#define EVC_TPW_LEN             (2)
-#define EVC_TPW_MASK            0x0FFF
-
-/* offset from DIG_DIAG_ID in bytes */
-#define EVC_RES1_OFFSET         0x1C        /* Please take care not to write to this register as doing so may cause the DW1000 to malfunction. */
-
-/* offset from DIG_DIAG_ID in bytes */
-#define DIAG_TMC_OFFSET         0x24
-#define DIAG_TMC_LEN            (2)
-#define DIAG_TMC_MASK           0x0010
-#define DIAG_TMC_TX_PSTM        0x0010      /* This test mode is provided to help support regulatory approvals spectral testing. When the TX_PSTM bit is set it enables a repeating transmission of the data from the TX_BUFFER */
-
-
-/****************************************************************************//**
- * @brief Bit definitions for register 0x30-0x35
- * Please take care not to write to these registers as doing so may cause the DW1000 to malfunction.
+/******************************************************************************
+* @brief Bit definitions for register STS_KEY0
 **/
-#define REG_30_ID_RESERVED      0x30
-#define REG_31_ID_RESERVED      0x31
-#define REG_32_ID_RESERVED      0x32
-#define REG_33_ID_RESERVED      0x33
-#define REG_34_ID_RESERVED      0x34
-#define REG_35_ID_RESERVED      0x35
+#define STS_KEY0_ID                           0x2000c              
+#define STS_KEY0_LEN                          (4U)                
+#define STS_KEY0_MASK                         0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register PMSC
+/******************************************************************************
+* @brief Bit definitions for register STS_KEY1
 **/
-#define PMSC_ID                 0x36            /* Power Management System Control Block */
-#define PMSC_LEN                (48)
-/* offset from PMSC_ID in bytes */
-#define PMSC_CTRL0_OFFSET       0x00
-#define PMSC_CTRL0_LEN          (4)
-#define PMSC_CTRL0_MASK         0xF18F847FUL    /* access mask to register PMSC_CTRL0 */
-#define PMSC_CTRL0_SYSCLKS_AUTO 0x00000000UL    /* The system clock will run off the 19.2 MHz XTI clock until the PLL is calibrated and locked, then it will switch over the 125 MHz PLL clock */
-#define PMSC_CTRL0_SYSCLKS_19M  0x00000001UL    /* Force system clock to be the 19.2 MHz XTI clock. */
-#define PMSC_CTRL0_SYSCLKS_125M 0x00000002UL    /* Force system clock to the 125 MHz PLL clock. */
-#define PMSC_CTRL0_RXCLKS_AUTO  0x00000000UL    /* The RX clock will be disabled until it is required for an RX operation */
-#define PMSC_CTRL0_RXCLKS_19M   0x00000004UL    /* Force RX clock enable and sourced clock from the 19.2 MHz XTI clock */
-#define PMSC_CTRL0_RXCLKS_125M  0x00000008UL    /* Force RX clock enable and sourced from the 125 MHz PLL clock */
-#define PMSC_CTRL0_RXCLKS_OFF   0x0000000CUL    /* Force RX clock off. */
-#define PMSC_CTRL0_TXCLKS_AUTO  0x00000000UL    /* The TX clock will be disabled until it is required for a TX operation */
-#define PMSC_CTRL0_TXCLKS_19M   0x00000010UL    /* Force TX clock enable and sourced clock from the 19.2 MHz XTI clock */
-#define PMSC_CTRL0_TXCLKS_125M  0x00000020UL    /* Force TX clock enable and sourced from the 125 MHz PLL clock */
-#define PMSC_CTRL0_TXCLKS_OFF   0x00000030UL    /* Force TX clock off */
-#define PMSC_CTRL0_FACE         0x00000040UL    /* Force Accumulator Clock Enable */
-#define PMSC_CTRL0_GPDCE        0x00040000UL    /* GPIO De-bounce Clock Enable */
-#define PMSC_CTRL0_KHZCLEN      0x00800000UL    /* Kilohertz Clock Enable */
-#define PMSC_CTRL0_PLL2_SEQ_EN  0x01000000UL    /* Enable PLL2 on/off sequencing by SNIFF mode */
-#define PMSC_CTRL0_SOFTRESET_OFFSET 3           /* In bytes */
-#define PMSC_CTRL0_RESET_ALL    0x00            /* Assuming only 4th byte of the register is read */
-#define PMSC_CTRL0_RESET_RX     0xE0            /* Assuming only 4th byte of the register is read */
-#define PMSC_CTRL0_RESET_CLEAR  0xF0            /* Assuming only 4th byte of the register is read */
-/* offset from PMSC_ID in bytes */
-#define PMSC_CTRL1_OFFSET       0x04
-#define PMSC_CTRL1_LEN          (4)
-#define PMSC_CTRL1_MASK         0xFC02F802UL    /* access mask to register PMSC_CTRL1 */
-#define PMSC_CTRL1_ARX2INIT     0x00000002UL    /* Automatic transition from receive mode into the INIT state */
-#define PMSC_CTRL1_ATXSLP       0x00000800UL    /* If this bit is set then the DW1000 will automatically transition into SLEEP or DEEPSLEEP mode after transmission of a frame */
-#define PMSC_CTRL1_ARXSLP       0x00001000UL    /* this bit is set then the DW1000 will automatically transition into SLEEP mode after a receive attempt */
-#define PMSC_CTRL1_SNOZE        0x00002000UL    /* Snooze Enable */
-#define PMSC_CTRL1_SNOZR        0x00004000UL    /* The SNOZR bit is set to allow the snooze timer to repeat twice */
-#define PMSC_CTRL1_PLLSYN       0x00008000UL    /* This enables a special 1 GHz clock used for some external SYNC modes */
-#define PMSC_CTRL1_LDERUNE      0x00020000UL    /* This bit enables the running of the LDE algorithm */
-#define PMSC_CTRL1_KHZCLKDIV_MASK   0xFC000000UL    /* Kilohertz clock divisor */
-#define PMSC_CTRL1_PKTSEQ_DISABLE   0x00        /* writing this to PMSC CONTROL 1 register (bits 10-3) disables PMSC control of analog RF subsystems */
-#define PMSC_CTRL1_PKTSEQ_ENABLE    0xE7        /* writing this to PMSC CONTROL 1 register (bits 10-3) enables PMSC control of analog RF subsystems */
-/* offset from PMSC_ID in bytes */
-#define PMSC_RES1_OFFSET        0x08
-/* offset from PMSC_ID in bytes */
-#define PMSC_SNOZT_OFFSET       0x0C            /* PMSC Snooze Time Register */
-#define PMSC_SNOZT_LEN          (1)
-/* offset from PMSC_ID in bytes */
-#define PMSC_RES2_OFFSET        0x10
-/* offset from PMSC_ID in bytes */
-#define PMSC_RES3_OFFSET        0x24
-/* offset from PMSC_ID in bytes */
-#define PMSC_TXFINESEQ_OFFSET   0x26
-#define PMSC_TXFINESEQ_DISABLE  0x0             /* Writing this disables fine grain sequencing in the transmitter */
-#define PMSC_TXFINESEQ_ENABLE   0x0B74          /* Writing this enables fine grain sequencing in the transmitter */
-/* offset from PMSC_ID in bytes */
-#define PMSC_LEDC_OFFSET        0x28
-#define PMSC_LEDC_LEN           (4)
-#define PMSC_LEDC_MASK          0x000001FFUL    /* 32-bit LED control register. */
-#define PMSC_LEDC_BLINK_TIM_MASK 0x000000FFUL   /* This field determines how long the LEDs remain lit after an event that causes them to be set on. */
-#define PMSC_LEDC_BLNKEN        0x00000100UL    /* Blink Enable. When this bit is set to 1 the LED blink feature is enabled. */
-/* Default blink time. Blink time is expressed in multiples of 14 ms. The value defined here is ~225 ms. */
-#define PMSC_LEDC_BLINK_TIME_DEF 0x10
-/* Command a blink of all LEDs */
-#define PMSC_LEDC_BLINK_NOW_ALL 0x000F0000UL
+#define STS_KEY1_ID                           0x20010              
+#define STS_KEY1_LEN                          (4U)                
+#define STS_KEY1_MASK                         0xFFFFFFFFUL        
 
-/****************************************************************************//**
- * @brief Bit definitions for register 0x37-0x3F
- * Please take care not to write to these registers as doing so may cause the DW1000 to malfunction.
+/******************************************************************************
+* @brief Bit definitions for register STS_KEY2
 **/
-#define REG_37_ID_RESERVED      0x37
-#define REG_38_ID_RESERVED      0x38
-#define REG_39_ID_RESERVED      0x39
-#define REG_3A_ID_RESERVED      0x3A
-#define REG_3B_ID_RESERVED      0x3B
-#define REG_3C_ID_RESERVED      0x3C
-#define REG_3D_ID_RESERVED      0x3D
-#define REG_3E_ID_RESERVED      0x3E
-#define REG_3F_ID_RESERVED      0x3F
+#define STS_KEY2_ID                           0x20014              
+#define STS_KEY2_LEN                          (4U)                
+#define STS_KEY2_MASK                         0xFFFFFFFFUL        
 
-/* END DW1000 REGISTER DEFINITION */
+/******************************************************************************
+* @brief Bit definitions for register STS_KEY3
+**/
+#define STS_KEY3_ID                           0x20018              
+#define STS_KEY3_LEN                          (4U)                
+#define STS_KEY3_MASK                         0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_IV0
+**/
+#define STS_IV0_ID                            0x2001c              
+#define STS_IV0_LEN                           (4U)                
+#define STS_IV0_MASK                          0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_IV1
+**/
+#define STS_IV1_ID                            0x20020              
+#define STS_IV1_LEN                           (4U)                
+#define STS_IV1_MASK                          0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_IV2
+**/
+#define STS_IV2_ID                            0x20024              
+#define STS_IV2_LEN                           (4U)                
+#define STS_IV2_MASK                          0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_IV3
+**/
+#define STS_IV3_ID                            0x20028              
+#define STS_IV3_LEN                           (4U)                
+#define STS_IV3_MASK                          0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register LCSS_MARGIN
+**/
+#define LCSS_MARGIN_ID                       0x20034              
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_CFG
+**/
+#define DGC_CFG_ID                           0x30018              
+#define DGC_CFG_LEN                          (4U)                
+#define DGC_CFG_MASK                         0xFFFFFFFFUL    
+#define DGC_CFG_THR_64_BIT_OFFSET            (9U)                
+#define DGC_CFG_THR_64_BIT_LEN               (6U)                
+#define DGC_CFG_THR_64_BIT_MASK              0x7e00U  
+#define DGC_CFG_RX_TUNE_EN_BIT_OFFSET        (0U)                
+#define DGC_CFG_RX_TUNE_EN_BIT_LEN           (1U)                
+#define DGC_CFG_RX_TUNE_EN_BIT_MASK          0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_CFG0
+**/
+#define DGC_CFG0_ID              0x3001c              
+#define DGC_CFG0_LEN             (4U)                
+#define DGC_CFG0_MASK            0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_CFG1
+**/
+#define DGC_CFG1_ID             0x30020              
+#define DGC_CFG1_LEN            (4U)                
+#define DGC_CFG1_MASK           0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_LUT_0_CFG
+**/
+#define DGC_LUT_0_CFG_ID                 0x30038              
+#define DGC_LUT_0_CFG_LEN                (4U)                
+#define DGC_LUT_0_CFG_MASK               0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_LUT_1_CFG
+**/
+#define DGC_LUT_1_CFG_ID                 0x3003c              
+#define DGC_LUT_1_CFG_LEN                (4U)                
+#define DGC_LUT_1_CFG_MASK               0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_LUT_2_CFG
+**/
+#define DGC_LUT_2_CFG_ID                 0x30040              
+#define DGC_LUT_2_CFG_LEN                (4U)                
+#define DGC_LUT_2_CFG_MASK               0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_LUT_3_CFG
+**/
+#define DGC_LUT_3_CFG_ID                 0x30044              
+#define DGC_LUT_3_CFG_LEN                (4U)                
+#define DGC_LUT_3_CFG_MASK               0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_LUT_4_CFG
+**/
+#define DGC_LUT_4_CFG_ID                 0x30048              
+#define DGC_LUT_4_CFG_LEN                (4U)                
+#define DGC_LUT_4_CFG_MASK               0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_LUT_5_CFG
+**/
+#define DGC_LUT_5_CFG_ID                 0x3004c              
+#define DGC_LUT_5_CFG_LEN                (4U)                
+#define DGC_LUT_5_CFG_MASK               0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register DGC_LUT_6_CFG
+**/
+#define DGC_LUT_6_CFG_ID                 0x30050              
+#define DGC_LUT_6_CFG_LEN                (4U)                
+#define DGC_LUT_6_CFG_MASK               0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register EC_CTRL
+**/
+#define EC_CTRL_ID                           0x40000              
+#define EC_CTRL_LEN                          (4U)                
+#define EC_CTRL_MASK                         0xFFFFFFFFUL        
+#define EC_CTRL_OSTR_MODE_BIT_OFFSET         (11U)               
+#define EC_CTRL_OSTR_MODE_BIT_LEN            (1U)                
+#define EC_CTRL_OSTR_MODE_BIT_MASK           0x800U               
+#define EC_CTRL_OSTS_WAIT_BIT_OFFSET         (3U)                
+#define EC_CTRL_OSTS_WAIT_BIT_LEN            (8U)                
+#define EC_CTRL_OSTS_WAIT_BIT_MASK           0x7f8U               
+
+/******************************************************************************
+* @brief Bit definitions for register RX_CAL_CFG
+**/
+#define RX_CAL_CFG_ID                       0x4000c              
+#define RX_CAL_CFG_LEN                      (4U)                
+#define RX_CAL_CFG_MASK                     0xFFFFFFFFUL        
+#define RX_CAL_CFG_COMP_DLY_BIT_OFFSET      (16U)               
+#define RX_CAL_CFG_COMP_DLY_BIT_LEN         (4U)                
+#define RX_CAL_CFG_COMP_DLY_BIT_MASK        0xf0000UL            
+#define RX_CAL_CFG_CAL_EN_BIT_OFFSET        (4U)                
+#define RX_CAL_CFG_CAL_EN_BIT_LEN           (1U)                
+#define RX_CAL_CFG_CAL_EN_BIT_MASK          0x10U                
+#define RX_CAL_CFG_CAL_MODE_BIT_OFFSET      (0U)                
+#define RX_CAL_CFG_CAL_MODE_BIT_LEN         (2U)                
+#define RX_CAL_CFG_CAL_MODE_BIT_MASK        0x3U                 
+
+
+/******************************************************************************
+* @brief Bit definitions for register RX_CAL_RESI
+**/
+#define RX_CAL_RESI_ID                       0x40014              
+#define RX_CAL_RESI_LEN                      (4U)                
+#define RX_CAL_RESI_MASK                     0xFFFFFFFFUL        
+
+
+/******************************************************************************
+* @brief Bit definitions for register RX_CAL_RESQ
+**/
+#define RX_CAL_RESQ_ID                       0x4001c              
+#define RX_CAL_RESQ_LEN                      (4U)                
+#define RX_CAL_RESQ_MASK                     0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register RX_CAL_STS
+**/
+#define RX_CAL_STS_ID                       0x40020              
+#define RX_CAL_STS_LEN                      (4U)                
+#define RX_CAL_STS_MASK                     0xFFFFFFFFUL        
+
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_MODE
+**/
+#define GPIO_MODE_ID                         0x50000              
+#define GPIO_MODE_LEN                        (4U)                
+#define GPIO_MODE_MASK                       0xFFFFFFFFUL        
+#define GPIO_MODE_MSGP8_MODE_BIT_OFFSET      (24U)               
+#define GPIO_MODE_MSGP8_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP8_MODE_BIT_MASK        0x7000000UL          
+#define GPIO_MODE_MSGP7_MODE_BIT_OFFSET      (21U)               
+#define GPIO_MODE_MSGP7_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP7_MODE_BIT_MASK        0xe00000UL           
+#define GPIO_MODE_MSGP6_MODE_BIT_OFFSET      (18U)               
+#define GPIO_MODE_MSGP6_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP6_MODE_BIT_MASK        0x1c0000UL           
+#define GPIO_MODE_MSGP5_MODE_BIT_OFFSET      (15U)               
+#define GPIO_MODE_MSGP5_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP5_MODE_BIT_MASK        0x38000UL            
+#define GPIO_MODE_MSGP4_MODE_BIT_OFFSET      (12U)               
+#define GPIO_MODE_MSGP4_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP4_MODE_BIT_MASK        0x7000U              
+#define GPIO_MODE_MSGP3_MODE_BIT_OFFSET      (9U)                
+#define GPIO_MODE_MSGP3_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP3_MODE_BIT_MASK        0xe00U               
+#define GPIO_MODE_MSGP2_MODE_BIT_OFFSET      (6U)                
+#define GPIO_MODE_MSGP2_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP2_MODE_BIT_MASK        0x1c0U               
+#define GPIO_MODE_MSGP1_MODE_BIT_OFFSET      (3U)                
+#define GPIO_MODE_MSGP1_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP1_MODE_BIT_MASK        0x38U                
+#define GPIO_MODE_MSGP0_MODE_BIT_OFFSET      (0U)                
+#define GPIO_MODE_MSGP0_MODE_BIT_LEN         (3U)                
+#define GPIO_MODE_MSGP0_MODE_BIT_MASK        0x7U                 
+
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_DIR
+**/
+#define GPIO_DIR_ID                          0x50008              
+#define GPIO_DIR_LEN                         (4U)                
+#define GPIO_DIR_MASK                        0xFFFFFFFFUL        
+#define GPIO_DIR_GDP8_BIT_OFFSET        (8U)                
+#define GPIO_DIR_GDP8_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP8_BIT_MASK          0x100U               
+#define GPIO_DIR_GDP7_BIT_OFFSET        (7U)                
+#define GPIO_DIR_GDP7_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP7_BIT_MASK          0x80U                
+#define GPIO_DIR_GDP6_BIT_OFFSET        (6U)                
+#define GPIO_DIR_GDP6_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP6_BIT_MASK          0x40U                
+#define GPIO_DIR_GDP5_BIT_OFFSET        (5U)                
+#define GPIO_DIR_GDP5_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP5_BIT_MASK          0x20U                
+#define GPIO_DIR_GDP4_BIT_OFFSET        (4U)                
+#define GPIO_DIR_GDP4_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP4_BIT_MASK          0x10U                
+#define GPIO_DIR_GDP3_BIT_OFFSET        (3U)                
+#define GPIO_DIR_GDP3_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP3_BIT_MASK          0x8U                 
+#define GPIO_DIR_GDP2_BIT_OFFSET        (2U)                
+#define GPIO_DIR_GDP2_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP2_BIT_MASK          0x4U                 
+#define GPIO_DIR_GDP1_BIT_OFFSET        (1U)                
+#define GPIO_DIR_GDP1_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP1_BIT_MASK          0x2U                 
+#define GPIO_DIR_GDP0_BIT_OFFSET        (0U)                
+#define GPIO_DIR_GDP0_BIT_LEN           (1U)                
+#define GPIO_DIR_GDP0_BIT_MASK          0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_OUT
+**/
+#define GPIO_OUT_ID                          0x5000c              
+#define GPIO_OUT_LEN                         (4U)                
+#define GPIO_OUT_MASK                        0xFFFFFFFFUL        
+#define GPIO_OUT_GOP8_BIT_OFFSET        (8U)                
+#define GPIO_OUT_GOP8_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP8_BIT_MASK          0x100U               
+#define GPIO_OUT_GOP7_BIT_OFFSET        (7U)                
+#define GPIO_OUT_GOP7_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP7_BIT_MASK          0x80U                
+#define GPIO_OUT_GOP6_BIT_OFFSET        (6U)                
+#define GPIO_OUT_GOP6_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP6_BIT_MASK          0x40U                
+#define GPIO_OUT_GOP5_BIT_OFFSET        (5U)                
+#define GPIO_OUT_GOP5_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP5_BIT_MASK          0x20U                
+#define GPIO_OUT_GOP4_BIT_OFFSET        (4U)                
+#define GPIO_OUT_GOP4_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP4_BIT_MASK          0x10U                
+#define GPIO_OUT_GOP3_BIT_OFFSET        (3U)                
+#define GPIO_OUT_GOP3_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP3_BIT_MASK          0x8U                 
+#define GPIO_OUT_GOP2_BIT_OFFSET        (2U)                
+#define GPIO_OUT_GOP2_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP2_BIT_MASK          0x4U                 
+#define GPIO_OUT_GOP1_BIT_OFFSET        (1U)                
+#define GPIO_OUT_GOP1_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP1_BIT_MASK          0x2U                 
+#define GPIO_OUT_GOP0_BIT_OFFSET        (0U)                
+#define GPIO_OUT_GOP0_BIT_LEN           (1U)                
+#define GPIO_OUT_GOP0_BIT_MASK          0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_IRQE
+**/
+#define GPIO_IRQE_ID                       0x50010              
+#define GPIO_IRQE_LEN                      (4U)                
+#define GPIO_IRQE_MASK                     0xFFFFFFFFUL        
+#define GPIO_IRQE_GIRQE8_BIT_OFFSET  (8U)                
+#define GPIO_IRQE_GIRQE8_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE8_BIT_MASK    0x100U               
+#define GPIO_IRQE_GIRQE7_BIT_OFFSET  (7U)                
+#define GPIO_IRQE_GIRQE7_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE7_BIT_MASK    0x80U                
+#define GPIO_IRQE_GIRQE6_BIT_OFFSET  (6U)                
+#define GPIO_IRQE_GIRQE6_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE6_BIT_MASK    0x40U                
+#define GPIO_IRQE_GIRQE5_BIT_OFFSET  (5U)                
+#define GPIO_IRQE_GIRQE5_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE5_BIT_MASK    0x20U                
+#define GPIO_IRQE_GIRQE4_BIT_OFFSET  (4U)                
+#define GPIO_IRQE_GIRQE4_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE4_BIT_MASK    0x10U                
+#define GPIO_IRQE_GIRQE3_BIT_OFFSET  (3U)                
+#define GPIO_IRQE_GIRQE3_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE3_BIT_MASK    0x8U                 
+#define GPIO_IRQE_GIRQE2_BIT_OFFSET  (2U)                
+#define GPIO_IRQE_GIRQE2_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE2_BIT_MASK    0x4U                 
+#define GPIO_IRQE_GIRQE1_BIT_OFFSET  (1U)                
+#define GPIO_IRQE_GIRQE1_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE1_BIT_MASK    0x2U                 
+#define GPIO_IRQE_GIRQE0_BIT_OFFSET  (0U)                
+#define GPIO_IRQE_GIRQE0_BIT_LEN     (1U)                
+#define GPIO_IRQE_GIRQE0_BIT_MASK    0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_ISTS
+**/
+#define GPIO_ISTS_ID                   0x50014              
+#define GPIO_ISTS_LEN                  (4U)                
+#define GPIO_ISTS_MASK                 0xFFFFFFFFUL        
+#define GPIO_ISTS_GISTS8_BIT_OFFSET (8U)                
+#define GPIO_ISTS_GISTS8_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS8_BIT_MASK 0x100U               
+#define GPIO_ISTS_GISTS7_BIT_OFFSET (7U)                
+#define GPIO_ISTS_GISTS7_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS7_BIT_MASK 0x80U                
+#define GPIO_ISTS_GISTS6_BIT_OFFSET (6U)                
+#define GPIO_ISTS_GISTS6_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS6_BIT_MASK 0x40U                
+#define GPIO_ISTS_GISTS5_BIT_OFFSET (5U)                
+#define GPIO_ISTS_GISTS5_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS5_BIT_MASK 0x20U                
+#define GPIO_ISTS_GISTS4_BIT_OFFSET (4U)                
+#define GPIO_ISTS_GISTS4_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS4_BIT_MASK 0x10U                
+#define GPIO_ISTS_GISTS3_BIT_OFFSET (3U)                
+#define GPIO_ISTS_GISTS3_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS3_BIT_MASK 0x8U                 
+#define GPIO_ISTS_GISTS2_BIT_OFFSET (2U)                
+#define GPIO_ISTS_GISTS2_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS2_BIT_MASK 0x4U                 
+#define GPIO_ISTS_GISTS1_BIT_OFFSET (1U)                
+#define GPIO_ISTS_GISTS1_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS1_BIT_MASK 0x2U                 
+#define GPIO_ISTS_GISTS0_BIT_OFFSET (0U)                
+#define GPIO_ISTS_GISTS0_BIT_LEN (1U)                
+#define GPIO_ISTS_GISTS0_BIT_MASK 0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_ISEN
+**/
+#define GPIO_ISEN_ID                     0x50018              
+#define GPIO_ISEN_LEN                    (4U)                
+#define GPIO_ISEN_MASK                   0xFFFFFFFFUL        
+#define GPIO_ISEN_GISEN8_BIT_OFFSET (8U)                
+#define GPIO_ISEN_GISEN8_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN8_BIT_MASK 0x100U               
+#define GPIO_ISEN_GISEN7_BIT_OFFSET (7U)                
+#define GPIO_ISEN_GISEN7_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN7_BIT_MASK 0x80U                
+#define GPIO_ISEN_GISEN6_BIT_OFFSET (6U)                
+#define GPIO_ISEN_GISEN6_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN6_BIT_MASK 0x40U                
+#define GPIO_ISEN_GISEN5_BIT_OFFSET (5U)                
+#define GPIO_ISEN_GISEN5_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN5_BIT_MASK 0x20U                
+#define GPIO_ISEN_GISEN4_BIT_OFFSET (4U)                
+#define GPIO_ISEN_GISEN4_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN4_BIT_MASK 0x10U                
+#define GPIO_ISEN_GISEN3_BIT_OFFSET (3U)                
+#define GPIO_ISEN_GISEN3_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN3_BIT_MASK 0x8U                 
+#define GPIO_ISEN_GISEN2_BIT_OFFSET (2U)                
+#define GPIO_ISEN_GISEN2_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN2_BIT_MASK 0x4U                 
+#define GPIO_ISEN_GISEN1_BIT_OFFSET (1U)                
+#define GPIO_ISEN_GISEN1_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN1_BIT_MASK 0x2U                 
+#define GPIO_ISEN_GISEN0_BIT_OFFSET (0U)                
+#define GPIO_ISEN_GISEN0_BIT_LEN (1U)                
+#define GPIO_ISEN_GISEN0_BIT_MASK 0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_IMODE
+**/
+#define GPIO_IMODE_ID                     0x5001c              
+#define GPIO_IMODE_LEN                    (4U)                
+#define GPIO_IMODE_MASK                   0xFFFFFFFFUL        
+#define GPIO_IMODE_GIMOD8_BIT_OFFSET (8U)                
+#define GPIO_IMODE_GIMOD8_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD8_BIT_MASK 0x100U               
+#define GPIO_IMODE_GIMOD7_BIT_OFFSET (7U)                
+#define GPIO_IMODE_GIMOD7_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD7_BIT_MASK 0x80U                
+#define GPIO_IMODE_GIMOD6_BIT_OFFSET (6U)                
+#define GPIO_IMODE_GIMOD6_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD6_BIT_MASK 0x40U                
+#define GPIO_IMODE_GIMOD5_BIT_OFFSET (5U)                
+#define GPIO_IMODE_GIMOD5_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD5_BIT_MASK 0x20U                
+#define GPIO_IMODE_GIMOD4_BIT_OFFSET (4U)                
+#define GPIO_IMODE_GIMOD4_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD4_BIT_MASK 0x10U                
+#define GPIO_IMODE_GIMOD3_BIT_OFFSET (3U)                
+#define GPIO_IMODE_GIMOD3_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD3_BIT_MASK 0x8U                 
+#define GPIO_IMODE_GIMOD2_BIT_OFFSET (2U)                
+#define GPIO_IMODE_GIMOD2_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD2_BIT_MASK 0x4U                 
+#define GPIO_IMODE_GIMOD1_BIT_OFFSET (1U)                
+#define GPIO_IMODE_GIMOD1_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD1_BIT_MASK 0x2U                 
+#define GPIO_IMODE_GIMOD0_BIT_OFFSET (0U)                
+#define GPIO_IMODE_GIMOD0_BIT_LEN (1U)                
+#define GPIO_IMODE_GIMOD0_BIT_MASK 0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_IBES
+**/
+#define GPIO_IBES_ID                    0x50020              
+#define GPIO_IBES_LEN                   (4U)                
+#define GPIO_IBES_MASK                  0xFFFFFFFFUL        
+#define GPIO_IBES_GIBES8_BIT_OFFSET (8U)                
+#define GPIO_IBES_GIBES8_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES8_BIT_MASK 0x100U               
+#define GPIO_IBES_GIBES7_BIT_OFFSET (7U)                
+#define GPIO_IBES_GIBES7_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES7_BIT_MASK 0x80U                
+#define GPIO_IBES_GIBES6_BIT_OFFSET (6U)                
+#define GPIO_IBES_GIBES6_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES6_BIT_MASK 0x40U                
+#define GPIO_IBES_GIBES5_BIT_OFFSET (5U)                
+#define GPIO_IBES_GIBES5_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES5_BIT_MASK 0x20U                
+#define GPIO_IBES_GIBES4_BIT_OFFSET (4U)                
+#define GPIO_IBES_GIBES4_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES4_BIT_MASK 0x10U                
+#define GPIO_IBES_GIBES3_BIT_OFFSET (3U)                
+#define GPIO_IBES_GIBES3_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES3_BIT_MASK 0x8U                 
+#define GPIO_IBES_GIBES2_BIT_OFFSET (2U)                
+#define GPIO_IBES_GIBES2_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES2_BIT_MASK 0x4U                 
+#define GPIO_IBES_GIBES1_BIT_OFFSET (1U)                
+#define GPIO_IBES_GIBES1_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES1_BIT_MASK 0x2U                 
+#define GPIO_IBES_GIBES0_BIT_OFFSET (0U)                
+#define GPIO_IBES_GIBES0_BIT_LEN (1U)                
+#define GPIO_IBES_GIBES0_BIT_MASK 0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_ICLR
+**/
+#define GPIO_ICLR_ID                      0x50024              
+#define GPIO_ICLR_LEN                     (4U)                
+#define GPIO_ICLR_MASK                    0xFFFFFFFFUL        
+#define GPIO_ICLR_GICLR8_BIT_OFFSET (8U)                
+#define GPIO_ICLR_GICLR8_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR8_BIT_MASK  0x100U               
+#define GPIO_ICLR_GICLR7_BIT_OFFSET (7U)                
+#define GPIO_ICLR_GICLR7_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR7_BIT_MASK  0x80U                
+#define GPIO_ICLR_GICLR6_BIT_OFFSET (6U)                
+#define GPIO_ICLR_GICLR6_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR6_BIT_MASK  0x40U                
+#define GPIO_ICLR_GICLR5_BIT_OFFSET (5U)                
+#define GPIO_ICLR_GICLR5_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR5_BIT_MASK  0x20U                
+#define GPIO_ICLR_GICLR4_BIT_OFFSET (4U)                
+#define GPIO_ICLR_GICLR4_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR4_BIT_MASK  0x10U                
+#define GPIO_ICLR_GICLR3_BIT_OFFSET (3U)                
+#define GPIO_ICLR_GICLR3_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR3_BIT_MASK  0x8U                 
+#define GPIO_ICLR_GICLR2_BIT_OFFSET (2U)                
+#define GPIO_ICLR_GICLR2_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR2_BIT_MASK  0x4U                 
+#define GPIO_ICLR_GICLR1_BIT_OFFSET (1U)                
+#define GPIO_ICLR_GICLR1_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR1_BIT_MASK  0x2U                 
+#define GPIO_ICLR_GICLR0_BIT_OFFSET (0U)                
+#define GPIO_ICLR_GICLR0_BIT_LEN   (1U)                
+#define GPIO_ICLR_GICLR0_BIT_MASK  0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_IDBE
+**/
+#define GPIO_IDBE_ID                      0x50028              
+#define GPIO_IDBE_LEN                     (4U)                
+#define GPIO_IDBE_EN_MASK                    0xFFFFFFFFUL        
+#define GPIO_IDBE_GIDBE8_BIT_OFFSET (8U)                
+#define GPIO_IDBE_GIDBE8_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE8_BIT_MASK  0x100U               
+#define GPIO_IDBE_GIDBE7_BIT_OFFSET (7U)                
+#define GPIO_IDBE_GIDBE7_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE7_BIT_MASK  0x80U                
+#define GPIO_IDBE_GIDBE6_BIT_OFFSET (6U)                
+#define GPIO_IDBE_GIDBE6_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE6_BIT_MASK  0x40U                
+#define GPIO_IDBE_GIDBE5_BIT_OFFSET (5U)                
+#define GPIO_IDBE_GIDBE5_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE5_BIT_MASK  0x20U                
+#define GPIO_IDBE_GIDBE4_BIT_OFFSET (4U)                
+#define GPIO_IDBE_GIDBE4_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE4_BIT_MASK  0x10U                
+#define GPIO_IDBE_GIDBE3_BIT_OFFSET (3U)                
+#define GPIO_IDBE_GIDBE3_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE3_BIT_MASK  0x8U                 
+#define GPIO_IDBE_GIDBE2_BIT_OFFSET (2U)                
+#define GPIO_IDBE_GIDBE2_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE2_BIT_MASK  0x4U                 
+#define GPIO_IDBE_GIDBE1_BIT_OFFSET (1U)                
+#define GPIO_IDBE_GIDBE1_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE1_BIT_MASK  0x2U                 
+#define GPIO_IDBE_GIDBE0_BIT_OFFSET (0U)                
+#define GPIO_IDBE_GIDBE0_BIT_LEN   (1U)                
+#define GPIO_IDBE_GIDBE0_BIT_MASK  0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register GPIO_RAW
+**/
+#define GPIO_RAW_ID                     0x5002c              
+#define GPIO_RAW_LEN                    (4U)                
+#define GPIO_RAW_MASK                   0xFFFFFFFFUL        
+#define GPIO_RAW_GRAWP8_BIT_OFFSET (8U)                
+#define GPIO_RAW_GRAWP8_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP8_BIT_MASK 0x100U               
+#define GPIO_RAW_GRAWP7_BIT_OFFSET (7U)                
+#define GPIO_RAW_GRAWP7_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP7_BIT_MASK 0x80U                
+#define GPIO_RAW_GRAWP6_BIT_OFFSET (6U)                
+#define GPIO_RAW_GRAWP6_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP6_BIT_MASK 0x40U                
+#define GPIO_RAW_GRAWP5_BIT_OFFSET (5U)                
+#define GPIO_RAW_GRAWP5_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP5_BIT_MASK 0x20U                
+#define GPIO_RAW_GRAWP4_BIT_OFFSET (4U)                
+#define GPIO_RAW_GRAWP4_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP4_BIT_MASK 0x10U                
+#define GPIO_RAW_GRAWP3_BIT_OFFSET (3U)                
+#define GPIO_RAW_GRAWP3_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP3_BIT_MASK 0x8U                 
+#define GPIO_RAW_GRAWP2_BIT_OFFSET (2U)                
+#define GPIO_RAW_GRAWP2_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP2_BIT_MASK 0x4U                 
+#define GPIO_RAW_GRAWP1_BIT_OFFSET (1U)                
+#define GPIO_RAW_GRAWP1_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP1_BIT_MASK 0x2U                 
+#define GPIO_RAW_GRAWP0_BIT_OFFSET (0U)                
+#define GPIO_RAW_GRAWP0_BIT_LEN  (1U)                
+#define GPIO_RAW_GRAWP0_BIT_MASK 0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register DTUNE0
+**/
+#define DTUNE0_ID                            0x60000              
+#define DTUNE0_LEN                           (4U)                
+#define DTUNE0_MASK                          0xFFFFFFFFUL        
+#define DTUNE0_RX_SFD_TOC_BIT_OFFSET         (16U)               
+#define DTUNE0_RX_SFD_TOC_BIT_LEN            (16U)               
+#define DTUNE0_RX_SFD_TOC_BIT_MASK           0xffff0000UL         
+#define DTUNE0_PRE_PAC_SYM_BIT_OFFSET        (0U)                
+#define DTUNE0_PRE_PAC_SYM_BIT_LEN           (2U)                
+#define DTUNE0_PRE_PAC_SYM_BIT_MASK          0x3U                 
+
+/******************************************************************************
+* @brief Bit definitions for register DTUNE1
+**/
+#define DTUNE1_ID                            0x60004              
+#define DTUNE1_LEN                           (4U)                
+#define DTUNE1_MASK                          0xFFFFFFFFUL        
+#define DTUNE1_PRE_TOC_BIT_OFFSET            (0U)                
+#define DTUNE1_PRE_TOC_BIT_LEN               (16U)               
+#define DTUNE1_PRE_TOC_BIT_MASK              0xffffU              
+
+
+/******************************************************************************
+* @brief Bit definitions for register DTUNE3
+**/
+#define DTUNE3_ID                            0x6000c              
+#define DTUNE3_LEN                           (4U)                
+#define DTUNE3_MASK                          0xFFFFFFFFUL        
+
+
+
+
+
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register DRX_DIAG3
+**/
+#define DRX_DIAG3_ID                         0x60029              /*  */
+#define DRX_DIAG3_LEN                        (4U)                
+#define DRX_DIAG3_MASK                       0xFFFFFFFFUL        
+#define DRX_DIAG3_CAR_INT_BIT_OFFSET         (0U)                
+#define DRX_DIAG3_CAR_INT_BIT_LEN            (21U)               
+#define DRX_DIAG3_CAR_INT_BIT_MASK           0x1fffffUL           
+
+
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register RF_ENABLE
+**/
+#define RF_ENABLE_ID                            0x70000              
+#define RF_ENABLE_LEN                           (4U)                
+#define RF_ENABLE_MASK                          0xFFFFFFFFUL        
+#define RF_ENABLE_TX_SW_EN_BIT_OFFSET           (25U)               
+#define RF_ENABLE_TX_SW_EN_BIT_LEN              (1U)                
+#define RF_ENABLE_TX_SW_EN_BIT_MASK             0x2000000UL          
+#define RF_ENABLE_TX_CH5_BIT_OFFSET             (13U)               
+#define RF_ENABLE_TX_CH5_BIT_LEN                (1U)                
+#define RF_ENABLE_TX_CH5_BIT_MASK               0x2000U              
+#define RF_ENABLE_TX_EN_BIT_OFFSET              (12U)               
+#define RF_ENABLE_TX_EN_BIT_LEN                 (1U)                
+#define RF_ENABLE_TX_EN_BIT_MASK                0x1000U              
+#define RF_ENABLE_TX_EN_BUF_BIT_OFFSET          (11U)               
+#define RF_ENABLE_TX_EN_BUF_BIT_LEN             (1U)                
+#define RF_ENABLE_TX_EN_BUF_BIT_MASK            0x800U               
+#define RF_ENABLE_TX_BIAS_EN_BIT_OFFSET         (10U)               
+#define RF_ENABLE_TX_BIAS_EN_BIT_LEN            (1U)                
+#define RF_ENABLE_TX_BIAS_EN_BIT_MASK           0x400U               
+
+/******************************************************************************
+* @brief Bit definitions for register RF_CTRL_MASK
+**/
+#define RF_CTRL_MASK_ID                      0x70004              
+#define RF_CTRL_MASK_LEN                     (4U)                
+#define RF_CTRL_MASK_MASK                    0xFFFFFFFFUL        
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register RX_CTRL_HI
+**/
+#define RX_CTRL_HI_ID                        0x70010              
+#define RX_CTRL_HI_LEN                       (4U)                
+#define RX_CTRL_HI_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register RF_SWITCH
+**/
+#define RF_SWITCH_CTRL_ID                         0x70014              
+#define RF_SWITCH_CTRL_LEN                        (4U)                
+#define RF_SWITCH_CTRL_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register TX_CTRL_LO
+**/
+#define TX_CTRL_LO_ID                        0x70018              
+#define TX_CTRL_LO_LEN                       (4U)                
+#define TX_CTRL_LO_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register TX_CTRL_HI
+**/
+#define TX_CTRL_HI_ID                        0x7001c              
+#define TX_CTRL_HI_LEN                       (4U)                
+#define TX_CTRL_HI_MASK                      0xFFFFFFFFUL        
+#define TX_CTRL_HI_TX_PG_DELAY_BIT_OFFSET    (0U)                
+#define TX_CTRL_HI_TX_PG_DELAY_BIT_LEN       (6U)                
+#define TX_CTRL_HI_TX_PG_DELAY_BIT_MASK      0x3fU                
+
+
+/******************************************************************************
+* @brief Bit definitions for register TX_TEST
+**/
+#define TX_TEST_ID                           0x70028              
+#define TX_TEST_LEN                          (4U)                
+#define TX_TEST_MASK                         0xFFFFFFFFUL        
+#define TX_TEST_TX_ENTEST_CH1_BIT_OFFSET     (3U)                
+#define TX_TEST_TX_ENTEST_CH1_BIT_LEN        (1U)                
+#define TX_TEST_TX_ENTEST_CH1_BIT_MASK       0x8U                 
+#define TX_TEST_TX_ENTEST_CH2_BIT_OFFSET     (2U)                
+#define TX_TEST_TX_ENTEST_CH2_BIT_LEN        (1U)                
+#define TX_TEST_TX_ENTEST_CH2_BIT_MASK       0x4U                 
+#define TX_TEST_TX_ENTEST_CH3_BIT_OFFSET     (1U)                
+#define TX_TEST_TX_ENTEST_CH3_BIT_LEN        (1U)                
+#define TX_TEST_TX_ENTEST_CH3_BIT_MASK       0x2U                 
+#define TX_TEST_TX_ENTEST_CH4_BIT_OFFSET     (0U)                
+#define TX_TEST_TX_ENTEST_CH4_BIT_LEN        (1U)                
+#define TX_TEST_TX_ENTEST_CH4_BIT_MASK       0x1U                 
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register SAR_TEST
+**/
+#define SAR_TEST_ID                          0x70034              
+#define SAR_TEST_LEN                         (4U)                
+#define SAR_TEST_MASK                        0xFFFFFFFFUL        
+#define SAR_TEST_SAR_RDEN_BIT_OFFSET    (2U)                
+#define SAR_TEST_SAR_RDEN_BIT_LEN       (1U)                
+#define SAR_TEST_SAR_RDEN_BIT_MASK      0x4U                 
+
+
+/******************************************************************************
+* @brief Bit definitions for register LDO_TUNE_LO
+**/
+#define LDO_TUNE_LO_ID                       0x70040              
+#define LDO_TUNE_LO_LEN                      (4U)                
+#define LDO_TUNE_LO_MASK                     0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register LDO_TUNE_HI
+**/
+#define LDO_TUNE_HI_ID                       0x70044              
+#define LDO_TUNE_HI_LEN                      (4U)                
+#define LDO_TUNE_HI_MASK                     0xFFFFFFFFUL        
+#define LDO_TUNE_HI_LDO_HVAUX_TUNE_BIT_OFFSET (12U)               
+#define LDO_TUNE_HI_LDO_HVAUX_TUNE_BIT_LEN   (4U)                
+#define LDO_TUNE_HI_LDO_HVAUX_TUNE_BIT_MASK  0xf000U              
+
+/******************************************************************************
+* @brief Bit definitions for register LDO_CTRL
+**/
+#define LDO_CTRL_ID                          0x70048              
+#define LDO_CTRL_LEN                         (4U)                
+#define LDO_CTRL_MASK                        0xFFFFFFFFUL        
+#define LDO_CTRL_LDO_VDDHVTX_VREF_BIT_OFFSET (27U)               
+#define LDO_CTRL_LDO_VDDHVTX_VREF_BIT_LEN    (1U)                
+#define LDO_CTRL_LDO_VDDHVTX_VREF_BIT_MASK   0x8000000UL          
+#define LDO_CTRL_LDO_VDDTX2_VREF_BIT_OFFSET  (22U)               
+#define LDO_CTRL_LDO_VDDTX2_VREF_BIT_LEN     (1U)                
+#define LDO_CTRL_LDO_VDDTX2_VREF_BIT_MASK    0x400000UL           
+#define LDO_CTRL_LDO_VDDTX1_VREF_BIT_OFFSET  (21U)               
+#define LDO_CTRL_LDO_VDDTX1_VREF_BIT_LEN     (1U)                
+#define LDO_CTRL_LDO_VDDTX1_VREF_BIT_MASK    0x200000UL           
+#define LDO_CTRL_LDO_VDDHVTX_EN_BIT_OFFSET   (11U)               
+#define LDO_CTRL_LDO_VDDHVTX_EN_BIT_LEN      (1U)                
+#define LDO_CTRL_LDO_VDDHVTX_EN_BIT_MASK     0x800U               
+#define LDO_CTRL_LDO_VDDIF2_EN_BIT_OFFSET    (8U)                
+#define LDO_CTRL_LDO_VDDIF2_EN_BIT_LEN       (1U)                
+#define LDO_CTRL_LDO_VDDIF2_EN_BIT_MASK      0x100U               
+#define LDO_CTRL_LDO_VDDTX2_EN_BIT_OFFSET    (6U)                
+#define LDO_CTRL_LDO_VDDTX2_EN_BIT_LEN       (1U)                
+#define LDO_CTRL_LDO_VDDTX2_EN_BIT_MASK      0x40U                
+#define LDO_CTRL_LDO_VDDTX1_EN_BIT_OFFSET    (5U)                
+#define LDO_CTRL_LDO_VDDTX1_EN_BIT_LEN       (1U)                
+#define LDO_CTRL_LDO_VDDTX1_EN_BIT_MASK      0x20U                
+#define LDO_CTRL_LDO_VDDPLL_EN_BIT_OFFSET    (4U)                
+#define LDO_CTRL_LDO_VDDPLL_EN_BIT_LEN       (1U)                
+#define LDO_CTRL_LDO_VDDPLL_EN_BIT_MASK      0x10U                
+#define LDO_CTRL_LDO_VDDMS3_EN_BIT_OFFSET    (2U)                
+#define LDO_CTRL_LDO_VDDMS3_EN_BIT_LEN       (1U)                
+#define LDO_CTRL_LDO_VDDMS3_EN_BIT_MASK      0x4U                 
+#define LDO_CTRL_LDO_VDDMS2_EN_BIT_OFFSET    (1U)                
+#define LDO_CTRL_LDO_VDDMS2_EN_BIT_LEN       (1U)                
+#define LDO_CTRL_LDO_VDDMS2_EN_BIT_MASK      0x2U                 
+#define LDO_CTRL_LDO_VDDMS1_EN_BIT_OFFSET    (0U)                
+#define LDO_CTRL_LDO_VDDMS1_EN_BIT_LEN       (1U)                
+#define LDO_CTRL_LDO_VDDMS1_EN_BIT_MASK      0x1U                 
+
+
+/******************************************************************************
+* @brief Bit definitions for register LDO_RLOAD
+**/
+#define LDO_RLOAD_ID                         0x70050              
+#define LDO_RLOAD_LEN                        (4U)                
+#define LDO_RLOAD_MASK                       0xFFFFFFFFUL        
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register SAR_CTRL
+**/
+#define SAR_CTRL_ID                          0x80000              
+#define SAR_CTRL_LEN                         (4U)                
+#define SAR_CTRL_MASK                        0xFFFFFFFFUL        
+#define SAR_CTRL_SAR_START_BIT_OFFSET        (0U)                
+#define SAR_CTRL_SAR_START_BIT_LEN           (1U)                
+#define SAR_CTRL_SAR_START_BIT_MASK          0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register SAR_STATUS
+**/
+#define SAR_STATUS_ID                        0x80004              
+#define SAR_STATUS_LEN                       (4U)                
+#define SAR_STATUS_MASK                      0xFFFFFFFFUL        
+#define SAR_STATUS_SAR_DONE_BIT_OFFSET  (0U)                
+#define SAR_STATUS_SAR_DONE_BIT_LEN     (1U)                
+#define SAR_STATUS_SAR_DONE_BIT_MASK    0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register SAR_READING
+**/
+#define SAR_READING_ID                       0x80008              
+#define SAR_READING_LEN                      (4U)                
+#define SAR_READING_MASK                     0xFFFFFFFFUL        
+#define SAR_READING_SAR_READING_TEMP_BIT_OFFSET (8U)                
+#define SAR_READING_SAR_READING_TEMP_BIT_LEN (8U)                
+#define SAR_READING_SAR_READING_TEMP_BIT_MASK 0xff00U              
+#define SAR_READING_SAR_READING_VBAT_BIT_OFFSET (0U)                
+#define SAR_READING_SAR_READING_VBAT_BIT_LEN (8U)                
+#define SAR_READING_SAR_READING_VBAT_BIT_MASK 0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register SAR_WAKE_RD
+
+**/
+#define SAR_WAKE_RD_ID                      0x8000c              
+#define SAR_WAKE_RD_LEN                     (4U)                
+#define SAR_WAKE_RD_MASK                    0xFFFFFFFFUL        
+#define SAR_WAKE_RD_SAR_LAST_TEMP_BIT_OFFSET (8U)                
+#define SAR_WAKE_RD_SAR_LAST_TEMP_BIT_LEN   (8U)                
+#define SAR_WAKE_RD_SAR_LAST_TEMP_BIT_MASK  0xff00U              
+#define SAR_WAKE_RD_SAR_LAST_VBAT_BIT_OFFSET (0U)                
+#define SAR_WAKE_RD_SAR_LAST_VBAT_BIT_LEN   (8U)                
+#define SAR_WAKE_RD_SAR_LAST_VBAT_BIT_MASK  0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register PGC_CTRL
+**/
+#define PGC_CTRL_ID                          0x80010              
+#define PGC_CTRL_LEN                         (4U)                
+#define PGC_CTRL_MASK                        0xFFFFFFFFUL        
+#define PGC_CTRL_PGC_AUTO_CAL_BIT_OFFSET     (1U)                
+#define PGC_CTRL_PGC_AUTO_CAL_BIT_LEN        (1U)                
+#define PGC_CTRL_PGC_AUTO_CAL_BIT_MASK       0x2U                 
+#define PGC_CTRL_PGC_START_BIT_OFFSET        (0U)                
+#define PGC_CTRL_PGC_START_BIT_LEN           (1U)                
+#define PGC_CTRL_PGC_START_BIT_MASK          0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register PGC_STATUS
+**/
+#define PGC_STATUS_ID                        0x80014              
+#define PGC_STATUS_LEN                       (4U)                
+#define PGC_STATUS_MASK                      0xFFFFFFFFUL        
+#define PGC_STATUS_AUTOCAL_DONE_BIT_OFFSET   (12U)               
+#define PGC_STATUS_AUTOCAL_DONE_BIT_LEN      (1U)                
+#define PGC_STATUS_AUTOCAL_DONE_BIT_MASK     0x1000U              
+#define PGC_STATUS_PG_DELAY_COUNT_BIT_OFFSET (0U)                
+#define PGC_STATUS_PG_DELAY_COUNT_BIT_LEN    (12U)               
+#define PGC_STATUS_PG_DELAY_COUNT_BIT_MASK   0xfffU               
+
+/******************************************************************************
+* @brief Bit definitions for register PG_TEST
+**/
+#define PG_TEST_ID                           0x80018              
+#define PG_TEST_LEN                          (4U)                
+#define PG_TEST_MASK                         0xFFFFFFFFUL        
+#define PG_TEST_TX_TEST_CH4_BIT_OFFSET       (12U)               
+#define PG_TEST_TX_TEST_CH4_BIT_LEN          (4U)                
+#define PG_TEST_TX_TEST_CH4_BIT_MASK         0xf000U              
+#define PG_TEST_TX_TEST_CH3_BIT_OFFSET       (8U)                
+#define PG_TEST_TX_TEST_CH3_BIT_LEN          (4U)                
+#define PG_TEST_TX_TEST_CH3_BIT_MASK         0xf00U               
+#define PG_TEST_TX_TEST_CH2_BIT_OFFSET       (4U)                
+#define PG_TEST_TX_TEST_CH2_BIT_LEN          (4U)                
+#define PG_TEST_TX_TEST_CH2_BIT_MASK         0xf0U                
+#define PG_TEST_TX_TEST_CH1_BIT_OFFSET       (0U)                
+#define PG_TEST_TX_TEST_CH1_BIT_LEN          (4U)                
+#define PG_TEST_TX_TEST_CH1_BIT_MASK         0xfU                 
+
+/******************************************************************************
+* @brief Bit definitions for register PG_CAL_TARGET
+**/
+#define PG_CAL_TARGET_ID                     0x8001c              
+#define PG_CAL_TARGET_LEN                    (4U)                
+#define PG_CAL_TARGET_MASK                   0xFFFFFFFFUL        
+#define PG_CAL_TARGET_TARGET_BIT_OFFSET      (0U)                
+#define PG_CAL_TARGET_TARGET_BIT_LEN         (12U)               
+#define PG_CAL_TARGET_TARGET_BIT_MASK        0xfffU               
+
+
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register PLL_CFG
+**/
+#define PLL_CFG_ID                           0x90000              
+#define PLL_CFG_LEN                          (4U)                
+#define PLL_CFG_MASK                         0xFFFFFFFFUL        
+
+
+/******************************************************************************
+* @brief Bit definitions for register PLL_CAL
+**/
+#define PLL_CAL_ID                           0x90008              
+#define PLL_CAL_LEN                          (4U)                
+#define PLL_CAL_MASK                         0xFFFFFFFFUL        
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register XTAL
+**/
+#define XTAL_ID                              0x90014              
+#define XTAL_LEN                             (4U)                
+#define XTAL_MASK                            0xFFFFFFFFUL        
+#define XTAL_XTAL_TRIM_BIT_OFFSET            (0U)                
+#define XTAL_XTAL_TRIM_BIT_LEN               (7U)                
+#define XTAL_XTAL_TRIM_BIT_MASK              0x7fU                
+
+
+/******************************************************************************
+* @brief Bit definitions for register AON_DIG_CFG
+**/
+#define AON_DIG_CFG_ID                       0xa0000              
+#define AON_DIG_CFG_LEN                      (4U)                
+#define AON_DIG_CFG_MASK                     0xFFFFFFFFUL      
+#define AON_DIG_CFG_ONWAKE_GO2RX_BIT_OFFSET  (9U)                
+#define AON_DIG_CFG_ONWAKE_GO2RX_BIT_LEN     (1U)                
+#define AON_DIG_CFG_ONWAKE_GO2RX_BIT_MASK    0x200U               
+#define AON_DIG_CFG_ONWAKE_GO2IDLE_BIT_OFFSET (8U)                
+#define AON_DIG_CFG_ONWAKE_GO2IDLE_BIT_LEN   (1U)                
+#define AON_DIG_CFG_ONWAKE_GO2IDLE_BIT_MASK  0x100U                              
+#define AON_DIG_CFG_ONWAKE_RUN_SAR_BIT_OFFSET (1U)                
+#define AON_DIG_CFG_ONWAKE_RUN_SAR_BIT_LEN   (1U)                
+#define AON_DIG_CFG_ONWAKE_RUN_SAR_BIT_MASK  0x2U                 
+#define AON_DIG_CFG_ONWAKE_AON_DLD_BIT_OFFSET (0U)                
+#define AON_DIG_CFG_ONWAKE_AON_DLD_BIT_LEN   (1U)                
+#define AON_DIG_CFG_ONWAKE_AON_DLD_BIT_MASK  0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register AON_CTRL
+**/
+#define AON_CTRL_ID                          0xa0004              
+#define AON_CTRL_LEN                         (4U)                
+#define AON_CTRL_MASK                        0xFFFFFFFFUL        
+#define AON_CTRL_DCA_ENAB_BIT_OFFSET      (7U)                
+#define AON_CTRL_DCA_ENAB_BIT_LEN         (1U)                
+#define AON_CTRL_DCA_ENAB_BIT_MASK        0x80U                              
+#define AON_CTRL_DCA_WRITE_HI_EN_BIT_OFFSET    (5U)                
+#define AON_CTRL_DCA_WRITE_HI_EN_BIT_LEN       (1U)                
+#define AON_CTRL_DCA_WRITE_HI_EN_BIT_MASK      0x20U                
+#define AON_CTRL_DCA_WRITE_EN_BIT_OFFSET     (4U)                
+#define AON_CTRL_DCA_WRITE_EN_BIT_LEN        (1U)                
+#define AON_CTRL_DCA_WRITE_EN_BIT_MASK       0x10U                
+#define AON_CTRL_DCA_READ_EN_BIT_OFFSET      (3U)                
+#define AON_CTRL_DCA_READ_EN_BIT_LEN         (1U)                
+#define AON_CTRL_DCA_READ_EN_BIT_MASK        0x8U                 
+#define AON_CTRL_CONFIG_UPLOAD_BIT_OFFSET    (2U)                
+#define AON_CTRL_CONFIG_UPLOAD_BIT_LEN       (1U)                
+#define AON_CTRL_CONFIG_UPLOAD_BIT_MASK      0x4U                 
+#define AON_CTRL_ARRAY_SAVE_BIT_OFFSET     (1U)                
+#define AON_CTRL_ARRAY_SAVE_BIT_LEN        (1U)                
+#define AON_CTRL_ARRAY_SAVE_BIT_MASK       0x2U                 
+#define AON_CTRL_ARRAY_RESTORE_BIT_OFFSET   (0U)                
+#define AON_CTRL_ARRAY_RESTORE_BIT_LEN      (1U)                
+#define AON_CTRL_ARRAY_RESTORE_BIT_MASK     0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register AON_RDATA
+**/
+#define AON_RDATA_ID                         0xa0008              
+#define AON_RDATA_LEN                        (4U)                
+#define AON_RDATA_MASK                       0xFFFFFFFFUL        
+#define AON_RDATA_RDATA_BIT_OFFSET           (0U)                
+#define AON_RDATA_RDATA_BIT_LEN              (8U)                
+#define AON_RDATA_RDATA_BIT_MASK             0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register AON_ADDR
+**/
+#define AON_ADDR_ID                          0xa000c              
+#define AON_ADDR_LEN                         (4U)                
+#define AON_ADDR_MASK                        0xFFFFFFFFUL        
+#define AON_ADDR_ADDR_BIT_OFFSET             (0U)                
+#define AON_ADDR_ADDR_BIT_LEN                (9U)                
+#define AON_ADDR_ADDR_BIT_MASK               0x1ffU               
+
+/******************************************************************************
+* @brief Bit definitions for register AON_WDATA
+**/
+#define AON_WDATA_ID                         0xa0010              
+#define AON_WDATA_LEN                        (4U)                
+#define AON_WDATA_MASK                       0xFFFFFFFFUL        
+#define AON_WDATA_WDATA_BIT_OFFSET           (0U)                
+#define AON_WDATA_WDATA_BIT_LEN              (8U)                
+#define AON_WDATA_WDATA_BIT_MASK             0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register ANA_CFG
+**/
+#define ANA_CFG_ID                           0xa0014              
+#define ANA_CFG_LEN                          (4U)                
+#define ANA_CFG_MASK                         0xFFFFFFFFUL                       
+#define ANA_CFG_PRES_SLEEP_BIT_OFFSET    (5U)                
+#define ANA_CFG_PRES_SLEEP_BIT_LEN       (1U)                
+#define ANA_CFG_PRES_SLEEP_BIT_MASK      0x20U                
+#define ANA_CFG_WAKE_WUP_BIT_OFFSET        (4U)                
+#define ANA_CFG_WAKE_WUP_BIT_LEN           (1U)                
+#define ANA_CFG_WAKE_WUP_BIT_MASK          0x10U                
+#define ANA_CFG_WAKE_CSN_BIT_OFFSET        (3U)                
+#define ANA_CFG_WAKE_CSN_BIT_LEN           (1U)                
+#define ANA_CFG_WAKE_CSN_BIT_MASK          0x8U                 
+#define ANA_CFG_BROUT_EN_BIT_OFFSET     (2U)                
+#define ANA_CFG_BROUT_EN_BIT_LEN        (1U)                
+#define ANA_CFG_BROUT_EN_BIT_MASK       0x4U                 
+#define ANA_CFG_WAKE_CNT_BIT_OFFSET      (1U)                
+#define ANA_CFG_WAKE_CNT_BIT_LEN         (1U)                
+#define ANA_CFG_WAKE_CNT_BIT_MASK        0x2U                 
+#define ANA_CFG_SLEEP_EN_BIT_OFFSET          (0U)                
+#define ANA_CFG_SLEEP_EN_BIT_LEN             (1U)                
+#define ANA_CFG_SLEEP_EN_BIT_MASK            0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register OTP_WDATA
+**/
+#define OTP_WDATA_ID                         0xb0000              
+#define OTP_WDATA_LEN                        (4U)                
+#define OTP_WDATA_MASK                       0xFFFFFFFFUL        
+#define OTP_WDATA_OTP_WDATA_BIT_OFFSET       (0U)                
+#define OTP_WDATA_OTP_WDATA_BIT_LEN          (32U)               
+#define OTP_WDATA_OTP_WDATA_BIT_MASK         0xffffffffUL         
+
+/******************************************************************************
+* @brief Bit definitions for register OTP_ADDR
+**/
+#define OTP_ADDR_ID                          0xb0004              
+#define OTP_ADDR_LEN                         (4U)                
+#define OTP_ADDR_MASK                        0xFFFFFFFFUL        
+#define OTP_ADDR_OTP_ADDR_BIT_OFFSET         (0U)                
+#define OTP_ADDR_OTP_ADDR_BIT_LEN            (11U)               
+#define OTP_ADDR_OTP_ADDR_BIT_MASK           0x7ffU               
+
+/******************************************************************************
+* @brief Bit definitions for register OTP_CFG
+**/
+#define OTP_CFG_ID                           0xb0008              
+#define OTP_CFG_LEN                          (4U)                
+#define OTP_CFG_MASK                         0xFFFFFFFFUL        
+#define OTP_CFG_DGC_SEL_BIT_OFFSET           (13U)               
+#define OTP_CFG_DGC_SEL_BIT_LEN              (1U)                
+#define OTP_CFG_DGC_SEL_BIT_MASK             0x2000U              
+#define OTP_CFG_OPS_ID_BIT_OFFSET           (11U)               
+#define OTP_CFG_OPS_ID_BIT_LEN              (2U)                
+#define OTP_CFG_OPS_ID_BIT_MASK             0x1800U              
+#define OTP_CFG_OPS_KICK_BIT_OFFSET         (10U)               
+#define OTP_CFG_OPS_KICK_BIT_LEN            (1U)                
+#define OTP_CFG_OPS_KICK_BIT_MASK           0x400U                             
+#define OTP_CFG_BIAS_KICK_BIT_OFFSET         (8U)                
+#define OTP_CFG_BIAS_KICK_BIT_LEN            (1U)                
+#define OTP_CFG_BIAS_KICK_BIT_MASK           0x100U               
+#define OTP_CFG_LDO_KICK_BIT_OFFSET          (7U)                
+#define OTP_CFG_LDO_KICK_BIT_LEN             (1U)                
+#define OTP_CFG_LDO_KICK_BIT_MASK            0x80U                
+#define OTP_CFG_DGC_KICK_BIT_OFFSET          (6U)                
+#define OTP_CFG_DGC_KICK_BIT_LEN             (1U)                
+#define OTP_CFG_DGC_KICK_BIT_MASK            0x40U                                         
+#define OTP_CFG_OTP_WRITE_MR_BIT_OFFSET      (3U)                
+#define OTP_CFG_OTP_WRITE_MR_BIT_LEN         (1U)                
+#define OTP_CFG_OTP_WRITE_MR_BIT_MASK        0x8U                 
+#define OTP_CFG_OTP_WRITE_BIT_OFFSET         (2U)                
+#define OTP_CFG_OTP_WRITE_BIT_LEN            (1U)                
+#define OTP_CFG_OTP_WRITE_BIT_MASK           0x4U                 
+#define OTP_CFG_OTP_READ_BIT_OFFSET          (1U)                
+#define OTP_CFG_OTP_READ_BIT_LEN             (1U)                
+#define OTP_CFG_OTP_READ_BIT_MASK            0x2U                 
+#define OTP_CFG_OTP_MAN_CTR_EN_BIT_OFFSET    (0U)                
+#define OTP_CFG_OTP_MAN_CTR_EN_BIT_LEN       (1U)                
+#define OTP_CFG_OTP_MAN_CTR_EN_BIT_MASK      0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register OTP_STATUS
+**/
+#define OTP_STATUS_ID                        0xb000c              
+#define OTP_STATUS_LEN                       (4U)                
+#define OTP_STATUS_MASK                      0xFFFFFFFFUL        
+#define OTP_STATUS_OTP_VPP_OK_BIT_OFFSET     (1U)                
+#define OTP_STATUS_OTP_VPP_OK_BIT_LEN        (1U)                
+#define OTP_STATUS_OTP_VPP_OK_BIT_MASK       0x2U                 
+#define OTP_STATUS_OTP_PROG_DONE_BIT_OFFSET  (0U)                
+#define OTP_STATUS_OTP_PROG_DONE_BIT_LEN     (1U)                
+#define OTP_STATUS_OTP_PROG_DONE_BIT_MASK    0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register OTP_RDATA
+**/
+#define OTP_RDATA_ID                         0xb0010              
+#define OTP_RDATA_LEN                        (4U)                
+#define OTP_RDATA_MASK                       0xFFFFFFFFUL        
+#define OTP_RDATA_OTP_RDATA_BIT_OFFSET       (0U)                
+#define OTP_RDATA_OTP_RDATA_BIT_LEN          (32U)               
+#define OTP_RDATA_OTP_RDATA_BIT_MASK         0xffffffffUL         
+
+
+/******************************************************************************
+* @brief Bit definitions for register IP_TOA_LO
+**/
+#define IP_TOA_LO_ID                         0xc0000              
+#define IP_TOA_LO_LEN                        (4U)                
+#define IP_TOA_LO_MASK                       0xFFFFFFFFUL        
+#define IP_TOA_LO_IP_TOA_BIT_OFFSET          (0U)                
+#define IP_TOA_LO_IP_TOA_BIT_LEN             (32U)               
+#define IP_TOA_LO_IP_TOA_BIT_MASK            0xffffffffUL         
+
+/******************************************************************************
+* @brief Bit definitions for register IP_TOA_HI
+**/
+#define IP_TOA_HI_ID                         0xc0004              
+#define IP_TOA_HI_LEN                        (4U)                
+#define IP_TOA_HI_MASK                       0xFFFFFFFFUL        
+#define IP_TOA_HI_IP_TOAST_BIT_OFFSET          (24U)               
+#define IP_TOA_HI_IP_TOAST_BIT_LEN             (8U)                
+#define IP_TOA_HI_IP_TOAST_BIT_MASK            0xff000000UL         
+#define IP_TOA_HI_IP_POA_BIT_OFFSET             (8U)                
+#define IP_TOA_HI_IP_POA_BIT_LEN                (14U)               
+#define IP_TOA_HI_IP_POA_BIT_MASK               0x3fff00UL           
+#define IP_TOA_HI_IP_TOA_BIT_OFFSET          (0U)                
+#define IP_TOA_HI_IP_TOA_BIT_LEN             (8U)                
+#define IP_TOA_HI_IP_TOA_BIT_MASK            0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register STS_TOA_LO
+**/
+#define STS_TOA_LO_ID                        0xc0008              
+#define STS_TOA_LO_LEN                       (4U)                
+#define STS_TOA_LO_MASK                      0xFFFFFFFFUL        
+#define STS_TOA_LO_STS_TOA_BIT_OFFSET         (0U)                
+#define STS_TOA_LO_STS_TOA_BIT_LEN            (32U)               
+#define STS_TOA_LO_STS_TOA_BIT_MASK           0xffffffffUL         
+
+/******************************************************************************
+* @brief Bit definitions for register STS_TOA_HI
+**/
+#define STS_TOA_HI_ID                        0xc000c              
+#define STS_TOA_HI_LEN                       (4U)                
+#define STS_TOA_HI_MASK                      0xFFFFFFFFUL        
+#define STS_TOA_HI_STS_TOAST_BIT_OFFSET         (23U)               
+#define STS_TOA_HI_STS_TOAST_BIT_LEN            (9U)                
+#define STS_TOA_HI_STS_TOAST_BIT_MASK           0xff800000UL         
+#define STS_TOA_HI_STS_POA_BIT_OFFSET            (8U)                
+#define STS_TOA_HI_STS_POA_BIT_LEN               (14U)               
+#define STS_TOA_HI_STS_POA_BIT_MASK              0x3fff00UL           
+#define STS_TOA_HI_STS_TOA_BIT_OFFSET          (0U)                
+#define STS_TOA_HI_STS_TOA_BIT_LEN             (8U)                
+#define STS_TOA_HI_STS_TOA_BIT_MASK            0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_TOA_LO
+**/
+#define STS1_TOA_LO_ID                        0xc0010              
+#define STS1_TOA_LO_LEN                       (4U)                
+#define STS1_TOA_LO_MASK                      0xFFFFFFFFUL        
+#define STS1_TOA_LO_STS1_TOA_BIT_OFFSET         (0U)                
+#define STS1_TOA_LO_STS1_TOA_BIT_LEN            (32U)               
+#define STS1_TOA_LO_STS1_TOA_BIT_MASK           0xffffffffUL         
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_TOA_HI
+**/
+#define STS1_TOA_HI_ID                        0xc0014              
+#define STS1_TOA_HI_LEN                       (4U)                
+#define STS1_TOA_HI_MASK                      0xFFFFFFFFUL        
+#define STS1_TOA_HI_STS1_TOAST_BIT_OFFSET         (23U)               
+#define STS1_TOA_HI_STS1_TOAST_BIT_LEN            (9U)                
+#define STS1_TOA_HI_STS1_TOAST_BIT_MASK           0xff800000UL         
+#define STS1_TOA_HI_STS1_POA_BIT_OFFSET            (8U)                
+#define STS1_TOA_HI_STS1_POA_BIT_LEN               (14U)               
+#define STS1_TOA_HI_STS1_POA_BIT_MASK              0x3fff00UL           
+#define STS1_TOA_HI_STS1_TOA_BIT_OFFSET          (0U)                
+#define STS1_TOA_HI_STS1_TOA_BIT_LEN             (8U)                
+#define STS1_TOA_HI_STS1_TOA_BIT_MASK            0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register CIA_TDOA_0
+**/
+#define CIA_TDOA_0_ID                        0xc0018              
+#define CIA_TDOA_0_LEN                       (4U)                
+#define CIA_TDOA_0_MASK                      0xFFFFFFFFUL        
+#define CIA_TDOA_0_TDOA_BIT_OFFSET        (0U)                
+#define CIA_TDOA_0_TDOA_BIT_LEN           (32U)               
+#define CIA_TDOA_0_TDOA_BIT_MASK          0xffffffffUL         
+
+/******************************************************************************
+* @brief Bit definitions for register CIA_TDOA_1_PDOA
+**/
+#define CIA_TDOA_1_PDOA_ID                   0xc001c              
+#define CIA_TDOA_1_PDOA_LEN                  (4U)                
+#define CIA_TDOA_1_PDOA_MASK                 0xFFFFFFFFUL        
+#define CIA_TDOA_1_PDOA_FP_TH_MD_BIT_OFFSET (30U)               
+#define CIA_TDOA_1_PDOA_FP_TH_MD_BIT_LEN    (1U)                
+#define CIA_TDOA_1_PDOA_FP_TH_MD_BIT_MASK   0x40000000UL         
+#define CIA_TDOA_1_PDOA_PDOA_BIT_OFFSET   (16U)               
+#define CIA_TDOA_1_PDOA_PDOA_BIT_LEN      (14U)               
+#define CIA_TDOA_1_PDOA_PDOA_BIT_MASK     0x3fff0000UL         
+#define CIA_TDOA_1_PDOA_TDOA_BIT_OFFSET   (0U)                
+#define CIA_TDOA_1_PDOA_TDOA_BIT_LEN      (9U)                
+#define CIA_TDOA_1_PDOA_TDOA_BIT_MASK     0x1ffU               
+
+/******************************************************************************
+* @brief Bit definitions for register CIA_DIAG_0
+**/
+#define CIA_DIAG_0_ID                        0xc0020              
+#define CIA_DIAG_0_LEN                       (4U)                
+#define CIA_DIAG_0_MASK                      0xFFFFFFFFUL        
+#define CIA_DIAG_0_COE_PPM_BIT_OFFSET     (0U)                
+#define CIA_DIAG_0_COE_PPM_BIT_LEN        (13U)               
+#define CIA_DIAG_0_COE_PPM_BIT_MASK       0x1fffU              
+
+/******************************************************************************
+* @brief Bit definitions for register CIA_DIAG_1
+**/
+#define CIA_DIAG_1_ID                        0xc0024              
+#define CIA_DIAG_1_LEN                       (4U)                
+#define CIA_DIAG_1_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_0
+**/
+#define IP_DIAG_0_ID                         0xc0028              
+#define IP_DIAG_0_LEN                        (4U)                
+#define IP_DIAG_0_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_1
+**/
+#define IP_DIAG_1_ID                         0xc002c              
+#define IP_DIAG_1_LEN                        (4U)                
+#define IP_DIAG_1_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_2
+**/
+#define IP_DIAG_2_ID                         0xc0030              
+#define IP_DIAG_2_LEN                        (4U)                
+#define IP_DIAG_2_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_3
+**/
+#define IP_DIAG_3_ID                         0xc0034              
+#define IP_DIAG_3_LEN                        (4U)                
+#define IP_DIAG_3_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_4
+**/
+#define IP_DIAG_4_ID                         0xc0038              
+#define IP_DIAG_4_LEN                        (4U)                
+#define IP_DIAG_4_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_5
+**/
+#define IP_DIAG_5_ID                         0xc003c              
+#define IP_DIAG_5_LEN                        (4U)                
+#define IP_DIAG_5_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_6
+**/
+#define IP_DIAG_6_ID                         0xc0040              
+#define IP_DIAG_6_LEN                        (4U)                
+#define IP_DIAG_6_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_7
+**/
+#define IP_DIAG_7_ID                         0xc0044              
+#define IP_DIAG_7_LEN                        (4U)                
+#define IP_DIAG_7_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_8
+**/
+#define IP_DIAG_8_ID                         0xc0048              
+#define IP_DIAG_8_LEN                        (4U)                
+#define IP_DIAG_8_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_9
+**/
+#define IP_DIAG_9_ID                         0xc004c              
+#define IP_DIAG_9_LEN                        (4U)                
+#define IP_DIAG_9_MASK                       0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_10
+**/
+#define IP_DIAG_10_ID                        0xc0050              
+#define IP_DIAG_10_LEN                       (4U)                
+#define IP_DIAG_10_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_11
+**/
+#define IP_DIAG_11_ID                        0xc0054              
+#define IP_DIAG_11_LEN                       (4U)                
+#define IP_DIAG_11_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register IP_DIAG_12
+**/
+#define IP_DIAG_12_ID                        0xc0058              
+#define IP_DIAG_12_LEN                       (4U)                
+#define IP_DIAG_12_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_0
+**/
+#define STS_DIAG_0_ID                        0xc005c              
+#define STS_DIAG_0_LEN                       (4U)                
+#define STS_DIAG_0_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_1
+**/
+#define STS_DIAG_1_ID                        0xc0060              
+#define STS_DIAG_1_LEN                       (4U)                
+#define STS_DIAG_1_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_2
+**/
+#define STS_DIAG_2_ID                        0xc0064              
+#define STS_DIAG_2_LEN                       (4U)                
+#define STS_DIAG_2_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_3
+**/
+#define STS_DIAG_3_ID                        0xc0068              
+#define STS_DIAG_3_LEN                       (4U)                
+#define STS_DIAG_3_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_4
+**/
+#define STS_DIAG_4_ID                        0xd0000              
+#define STS_DIAG_4_LEN                       (4U)                
+#define STS_DIAG_4_MASK                      0xFFFFFFFFUL        
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_5
+**/
+#define STS_DIAG_5_ID                        0xd0004              
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_6
+**/
+#define STS_DIAG_6_ID                        0xd0008              
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_7
+**/
+#define STS_DIAG_7_ID                        0xd000c              
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_8
+**/
+#define STS_DIAG_8_ID                        0xd0010              
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_9
+**/
+#define STS_DIAG_9_ID                        0xd0014              
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_10
+**/
+#define STS_DIAG_10_ID                       0xd0018              
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_11
+**/
+#define STS_DIAG_11_ID                       0xd001c              
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_12
+**/
+#define STS_DIAG_12_ID                       0xd0020              
+#define STS_DIAG_12_LEN                      (4U)                
+#define STS_DIAG_12_MASK                     0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_13
+**/
+#define STS_DIAG_13_ID                       0xd0024    
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_14
+**/
+#define STS_DIAG_14_ID                       0xd0028    
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_15
+**/
+#define STS_DIAG_15_ID                       0xd002C    
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_16
+**/
+#define STS_DIAG_16_ID                       0xd0030    
+
+/******************************************************************************
+* @brief Bit definitions for register STS_DIAG_17
+**/
+#define STS_DIAG_17_ID                       0xd0034    
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_0
+**/
+#define STS1_DIAG_0_ID                        0xd0038              
+#define STS1_DIAG_0_LEN                       (4U)                
+#define STS1_DIAG_0_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_1
+**/
+#define STS1_DIAG_1_ID                        0xd003c              
+#define STS1_DIAG_1_LEN                       (4U)                
+#define STS1_DIAG_1_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_2
+**/
+#define STS1_DIAG_2_ID                        0xd0040              
+#define STS1_DIAG_2_LEN                       (4U)                
+#define STS1_DIAG_2_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_3
+**/
+#define STS1_DIAG_3_ID                        0xd0044              
+#define STS1_DIAG_3_LEN                       (4U)                
+#define STS1_DIAG_3_MASK                      0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_4
+**/
+#define STS1_DIAG_4_ID                        0xd0048              
+#define STS1_DIAG_4_LEN                       (4U)                
+#define STS1_DIAG_4_MASK                      0xFFFFFFFFUL        
+
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_5
+**/
+#define STS1_DIAG_5_ID                        0xd004c              
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_6
+**/
+#define STS1_DIAG_6_ID                        0xd0050              
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_7
+**/
+#define STS1_DIAG_7_ID                        0xd0054              
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_8
+**/
+#define STS1_DIAG_8_ID                        0xd0058              
+#define STS1_DIAG_8_LEN                       (4U)                
+#define STS1_DIAG_8_MASK                      0xFFFFFFFFUL        
+
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_9
+**/
+#define STS1_DIAG_9_ID                        0xd005c              
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_10
+**/
+#define STS1_DIAG_10_ID                       0xd0060              
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_11
+**/
+#define STS1_DIAG_11_ID                       0xd0064              
+
+/******************************************************************************
+* @brief Bit definitions for register STS1_DIAG_12
+**/
+#define STS1_DIAG_12_ID                       0xd0068              
+#define STS1_DIAG_12_LEN                      (4U)                
+#define STS1_DIAG_12_MASK                     0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register CIA_CONF
+**/
+#define CIA_CONF_ID                  0xe0000              
+#define CIA_CONF_LEN                 (4U)                
+#define CIA_CONF_MASK                0xFFFFFFFFUL        
+#define CIA_CONF_MINDIAG_BIT_OFFSET  (20U)               
+#define CIA_CONF_MINDIAG_BIT_LEN     (1U)                
+#define CIA_CONF_MINDIAG_BIT_MASK    0x100000UL                          
+#define CIA_CONF_RXANTD_BIT_OFFSET (0U)                
+#define CIA_CONF_RXANTD_BIT_LEN (16U)               
+#define CIA_CONF_RXANTD_BIT_MASK 0xffffU              
+
+/******************************************************************************
+* @brief Bit definitions for register FP_CONF
+**/
+#define FP_CONF_ID               0xe0004              
+#define FP_CONF_LEN              (4U)                
+#define FP_CONF_MASK             0xFFFFFFFFUL                            
+#define FP_CONF_TC_RXDLY_EN_BIT_OFFSET (20U)               
+#define FP_CONF_TC_RXDLY_EN_BIT_LEN (1U)                
+#define FP_CONF_TC_RXDLY_EN_BIT_MASK 0x100000UL                     
+#define FP_CONF_CAL_TEMP_BIT_OFFSET (11U)               
+#define FP_CONF_CAL_TEMP_BIT_LEN (8U)                
+#define FP_CONF_CAL_TEMP_BIT_MASK 0x7f800UL            
+#define FP_CONF_FP_AGREED_TH_BIT_OFFSET (8U)                
+#define FP_CONF_FP_AGREED_TH_BIT_LEN (3U)                
+#define FP_CONF_FP_AGREED_TH_BIT_MASK 0x700U               
+               
+
+/******************************************************************************
+* @brief Bit definitions for register IP_CONFIG_LO
+**/
+#define IP_CONFIG_LO_ID                      0xe000c              
+#define IP_CONFIG_LO_LEN                     (2U)                
+#define IP_CONFIG_LO_MASK                    0xFFFFU                            
+#define IP_CONFIG_LO_IP_PMULT_BIT_OFFSET (5U)                
+#define IP_CONFIG_LO_IP_PMULT_BIT_LEN  (2U)                
+#define IP_CONFIG_LO_IP_PMULT_BIT_MASK 0x60U                
+#define IP_CONFIG_LO_IP_NTM_BIT_OFFSET (0U)                
+#define IP_CONFIG_LO_IP_NTM_BIT_LEN (5U)                
+#define IP_CONFIG_LO_IP_NTM_BIT_MASK 0x1fU                
+
+/******************************************************************************
+* @brief Bit definitions for register IP_CONFIG_HI
+**/
+#define IP_CONFIG_HI_ID                      0xe000e              /*  { aliased = true}  */
+#define IP_CONFIG_HI_LEN                     (4U)
+#define IP_CONFIG_HI_MASK                    0xFFFFFFFFUL
+#define IP_CONFIG_HI_IP_RTM_BIT_OFFSET (0U)
+#define IP_CONFIG_HI_IP_RTM_BIT_LEN (5U)
+#define IP_CONFIG_HI_IP_RTM_BIT_MASK 0x1fU
+
+/******************************************************************************
+* @brief Bit definitions for register STS_CONFIG_LO
+**/
+#define STS_CONFIG_LO_ID                      0xe0012              /*  { aliased = true}  */
+#define STS_CONFIG_LO_LEN                     (4U)
+#define STS_CONFIG_LO_MASK                    0xFFFFFFFFUL
+#define STS_CONFIG_LO_STS_MAN_TH_BIT_OFFSET (16U)
+#define STS_CONFIG_LO_STS_MAN_TH_BIT_LEN (7U)
+#define STS_CONFIG_LO_STS_MAN_TH_BIT_MASK 0x7f0000UL
+#define STS_CONFIG_LO_STS_PMULT_BIT_OFFSET (5U)
+#define STS_CONFIG_LO_STS_PMULT_BIT_LEN  (2U)
+#define STS_CONFIG_LO_STS_PMULT_BIT_MASK 0x60U
+#define STS_CONFIG_LO_STS_NTM_BIT_OFFSET (0U)
+#define STS_CONFIG_LO_STS_NTM_BIT_LEN (5U)
+#define STS_CONFIG_LO_STS_NTM_BIT_MASK 0x1fU
+
+/******************************************************************************
+* @brief Bit definitions for register STS_CONFIG_HI
+**/
+#define STS_CONFIG_HI_ID                      0xe0016              /*  { aliased = true}  */
+#define STS_CONFIG_HI_LEN                     (4U)
+#define STS_CONFIG_HI_MASK                    0xFFFFFFFFUL
+#define STS_CONFIG_HI_STS_PGR_EN_BIT_OFFSET (31U)
+#define STS_CONFIG_HI_STS_PGR_EN_BIT_LEN  (1U)
+#define STS_CONFIG_HI_STS_PGR_EN_BIT_MASK 0x80000000UL
+#define STS_CONFIG_HI_STS_SS_EN_BIT_OFFSET (30U)
+#define STS_CONFIG_HI_STS_SS_EN_BIT_LEN    (1U)
+#define STS_CONFIG_HI_STS_SS_EN_BIT_MASK   0x40000000UL
+#define STS_CONFIG_HI_STS_CQ_EN_BIT_OFFSET (29U)
+#define STS_CONFIG_HI_STS_CQ_EN_BIT_LEN    (1U)
+#define STS_CONFIG_HI_STS_CQ_EN_BIT_MASK   0x20000000UL
+#define STS_CONFIG_HI_FP_AGREED_EN_BIT_OFFSET (28U)
+#define STS_CONFIG_HI_FP_AGREED_EN_BIT_LEN    (1U)
+#define STS_CONFIG_HI_FP_AGREED_EN_BIT_MASK   0x10000000UL
+
+/******************************************************************************
+* @brief Bit definitions for register CIA_ADJUST
+**/
+#define CIA_ADJUST_ID            0xe001a              /* {aliased=true} */
+#define CIA_ADJUST_LEN           (4U)
+#define CIA_ADJUST_MASK          0xFFFFFFFFUL
+#define CIA_ADJUST_PDOA_ADJ_OFFSET_BIT_OFFSET (0U)
+#define CIA_ADJUST_PDOA_ADJ_OFFSET_BIT_LEN (14U)
+#define CIA_ADJUST_PDOA_ADJ_OFFSET_BIT_MASK 0x3fffU
+
+/******************************************************************************
+* @brief Bit definitions for register PGF_DELAY_COMP_LO
+**/
+#define PGF_DELAY_COMP_LO_ID                 0xe001e              /* {aliased=true} */
+
+/******************************************************************************
+* @brief Bit definitions for register PGF_DELAY_COMP_HI
+**/
+#define PGF_DELAY_COMP_HI_ID                 0xe0022              /* {aliased=true} */
+
+/******************************************************************************
+* @brief Bit definitions for register EVENT_CTRL
+**/
+#define EVC_CTRL_ID                        0xf0000              
+#define EVC_CTRL_LEN                       (4U)                
+#define EVC_CTRL_MASK                      0xFFFFFFFFUL        
+#define EVC_CTRL_EVC_CLR_BIT_OFFSET (1U)                
+#define EVC_CTRL_EVC_CLR_BIT_LEN   (1U)                
+#define EVC_CTRL_EVC_CLR_BIT_MASK  0x2U                 
+#define EVC_CTRL_EVC_EN_BIT_OFFSET (0U)                
+#define EVC_CTRL_EVC_EN_BIT_LEN    (1U)                
+#define EVC_CTRL_EVC_EN_BIT_MASK   0x1U                 
+
+/******************************************************************************
+* @brief Bit definitions for register EVC_COUNT0
+**/
+#define EVC_COUNT0_ID                      0xf0004              
+#define EVC_COUNT0_LEN                     (4U)                
+#define EVC_COUNT0_MASK                    0xFFFFFFFFUL        
+#define EVC_COUNT0_EVC_RSE_BIT_OFFSET  (16U)               
+#define EVC_COUNT0_EVC_RSE_BIT_LEN     (12U)               
+#define EVC_COUNT0_EVC_RSE_BIT_MASK    0xfff0000UL          
+#define EVC_COUNT0_EVC_PHE_BIT_OFFSET  (0U)                
+#define EVC_COUNT0_EVC_PHE_BIT_LEN     (12U)               
+#define EVC_COUNT0_EVC_PHE_BIT_MASK    0xfffU               
+
+/******************************************************************************
+* @brief Bit definitions for register EVC_COUNT1
+**/
+#define EVC_COUNT1_ID                      0xf0008              
+#define EVC_COUNT1_LEN                     (4U)                
+#define EVC_COUNT1_MASK                    0xFFFFFFFFUL        
+#define EVC_COUNT1_EVC_FCE_BIT_OFFSET  (16U)               
+#define EVC_COUNT1_EVC_FCE_BIT_LEN     (12U)               
+#define EVC_COUNT1_EVC_FCE_BIT_MASK    0xfff0000UL          
+#define EVC_COUNT1_EVC_FCG_BIT_OFFSET  (0U)                
+#define EVC_COUNT1_EVC_FCG_BIT_LEN     (12U)               
+#define EVC_COUNT1_EVC_FCG_BIT_MASK    0xfffU               
+
+/******************************************************************************
+* @brief Bit definitions for register EVC_COUNT2
+**/
+#define EVC_COUNT2_ID                      0xf000c              
+#define EVC_COUNT2_LEN                     (4U)                
+#define EVC_COUNT2_MASK                    0xFFFFFFFFUL        
+#define EVC_COUNT2_EVC_OVR_BIT_OFFSET (16U)               
+#define EVC_COUNT2_EVC_OVR_BIT_LEN    (8U)                
+#define EVC_COUNT2_EVC_OVR_BIT_MASK   0xff0000UL           
+#define EVC_COUNT2_EVC_FFR_BIT_OFFSET   (0U)                
+#define EVC_COUNT2_EVC_FFR_BIT_LEN      (8U)                
+#define EVC_COUNT2_EVC_FFR_BIT_MASK     0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register EVC_COUNT3
+**/
+#define EVC_COUNT3_ID                      0xf0010              
+#define EVC_COUNT3_LEN                     (4U)                
+#define EVC_COUNT3_MASK                    0xFFFFFFFFUL        
+#define EVC_COUNT3_EVC_PTO_BIT_OFFSET  (16U)               
+#define EVC_COUNT3_EVC_PTO_BIT_LEN     (12U)               
+#define EVC_COUNT3_EVC_PTO_BIT_MASK    0xfff0000UL          
+#define EVC_COUNT3_EVC_STO_BIT_OFFSET  (0U)                
+#define EVC_COUNT3_EVC_STO_BIT_LEN     (12U)               
+#define EVC_COUNT3_EVC_STO_BIT_MASK    0xfffU               
+
+/******************************************************************************
+* @brief Bit definitions for register EVC_COUNT4
+**/
+#define EVC_COUNT4_ID                      0xf0014              
+#define EVC_COUNT4_LEN                     (4U)                
+#define EVC_COUNT4_MASK                    0xFFFFFFFFUL        
+#define EVC_COUNT4_EVC_TXFS_BIT_OFFSET  (16U)               
+#define EVC_COUNT4_EVC_TXFS_BIT_LEN     (12U)               
+#define EVC_COUNT4_EVC_TXFS_BIT_MASK    0xfff0000UL          
+#define EVC_COUNT4_EVC_FWTO_BIT_OFFSET   (0U)                
+#define EVC_COUNT4_EVC_FWTO_BIT_LEN      (8U)                
+#define EVC_COUNT4_EVC_FWTO_BIT_MASK     0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register EVC_COUNT5
+**/
+#define EVC_COUNT5_ID                      0xf0018              
+#define EVC_COUNT5_LEN                     (4U)                
+#define EVC_COUNT5_MASK                    0xFFFFFFFFUL        
+#define EVC_COUNT5_EVC_SWCE_BIT_OFFSET (16U)               
+#define EVC_COUNT5_EVC_SWCE_BIT_LEN    (8U)                
+#define EVC_COUNT5_EVC_SWCE_BIT_MASK   0xff0000UL           
+#define EVC_COUNT5_EVC_HPW_BIT_OFFSET (0U)                
+#define EVC_COUNT5_EVC_HPW_BIT_LEN    (8U)                
+#define EVC_COUNT5_EVC_HPW_BIT_MASK   0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register EVC_COUNT6
+**/
+#define EVC_COUNT6_ID                      0xf001c              
+#define EVC_COUNT6_LEN                     (4U)                
+#define EVC_COUNT6_MASK                    0xFFFFFFFFUL        
+#define EVC_COUNT6_EVC_PREJ_BIT_OFFSET (0U)                
+#define EVC_COUNT6_EVC_PREJ_BIT_LEN    (12U)               
+#define EVC_COUNT6_EVC_PREJ_BIT_MASK   0xfffU               
+            
+
+
+/******************************************************************************
+* @brief Bit definitions for register TEST_CTRL0
+**/
+#define TEST_CTRL0_ID                        0xf0024              
+#define TEST_CTRL0_LEN                       (4U)                
+#define TEST_CTRL0_MASK                      0xFFFFFFFFUL        
+#define TEST_CTRL0_CIA_RUN_BIT_OFFSET    (26U)               
+#define TEST_CTRL0_CIA_RUN_BIT_LEN       (1U)                
+#define TEST_CTRL0_CIA_RUN_BIT_MASK      0x4000000UL          
+#define TEST_CTRL0_CIA_WDEN_BIT_OFFSET    (24U)               
+#define TEST_CTRL0_CIA_WDEN_BIT_LEN       (1U)                
+#define TEST_CTRL0_CIA_WDEN_BIT_MASK      0x1000000UL          
+#define TEST_CTRL0_HIRQ_POL_BIT_OFFSET       (21U)               
+#define TEST_CTRL0_HIRQ_POL_BIT_LEN          (1U)                
+#define TEST_CTRL0_HIRQ_POL_BIT_MASK         0x200000UL           
+#define TEST_CTRL0_TX_PSTM_BIT_OFFSET          (4U)                
+#define TEST_CTRL0_TX_PSTM_BIT_LEN             (1U)                
+#define TEST_CTRL0_TX_PSTM_BIT_MASK            0x10U                
+
+/******************************************************************************
+* @brief Bit definitions for register EVC_COUNT7
+**/
+#define EVC_COUNT7_ID                      0xf0028              
+#define EVC_COUNT7_LEN                     (4U)                
+#define EVC_COUNT7_MASK                    0xFFFFFFFFUL        
+#define EVC_COUNT7_EVC_VWARN_BIT_OFFSET  (16U)               
+#define EVC_COUNT7_EVC_VWARN_BIT_LEN     (8U)                
+#define EVC_COUNT7_EVC_VWARN_BIT_MASK    0xff0000UL           
+#define EVC_COUNT7_EVC_CPQE_BIT_OFFSET  (0U)                
+#define EVC_COUNT7_EVC_CPQE_BIT_LEN     (8U)                
+#define EVC_COUNT7_EVC_CPQE_BIT_MASK    0xffU                
+
+/******************************************************************************
+* @brief Bit definitions for register SPI_MODE
+**/
+#define SPI_MODE_ID                          0xf002c              
+#define SPI_MODE_LEN                         (4U)                
+#define SPI_MODE_MASK                        0xFFFFFFFFUL        
+#define SPI_MODE_SPI_MODE_BIT_OFFSET         (0U)                
+#define SPI_MODE_SPI_MODE_BIT_LEN            (2U)                
+#define SPI_MODE_SPI_MODE_BIT_MASK           0x3U                 
+
+/******************************************************************************
+* @brief Bit definitions for register SYS_STATE_LO
+**/
+#define SYS_STATE_LO_ID                      0xf0030              
+#define SYS_STATE_LO_LEN                     (4U)                
+#define SYS_STATE_LO_MASK                    0xFFFFFFFFUL        
+
+
+
+/******************************************************************************
+* @brief Bit definitions for register FCMD_STATUS
+**/
+#define FCMD_STATUS_ID                       0xf003c              
+#define FCMD_STATUS_LEN                      (4U)                
+#define FCMD_STATUS_MASK                     0xFFFFFFFFUL        
+#define FCMD_STATUS_FCMD_STATUS_BIT_OFFSET   (0U)                
+#define FCMD_STATUS_FCMD_STATUS_BIT_LEN      (5U)                
+#define FCMD_STATUS_FCMD_STATUS_BIT_MASK     0x1fU                
+
+/******************************************************************************
+* @brief Bit definitions for register CTR_DBG
+**/
+#define CTR_DBG_ID                           0xf0048   
+#define CTR_DBG_LEN                          (4U)
+#define CTR_DBG_MASK                         0xFFFFFFFFUL
+#define CTR_DBG_CTR_DBG_BIT_OFFSET           (0U)
+#define CTR_DBG_CTR_DBG_BIT_LEN              (32U)
+#define CTR_DBG_CTR_DBG_BIT_MASK             0xffffffffUL
+
+/******************************************************************************
+* @brief Bit definitions for register SOFT_RST
+**/
+#define SOFT_RST_ID                          0x110000             
+#define SOFT_RST_LEN                         (4U)                
+#define SOFT_RST_MASK                        0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register CLK_CTRL
+**/
+#define CLK_CTRL_ID                          0x110004             
+#define CLK_CTRL_LEN                         (4U)                
+#define CLK_CTRL_MASK                        0xFFFFFFFFUL                          
+#define CLK_CTRL_LP_CLK_EN_BIT_OFFSET        (23U)               
+#define CLK_CTRL_LP_CLK_EN_BIT_LEN           (1U)                
+#define CLK_CTRL_LP_CLK_EN_BIT_MASK          0x800000UL                             
+#define CLK_CTRL_GPIO_DRST_N_BIT_OFFSET  (19U)               
+#define CLK_CTRL_GPIO_DRST_N_BIT_LEN     (1U)                
+#define CLK_CTRL_GPIO_DRST_N_BIT_MASK    0x80000UL            
+#define CLK_CTRL_GPIO_DCLK_EN_BIT_OFFSET (18U)               
+#define CLK_CTRL_GPIO_DCLK_EN_BIT_LEN    (1U)                
+#define CLK_CTRL_GPIO_DCLK_EN_BIT_MASK   0x40000UL            
+#define CLK_CTRL_GPIO_CLK_EN_BIT_OFFSET      (16U)               
+#define CLK_CTRL_GPIO_CLK_EN_BIT_LEN         (1U)                
+#define CLK_CTRL_GPIO_CLK_EN_BIT_MASK        0x10000UL            
+#define CLK_CTRL_ACC_MCLK_EN_BIT_OFFSET   (15U)               
+#define CLK_CTRL_ACC_MCLK_EN_BIT_LEN      (1U)                
+#define CLK_CTRL_ACC_MCLK_EN_BIT_MASK     0x8000U                         
+#define CLK_CTRL_TX_BUF_CLK_ON_BIT_OFFSET    (12U)               
+#define CLK_CTRL_TX_BUF_CLK_ON_BIT_LEN       (1U)                
+#define CLK_CTRL_TX_BUF_CLK_ON_BIT_MASK      0x1000U              
+#define CLK_CTRL_RX_BUF_CLK_ON_BIT_OFFSET    (11U)               
+#define CLK_CTRL_RX_BUF_CLK_ON_BIT_LEN       (1U)                
+#define CLK_CTRL_RX_BUF_CLK_ON_BIT_MASK      0x800U               
+#define CLK_CTRL_SAR_CLK_EN_BIT_OFFSET (10U)               
+#define CLK_CTRL_SAR_CLK_EN_BIT_LEN    (1U)                
+#define CLK_CTRL_SAR_CLK_EN_BIT_MASK   0x400U               
+#define CLK_CTRL_OTP_CLK_EN_BIT_OFFSET (9U)                
+#define CLK_CTRL_OTP_CLK_EN_BIT_LEN    (1U)                
+#define CLK_CTRL_OTP_CLK_EN_BIT_MASK   0x200U               
+#define CLK_CTRL_CIA_CLK_EN_BIT_OFFSET (8U)                
+#define CLK_CTRL_CIA_CLK_EN_BIT_LEN   (1U)                
+#define CLK_CTRL_CIA_CLK_EN_BIT_MASK  0x100U                            
+#define CLK_CTRL_ACC_CLK_EN_BIT_OFFSET    (6U)                
+#define CLK_CTRL_ACC_CLK_EN_BIT_LEN       (1U)                
+#define CLK_CTRL_ACC_CLK_EN_BIT_MASK      0x40U                
+#define CLK_CTRL_TX_CLK_SEL_BIT_OFFSET       (4U)                
+#define CLK_CTRL_TX_CLK_SEL_BIT_LEN          (2U)                
+#define CLK_CTRL_TX_CLK_SEL_BIT_MASK         0x30U                
+#define CLK_CTRL_RX_CLK_SEL_BIT_OFFSET       (2U)                
+#define CLK_CTRL_RX_CLK_SEL_BIT_LEN          (2U)                
+#define CLK_CTRL_RX_CLK_SEL_BIT_MASK         0xcU                 
+#define CLK_CTRL_SYS_CLK_SEL_BIT_OFFSET      (0U)                
+#define CLK_CTRL_SYS_CLK_SEL_BIT_LEN         (2U)                
+#define CLK_CTRL_SYS_CLK_SEL_BIT_MASK        0x3U                 
+
+/******************************************************************************
+* @brief Bit definitions for register SEQ_CTRL
+**/
+#define SEQ_CTRL_ID                          0x110008             
+#define SEQ_CTRL_LEN                         (4U)                
+#define SEQ_CTRL_MASK                        0xFFFFFFFFUL        
+#define SEQ_CTRL_LP_CLK_DIV_BIT_OFFSET       (26U)               
+#define SEQ_CTRL_LP_CLK_DIV_BIT_LEN          (6U)                
+#define SEQ_CTRL_LP_CLK_DIV_BIT_MASK         0xfc000000UL                            
+#define SEQ_CTRL_FORCE2INIT_BIT_OFFSET       (23U)               
+#define SEQ_CTRL_FORCE2INIT_BIT_LEN          (1U)                
+#define SEQ_CTRL_FORCE2INIT_BIT_MASK         0x800000UL           
+#define SEQ_CTRL_CIA_SEQ_EN_BIT_OFFSET       (17U)               
+#define SEQ_CTRL_CIA_SEQ_EN_BIT_LEN          (1U)                
+#define SEQ_CTRL_CIA_SEQ_EN_BIT_MASK         0x20000UL                       
+#define SEQ_CTRL_PLL_SYNC_MODE_BIT_OFFSET    (15U)               
+#define SEQ_CTRL_PLL_SYNC_MODE_BIT_LEN       (1U)                
+#define SEQ_CTRL_PLL_SYNC_MODE_BIT_MASK      0x8000U                          
+#define SEQ_CTRL_ARX2SLP_BIT_OFFSET      (12U)               
+#define SEQ_CTRL_ARX2SLP_BIT_LEN         (1U)                
+#define SEQ_CTRL_ARX2SLP_BIT_MASK        0x1000U              
+#define SEQ_CTRL_ATX2SLP_BIT_OFFSET      (11U)               
+#define SEQ_CTRL_ATX2SLP_BIT_LEN         (1U)                
+#define SEQ_CTRL_ATX2SLP_BIT_MASK        0x800U                            
+#define SEQ_CTRL_AINIT2IDLE_BIT_OFFSET   (8U)                
+#define SEQ_CTRL_AINIT2IDLE_BIT_LEN      (1U)                
+#define SEQ_CTRL_AINIT2IDLE_BIT_MASK     0x100U               
+               
+               
+                          
+
+/******************************************************************************
+* @brief Bit definitions for register PWR_UP_TIMES_LO
+**/
+#define PWR_UP_TIMES_LO_ID                   0x110010             
+#define PWR_UP_TIMES_LO_LEN                  (4U)                
+#define PWR_UP_TIMES_LO_MASK                 0xFFFFFFFFUL        
+#define PWR_UP_TIMES_TXFINESEQ_BIT_OFFSET    (0U)                
+#define PWR_UP_TIMES_TXFINESEQ_BIT_LEN       (32U)                
+#define PWR_UP_TIMES_TXFINESEQ_BIT_MASK      0xFFFFFFFFUL              
+
+
+/******************************************************************************
+* @brief Bit definitions for register LED_CTRL
+**/
+#define LED_CTRL_ID                          0x110016             /*  */
+#define LED_CTRL_LEN                         (4U)                
+#define LED_CTRL_MASK                        0xFFFFFFFFUL        
+#define LED_CTRL_FORCE_TRIGGER_BIT_OFFSET    (16U)               
+#define LED_CTRL_FORCE_TRIGGER_BIT_LEN       (4U)                
+#define LED_CTRL_FORCE_TRIGGER_BIT_MASK      0xf0000UL            
+#define LED_CTRL_BLINK_EN_BIT_OFFSET         (8U)                
+#define LED_CTRL_BLINK_EN_BIT_LEN            (1U)                
+#define LED_CTRL_BLINK_EN_BIT_MASK           0x100U               
+
+/******************************************************************************
+* @brief Bit definitions for register RX_SNIFF
+**/
+#define RX_SNIFF_ID                            0x11001a             /*  { aliased = true}  */
+#define RX_SNIFF_LEN                           (4U)                
+#define RX_SNIFF_MASK                          0xFFFFFFFFUL        
+#define RX_SNIFF_SNIFF_OFF_BIT_OFFSET            (8U)                
+#define RX_SNIFF_SNIFF_OFF_BIT_LEN               (8U)                
+#define RX_SNIFF_SNIFF_OFF_BIT_MASK              0xff00U              
+#define RX_SNIFF_SNIFF_ON_BIT_OFFSET             (0U)                
+#define RX_SNIFF_SNIFF_ON_BIT_LEN                (4U)                
+#define RX_SNIFF_SNIFF_ON_BIT_MASK               0xfU                 
+
+
+/******************************************************************************
+* @brief Bit definitions for register BIAS_CTRL
+**/
+#define BIAS_CTRL_ID                         0x11001f             /*  */
+#define BIAS_CTRL_LEN                        (4U)                
+#define BIAS_CTRL_MASK                       0xFFFFFFFFUL        
+#define BIAS_CTRL_BIAS_OFFSET (0U)                
+#define BIAS_CTRL_BIAS_LEN   (5U)                
+#define BIAS_CTRL_BIAS_MASK  0x1fU                
+
+/******************************************************************************
+* @brief Bit definitions for register FINT_STAT
+**/
+#define FINT_STAT_ID                         0x1F0000             
+#define FINT_STAT_LEN                        (4U)                
+#define FINT_STAT_MASK                       0xFFFFFFFFUL        
+#define FINT_STAT_SYS_PANIC_BIT_MASK         0x80U                
+#define FINT_STAT_SYS_EVENT_BIT_MASK         0x40U                
+#define FINT_STAT_RXTO_BIT_MASK              0x20U                
+#define FINT_STAT_RXERR_BIT_MASK             0x10U                
+#define FINT_STAT_RXOK_BIT_MASK              0x8U                 
+#define FINT_STAT_RXTSERR_BIT_MASK           0x4U                 
+#define FINT_STAT_CCA_FAIL_AAT_BIT_MASK      0x2U                 
+#define FINT_STAT_TXOK_BIT_MASK              0x1U 
+
+/******************************************************************************
+* @brief Bit definitions for register INDIRECT_ADDR_A
+**/
+#define INDIRECT_ADDR_A_ID                   0x1f0004             
+#define INDIRECT_ADDR_A_LEN                  (4U)                
+#define INDIRECT_ADDR_A_MASK                 0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register ADDR_OFFSET_A
+**/
+#define ADDR_OFFSET_A_ID                     0x1f0008             
+#define ADDR_OFFSET_A_LEN                    (4U)                
+#define ADDR_OFFSET_A_MASK                   0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register INDIRECT_ADDR_B
+**/
+#define INDIRECT_ADDR_B_ID                   0x1f000c             
+#define INDIRECT_ADDR_B_LEN                  (4U)                
+#define INDIRECT_ADDR_B_MASK                 0xFFFFFFFFUL        
+
+/******************************************************************************
+* @brief Bit definitions for register ADDR_OFFSET_B
+**/
+#define ADDR_OFFSET_B_ID                     0x1f0010             
+#define ADDR_OFFSET_B_LEN                    (4U)                
+#define ADDR_OFFSET_B_MASK                   0xFFFFFFFFUL        
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif
+#endif /* __DECA_REGS_H */

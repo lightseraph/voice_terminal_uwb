@@ -19,11 +19,12 @@
 #include "usart.h"
 #include "kalman.h"
 #include "trilateration.h"
+#include "eeprom.h"
 
 // 函数声明
-uint32 inittestapplication(uint8 s1switch);
+uint32_t inittestapplication(void);
 
-volatile uint8_t s1switch = 0;
+// volatile uint8_t s1switch = 0;
 uint8_t instance_anchaddr = 0;
 uint8_t dr_mode = 0;
 uint8_t tagaddr, ancaddr;
@@ -34,7 +35,7 @@ char lcd_data[LCD_BUFF_LEN];
 uint8_t max_tag_num = 10;
 uint8_t UART_RX_BUF[1];
 
-// 默认使用110K，channel2
+// 默认使用850K，channel5
 instanceConfig_t chConfig[2] = {
 	// mode 1 - SW: 2 off 850K ch5
 	{
@@ -98,14 +99,14 @@ sfConfig_t sfConfig[2] = {
 };
 
 /*
- * 函数名称：void addressconfigure(uint8 s1switch, uint8 mode)
+ * 函数名称：void addressconfigure(uint8_t s1switch, uint8_t mode)
  * 主要功能：
  * 设置设备短地址
  */
-void addressconfigure(uint8 s1switch, uint8 mode)
+void addressconfigure(uint8_t mode)
 {
-	uint16 instAddress;
-	instance_anchaddr = (((s1switch & SWS1_A1A_MODE) << 2) + (s1switch & SWS1_A2A_MODE) + ((s1switch & SWS1_A3A_MODE) >> 2)) >> 4;
+	uint16_t instAddress;
+	instance_anchaddr = rom_DeviceAddr();
 	// instance_anchaddr=11;
 	if (mode == ANCHOR)
 	{
@@ -119,51 +120,39 @@ void addressconfigure(uint8 s1switch, uint8 mode)
 }
 
 /*
- * 函数名称：int decarangingmode(uint8 s1switch)
+ * 函数名称：int decarangingmode(uint8_t s1switch)
  * 主要功能：
  * 根据拨码开关读取工作模式
  */
-int decarangingmode(uint8 s1switch)
+int decarangingmode(uint8_t s1switch)
 {
-	int mode = 0;
-	if (s1switch & SWS1_SHF_MODE)
-	{
-		mode = 1;
-	}
-	return mode;
+	return rom_DeviceMode();
 }
 
 /*
- * 函数名称：uint32 inittestapplication(uint8 s1switch)
+ * 函数名称：uint32_t inittestapplication(uint8_t s1switch)
  * 主要功能：
  * dw1000初始化
  */
-uint32 inittestapplication(uint8 s1switch)
+uint32_t inittestapplication(void)
 {
-	uint32 devID;
+	uint32_t devID;
 	int result;
 
 	devID = instance_readdeviceid(); // 读取设备ID
-	if (DWT_DEVICE_ID != devID)		 // 如读取失败，先执行唤醒
+	if (DWT_A0_DEV_ID != devID)		 // 如读取失败，先执行唤醒
 	{
-		port_wakeup_dw1000(); // 使用SPI-NS管脚唤醒DW1000
+		dwt_wakeup_ic(); // 使用SPI-NS管脚唤醒DW1000
 		devID = instance_readdeviceid();
-		if (DWT_DEVICE_ID != devID) // SPI异常，或硬件故障
+		if (DWT_A0_DEV_ID != devID) // SPI异常，或硬件故障
 		{
 			return (-1); // 返回错误
 		}
 		dwt_softreset(); // 软件复位
 	}
-	reset_DW1000(); // 复位
+	reset_DWIC(); // 复位
 
-	if ((s1switch & SWS1_ANC_MODE) == 0) // 读取设备角色
-	{
-		instance_mode = TAG;
-	}
-	else
-	{
-		instance_mode = ANCHOR;
-	}
+	instance_mode = rom_DeviceMode();
 
 	result = instance_init(instance_mode); // 设置工作模式
 	if (0 > result)
@@ -171,17 +160,17 @@ uint32 inittestapplication(uint8 s1switch)
 		return (-1);
 	}
 
-	port_set_dw1000_fastrate();		 // SPI高速模式
+	port_set_dw_ic_spi_fastrate();	 // SPI高速模式
 	devID = instance_readdeviceid(); // 读取设备ID
 
-	if (DWT_DEVICE_ID != devID) // SPI异常，或硬件故障
+	if (DWT_A0_DEV_ID != devID) // SPI异常，或硬件故障
 	{
 		return (-1);
 	}
 
-	addressconfigure(s1switch, instance_mode); // 设置设备短地址
-	dr_mode = decarangingmode(s1switch);	   // 读取拨码开关第2位，on=6.8M,15tags,28*4ms   off=110K,4tags,10*15ms
-	instance_config(&chConfig[dr_mode], &sfConfig[dr_mode], s1switch);
+	addressconfigure(instance_mode); // 设置设备短地址
+	dr_mode = 0;					 // 读取拨码开关第2位，on=6.8M,15tags,28*4ms   off=110K,4tags,10*15ms
+	instance_config(&chConfig[dr_mode], &sfConfig[dr_mode]);
 	if (dr_mode == 1)
 	{
 		max_tag_num = MAX_TAG_68M;
@@ -194,16 +183,16 @@ uint32 inittestapplication(uint8 s1switch)
 }
 
 /*
- * 函数名称：void setLCDline1(uint8 s1switch)
+ * 函数名称：void setLCDline1(uint8_t s1switch)
  * 主要功能：
  * OLED显示
  */
 #if (OLED == 1)
-void setLCDline1(uint8 s1switch)
+void setLCDline1(void)
 {
 	int role = instance_get_role();
 
-	sprintf((char *)&lcd_data[0], "%s%s%s", (s1switch & SWS1_KAM_MODE) ? "K-" : "  ", (s1switch & SWS1_SHF_MODE) ? "F-" : "L-", (s1switch & SWS1_HPR_MODE) ? "30dBm" : "20dBm");
+	// sprintf((char *)&lcd_data[0], "%s%s%s", (s1switch & SWS1_KAM_MODE) ? "K-" : "  ", (s1switch & SWS1_SHF_MODE) ? "F-" : "L-", (s1switch & SWS1_HPR_MODE) ? "30dBm" : "20dBm");
 	LCD_DISPLAY(55, 48, lcd_data);
 	tagaddr = instance_anchaddr;
 	ancaddr = instance_anchaddr;
@@ -247,17 +236,17 @@ int dw_main(void)
 
 	port_DisableEXT_IRQ();
 
-	s1switch = portB_is_switch_on(TA_SW1_2) << 1 // 读取拨码开关
-			   | portC_is_switch_on(TA_SW1_3) << 2 | portC_is_switch_on(TA_SW1_4) << 3 | portC_is_switch_on(TA_SW1_5) << 4 | portC_is_switch_on(TA_SW1_6) << 5 | portC_is_switch_on(TA_SW1_7) << 6 | portC_is_switch_on(TA_SW1_8) << 7;
+	// s1switch = portB_is_switch_on(TA_SW1_2) << 1 // 读取拨码开关
+	//		   | portC_is_switch_on(TA_SW1_3) << 2 | portC_is_switch_on(TA_SW1_4) << 3 | portC_is_switch_on(TA_SW1_5) << 4 | portC_is_switch_on(TA_SW1_6) << 5 | portC_is_switch_on(TA_SW1_7) << 6 | portC_is_switch_on(TA_SW1_8) << 7;
 
-	if (inittestapplication(s1switch) == (uint32)-1) // 初始化dw1000错误
+	if (inittestapplication() == (uint32_t)-1) // 初始化dw1000错误
 	{
 		led_on(LED_ALL); // led_常亮kalman_filter
 #if (OLED == 1)
 		memset(lcd_data, ' ', LCD_BUFF_LEN);
-		memcpy(lcd_data, (const uint8 *)"ERROR   ", 12);
+		memcpy(lcd_data, (const uint8_t *)"ERROR   ", 12);
 		LCD_DISPLAY(0, 16, lcd_data);
-		memcpy(lcd_data, (const uint8 *)"  INIT FAIL ", 12);
+		memcpy(lcd_data, (const uint8_t *)"  INIT FAIL ", 12);
 		LCD_DISPLAY(0, 32, lcd_data);
 #endif
 		return 0;
@@ -269,7 +258,7 @@ int dw_main(void)
 
 #if (OLED == 1)
 	memset(lcd_data, ' ', LCD_BUFF_LEN);
-	setLCDline1(s1switch);
+	setLCDline1();
 #endif
 	port_EnableEXT_IRQ(); // 使能中断
 
@@ -405,7 +394,7 @@ int dw_main(void)
 				int A1_DIST = instance_get_idist_mm(1);
 				int A2_DIST = instance_get_idist_mm(2);
 				int A3_DIST = instance_get_idist_mm(3);
-				if (s1switch & SWS1_KAM_MODE) // 第8拨码开关=on,开启卡尔曼滤波
+				if (inst->is_Kalman) // 第8拨码开关=on,开启卡尔曼滤波
 				{
 					// 初次开机后，先获取10个测距值后，再进行卡尔曼滤波
 					// 否则初值为0，测距值如果是20，会有从0到20的过程
@@ -583,7 +572,7 @@ int dw_main(void)
 				if (instance_mode == TAG) // 标签输出十进制测距数据和位置坐标
 				{
 					UART_TX_DATA_len2 = sprintf((char *)&UART_TX_DATA2[0], "$%sT%d,%s,%s,%s,%s,%s\r\n",
-												(s1switch & SWS1_KAM_MODE) ? "K" : "NK", taddr, A0_dis_char, A1_dis_char, A2_dis_char, A3_dis_char, Location_char);
+												(rom_KalFilter()) ? "K" : "NK", taddr, A0_dis_char, A1_dis_char, A2_dis_char, A3_dis_char, Location_char);
 
 					strcat((char *)&UART_TX_DATA[0], (char *)&UART_TX_DATA2[0]);
 					UART_TX_DATA_len = UART_TX_DATA_len + UART_TX_DATA_len2;
@@ -600,7 +589,7 @@ int dw_main(void)
 				{
 					NanTWRReports = 0;
 					int taddr = instance_newrangetagadd() & 0xf;
-					UART_TX_DATA_len = sprintf((char *)&UART_TX_DATA[0], "$%sT%d,NULL,NULL,NULL,NULL\r\n", (s1switch & SWS1_KAM_MODE) ? "K" : "NK", taddr);
+					UART_TX_DATA_len = sprintf((char *)&UART_TX_DATA[0], "$%sT%d,NULL,NULL,NULL,NULL\r\n", (inst->is_Kalman) ? "K" : "NK", taddr);
 				}
 			}
 		}
@@ -638,7 +627,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		UART_RX_DATA_len++;
 		if (UART_RX_BUF[0] == '#')
 		{
-			led_toggle(LED_PC7);
+			// led_toggle(LED_PC7);
 			UART_RX_start_flag = 0;
 			HAL_UART_Transmit_DMA(&huart1, &UART_RX_DATA[0], UART_RX_DATA_len);
 			/*

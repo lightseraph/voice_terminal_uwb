@@ -12,24 +12,24 @@
 #include "instance.h"
 
 /*
- * 函数名称：void tag_enable_rx(uint32 dlyTime)
+ * 函数名称：void tag_enable_rx(uint32_t dlyTime)
  * 主要功能：
  * 标签使能接收功能，传入参数：延时时间
  *
  */
-void tag_enable_rx(uint32 dlyTime)
+void tag_enable_rx(uint32_t dlyTime)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
 	dwt_setdelayedtrxtime(dlyTime - inst->preambleDuration32h);
 	if (dwt_rxenable(DWT_START_RX_DELAYED | DWT_IDLE_ON_DLY_ERR) == DWT_ERROR) // 延时打开接收机
 	{
 		// 设置延时开启接收机失败，立即开启接收
-		dwt_setpreambledetecttimeout(0);					   // 清除前导码超时
-		dwt_setrxtimeout((uint16)inst->fwto4RespFrame_sy * 2); // 设置延时RX时间，加长超时时间以便多接收一会
-		dwt_rxenable(DWT_START_RX_IMMEDIATE);				   // 开启接收，立即开启
+		dwt_setpreambledetecttimeout(0);						 // 清除前导码超时
+		dwt_setrxtimeout((uint16_t)inst->fwto4RespFrame_sy * 2); // 设置延时RX时间，加长超时时间以便多接收一会
+		dwt_rxenable(DWT_START_RX_IMMEDIATE);					 // 开启接收，立即开启
 		// 恢复设置前的参数
-		dwt_setpreambledetecttimeout(PTO_PACS);			   // 设置前导码超时时间
-		dwt_setrxtimeout((uint16)inst->fwto4RespFrame_sy); // 恢复设置接收超时时间为resp消息时长
+		dwt_setpreambledetecttimeout(PTO_PACS);				 // 设置前导码超时时间
+		dwt_setrxtimeout((uint16_t)inst->fwto4RespFrame_sy); // 恢复设置接收超时时间为resp消息时长
 	}
 }
 
@@ -75,15 +75,15 @@ void tag_process_rx_timeout(instance_data_t *inst)
 }
 
 /*
- * 函数名称：uint8 tag_rx_reenable(uint16 sourceAddress, uint8 error)
+ * 函数名称：uint8_t tag_rx_reenable(uint16_t sourceAddress, uint8_t error)
  * 主要功能：
  * 用于接收多个resp的接收机重复使能
  *
  */
-uint8 tag_rx_reenable(uint16 sourceAddress, uint8 error)
+uint8_t tag_rx_reenable(uint16_t sourceAddress, uint8_t error)
 {
-	uint8 type_pend = DWT_SIG_DW_IDLE;
-	uint8 anc = sourceAddress;
+	uint8_t type_pend = DWT_SIG_DW_IDLE;
+	uint8_t anc = sourceAddress;
 	instance_data_t *inst = instance_get_local_structure_ptr();
 
 	switch (anc)
@@ -182,60 +182,57 @@ void rx_err_cb_tag(const dwt_cb_data_t *rxd)
 void rx_ok_cb_tag(const dwt_cb_data_t *rxd)
 {
 	instance_data_t *inst = instance_get_local_structure_ptr();
-	uint8 rxTimeStamp[5] = {0, 0, 0, 0, 0}; // 接收数据时间戳
+	uint8_t rxTimeStamp[5] = {0, 0, 0, 0, 0}; // 接收数据时间戳
 
-	uint8 rxd_event = 0;
-	uint8 fcode_index = 0;
-	uint8 srcAddr_index = 0;
+	uint8_t rxd_event = 0;
+	uint8_t fcode_index = 0;
+	uint8_t srcAddr_index = 0;
 	event_data_t dw_event;
 
 	dw_event.uTimeStamp = portGetTickCnt(); // 记录时间，调试用
 	dw_event.rxLength = rxd->datalength;
 
 	// 校验frame control为0X41 0X88，标准数据帧头格式，短地址模式
-	if (rxd->fctrl[0] == 0x41)
+
+	fcode_index = FRAME_CRTL_AND_ADDRESS_S;
+	srcAddr_index = FRAME_CTRLP + ADDR_BYTE_SIZE_S;
+	rxd_event = DWT_SIG_RX_OKAY; // 设置接收成功事件标志位
+
+#if (DISCOVERY == 1)						 // DISCOVERY模式的bilnk会使用8byte的长地址
+	else if ((rxd->fctrl[1] & 0xCC) == 0x8c) // long/short address - ranging init message
 	{
-		if ((rxd->fctrl[1] & 0xCC) == 0x88)
-		{
-			fcode_index = FRAME_CRTL_AND_ADDRESS_S;
-			srcAddr_index = FRAME_CTRLP + ADDR_BYTE_SIZE_S;
-			rxd_event = DWT_SIG_RX_OKAY; // 设置接收成功事件标志位
-		}
-#if (DISCOVERY == 1)							 // DISCOVERY模式的bilnk会使用8byte的长地址
-		else if ((rxd->fctrl[1] & 0xCC) == 0x8c) // long/short address - ranging init message
-		{
-			fcode_index = FRAME_CRTL_AND_ADDRESS_LS; // function code is in first byte after source address
-			srcAddr_index = FRAME_CTRLP + ADDR_BYTE_SIZE_L;
-			rxd_event = DWT_SIG_RX_OKAY;
-		}
-#endif
-		else
-		{
-			rxd_event = SIG_RX_UNKNOWN; // 错误消息头
-		}
+		fcode_index = FRAME_CRTL_AND_ADDRESS_LS; // function code is in first byte after source address
+		srcAddr_index = FRAME_CTRLP + ADDR_BYTE_SIZE_L;
+		rxd_event = DWT_SIG_RX_OKAY;
 	}
-	else
+#endif
+	/* else
 	{
 		rxd_event = SIG_RX_UNKNOWN; // 错误消息头
 	}
+}
+else
+{
+	rxd_event = SIG_RX_UNKNOWN; // 错误消息头
+} */
 
-	dwt_readrxtimestamp(rxTimeStamp);									  // 读取接收时间戳
-	dwt_readrxdata((uint8 *)&dw_event.msgu.frame[0], rxd->datalength, 0); // 读取接收数据
-	instance_seteventtime(&dw_event, rxTimeStamp);						  // 接收时间接入事件消息
+	dwt_readrxtimestamp(rxTimeStamp);										// 读取接收时间戳
+	dwt_readrxdata((uint8_t *)&dw_event.msgu.frame[0], rxd->datalength, 0); // 读取接收数据
+	instance_seteventtime(&dw_event, rxTimeStamp);							// 接收时间接入事件消息
 
 	dw_event.type = 0;
 	dw_event.typePend = DWT_SIG_DW_IDLE;
 
 	if (rxd_event == DWT_SIG_RX_OKAY) // 正确接收消息
 	{
-		uint16 sourceAddress = (((uint16)dw_event.msgu.frame[srcAddr_index + 1]) << 8) + dw_event.msgu.frame[srcAddr_index]; // 获取源地址
-		switch (dw_event.msgu.frame[fcode_index])																			 // 识别功能码
+		uint16_t sourceAddress = (((uint16_t)dw_event.msgu.frame[srcAddr_index + 1]) << 8) + dw_event.msgu.frame[srcAddr_index]; // 获取源地址
+		switch (dw_event.msgu.frame[fcode_index])																				 // 识别功能码
 		{
 		case RTLS_DEMO_MSG_ANCH_RESP: // 当前消息是基站的resp消息
 		{
 			if (inst->twrMode == INITIATOR)
 			{
-				uint8 index;
+				uint8_t index;
 				inst->remainingRespToRx--;
 				dw_event.typePend = tag_rx_reenable(sourceAddress, 0);	   // 打开接收机等待下一个基站的resep消息
 				index = RRXT0 + 5 * (sourceAddress);					   // 从final消息的第7个字节写入respRX时间戳，每个时间戳占5个字节
@@ -285,9 +282,9 @@ int tag_app_run(instance_data_t *inst)
 	{
 	case TA_INIT: // 标签初始化状态，设置初始化参数
 	{
-		uint16 sleep_mode = 0;											 // 初始化sleep_mode=0
-		dwt_enableframefilter(DWT_FF_DATA_EN | DWT_FF_ACK_EN);			 // 设置帧过滤模式，允许接收帧数据和ACK数据
-		memcpy(inst->eui64, &inst->instanceAddress16, ADDR_BYTE_SIZE_S); // 将标签EUI的最后2个字节设置为标签短地址，如T1标签的EUI=[FF FF FF FF 00 00 00 01]
+		// uint16_t sleep_mode = 0;														  // 初始化sleep_mode=0
+		dwt_configureframefilter(DWT_FF_ENABLE_802_15_4, DWT_FF_DATA_EN | DWT_FF_ACK_EN); // 设置帧过滤模式，允许接收帧数据和ACK数据
+		memcpy(inst->eui64, &inst->instanceAddress16, ADDR_BYTE_SIZE_S);				  // 将标签EUI的最后2个字节设置为标签短地址，如T1标签的EUI=[FF FF FF FF 00 00 00 01]
 
 		dwt_seteui(inst->eui64);   // 写入寄存器，设置标签EUI
 		dwt_setpanid(inst->panID); // 写入寄存器，设置标签PANID
@@ -308,12 +305,12 @@ int tag_app_run(instance_data_t *inst)
 #endif
 		inst->rangeNum = 0;				 // 初始化rangeNum=0
 		inst->tagSleepCorrection_ms = 0; // 初始化tagSleepCorrection_ms=0，标签休眠进入对应的SLOT校准值
-		// 以下设置默认休眠模式
-		sleep_mode = (DWT_PRESRV_SLEEP | DWT_CONFIG | DWT_TANDV);
-		if (inst->configData.txPreambLength == DWT_PLEN_64)
-		{
-			sleep_mode |= DWT_LOADOPSET;
-		}
+										 // 以下设置默认休眠模式
+										 /* sleep_mode = (DWT_PRES_SLEEP | DWT_CONFIG | DWT_TANDV);
+										 if (inst->configData.txPreambLength == DWT_PLEN_64)
+										 {
+											 sleep_mode |= DWT_LOADOPSET;
+										 } */
 #if (DEEP_SLEEP == 1)
 		dwt_configuresleep(sleep_mode, DWT_WAKE_WK | DWT_WAKE_CS | DWT_SLP_EN); // configure the on wake parameters (upload the IC config settings)
 #endif
@@ -343,7 +340,7 @@ int tag_app_run(instance_data_t *inst)
 #if (DEEP_SLEEP == 1)
 		{
 			// 唤醒DWM1000
-			port_wakeup_dw1000_fast();
+			port_wakeup_dw3000_fast();
 
 			// 设置收发LED闪烁模式
 			dwt_setleds(1);
@@ -399,7 +396,7 @@ int tag_app_run(instance_data_t *inst)
 		inst->blinkmsg.frameCtrl = 0xC5;
 		inst->blinkmsg.seqNum = inst->frameSN++;
 
-		dwt_writetxdata(flength, (uint8 *)(&inst->blinkmsg), 0); // write the frame data
+		dwt_writetxdata(flength, (uint8_t *)(&inst->blinkmsg), 0); // write the frame data
 		dwt_writetxfctrl(flength, 0, 1);
 
 		inst->twrMode = GREETER;
@@ -407,9 +404,9 @@ int tag_app_run(instance_data_t *inst)
 		inst->wait4ack = DWT_RESPONSE_EXPECTED;
 		inst->rxResponseMask = 0;
 
-		dwt_setrxtimeout((uint16)inst->fwto4RespFrame_sy * 2); // units are symbols (x2 as ranging init > response)
+		dwt_setrxtimeout((uint16_t)inst->fwto4RespFrame_sy * 2); // units are symbols (x2 as ranging init > response)
 		// set the delayed rx on time (the ranging init will be sent after this delay)
-		dwt_setrxaftertxdelay((uint32)inst->tagRespRxDelay_sy); // units are 1.0256us - wait for wait4respTIM before RX on (delay RX)
+		dwt_setrxaftertxdelay((uint32_t)inst->tagRespRxDelay_sy); // units are 1.0256us - wait for wait4respTIM before RX on (delay RX)
 
 		dwt_starttx(DWT_START_TX_IMMEDIATE | inst->wait4ack); // always using immediate TX and enable delayed RX
 
@@ -430,16 +427,16 @@ int tag_app_run(instance_data_t *inst)
 		inst->msg_f.sourceAddr[1] = (inst->instanceAddress16 >> 8) & 0xff;
 		inst->msg_f.destAddr[0] = 0xff; // POLL数据协议中的目标地址，POLL消息是广播，则为0xFFFF
 		inst->msg_f.destAddr[1] = 0xff;
-		dwt_writetxdata(inst->psduLength, (uint8 *)&inst->msg_f, 0); // 将数据帧写入相应寄存器
-		dwt_setrxaftertxdelay((uint32)inst->tagRespRxDelay_sy);		 // 设置发送后延时tagRespRxDelay_sy打开接收机进行A0的resp消息接收
-		inst->remainingRespToRx = MAX_ANCHOR_LIST_SIZE;				 // 期望收到4个RESP消息
-		dwt_setrxtimeout((uint16)inst->fwto4RespFrame_sy);			 // 设置接收超时时间
-		dwt_setpreambledetecttimeout(PTO_PACS);						 // 设置前导码超时时间
-		inst->rxResponseMask = 0;									 // 复位接收到resp的标志字节
-		inst->wait4ack = DWT_RESPONSE_EXPECTED;						 // 设置发送消息后等待接收，则系统将自动在发射后开启接收机等待接收数据
-		dwt_writetxfctrl(inst->psduLength, 0, 1);					 // 设置发送数据帧控制格式
-		inst->twrMode = INITIATOR;									 // 设置当前板卡TWR模式，POLL发起者为INITIATOR
-		dwt_starttx(DWT_START_TX_IMMEDIATE | DWT_RESPONSE_EXPECTED); // 控制消息发出
+		dwt_writetxdata(inst->psduLength, (uint8_t *)&inst->msg_f, 0); // 将数据帧写入相应寄存器
+		dwt_setrxaftertxdelay((uint32_t)inst->tagRespRxDelay_sy);	   // 设置发送后延时tagRespRxDelay_sy打开接收机进行A0的resp消息接收
+		inst->remainingRespToRx = MAX_ANCHOR_LIST_SIZE;				   // 期望收到4个RESP消息
+		dwt_setrxtimeout((uint16_t)inst->fwto4RespFrame_sy);		   // 设置接收超时时间
+		dwt_setpreambledetecttimeout(PTO_PACS);						   // 设置前导码超时时间
+		inst->rxResponseMask = 0;									   // 复位接收到resp的标志字节
+		inst->wait4ack = DWT_RESPONSE_EXPECTED;						   // 设置发送消息后等待接收，则系统将自动在发射后开启接收机等待接收数据
+		dwt_writetxfctrl(inst->psduLength, 0, 1);					   // 设置发送数据帧控制格式
+		inst->twrMode = INITIATOR;									   // 设置当前板卡TWR模式，POLL发起者为INITIATOR
+		dwt_starttx(DWT_START_TX_IMMEDIATE | DWT_RESPONSE_EXPECTED);   // 控制消息发出
 
 		inst->AppState = TA_TX_WAIT_CONF;		   // 设置状态标志位为TA_TX_WAIT_CONF
 		inst->previousState = TA_TXPOLL_WAIT_SEND; // 设置上一个状态为TA_TXPOLL_WAIT_SEND
@@ -455,7 +452,7 @@ int tag_app_run(instance_data_t *inst)
 		inst->msg_f.messageData[FCODE] = RTLS_DEMO_MSG_TAG_FINAL;					   // 设置function code
 		inst->psduLength = (TAG_FINAL_MSG_LEN + FRAME_CRTL_AND_ADDRESS_S + FRAME_CRC); // 设置数据长度
 		inst->msg_f.seqNum = inst->frameSN++;										   // 设置消息seqNum
-		dwt_writetxdata(inst->psduLength, (uint8 *)&inst->msg_f, 0);				   // 将数据写入寄存器
+		dwt_writetxdata(inst->psduLength, (uint8_t *)&inst->msg_f, 0);				   // 将数据写入寄存器
 		inst->wait4ack = 0;															   // 清除标志位
 
 		if (instance_send_delayed_frame(inst, DWT_START_TX_DELAYED)) // 延时发送
@@ -479,7 +476,7 @@ int tag_app_run(instance_data_t *inst)
 
 	case TA_TX_WAIT_CONF: // 等待发送数据成功并进入下一个状态
 	{
-		static uint32 count = 0;
+		static uint32_t count = 0;
 		event_data_t *dw_event = instance_getevent(); // 读取事件消息
 		/*
 			1、发送完成并成功后会产生中断，中断后进入回调函数TX_conf_cb()
@@ -514,7 +511,7 @@ int tag_app_run(instance_data_t *inst)
 
 			if (inst->previousState == TA_TXPOLL_WAIT_SEND) // 上一个状态标志位是TA_TXPOLL_WAIT_SEND
 			{
-				uint64 tagCalculatedFinalTxTime; // 定义final发送时间戳
+				uint64_t tagCalculatedFinalTxTime; // 定义final发送时间戳
 				// final发送的时间=当前时间+固定的poll到final的时间延时
 				tagCalculatedFinalTxTime = (inst->txu.txTimeStamp + inst->pollTx2FinalTxDelay) & MASK_TXDTS;
 				inst->delayedTRXTime32h = tagCalculatedFinalTxTime >> 8;					// delayedTRXTime32h为设置发送消息后延时某时间后再次发送的延时时间
@@ -527,9 +524,9 @@ int tag_app_run(instance_data_t *inst)
 					3、把T写入final消息中
 				*/
 				// 将final的TX时间戳写入final消息中
-				memcpy(&(inst->msg_f.messageData[FTXT]), (uint8 *)&tagCalculatedFinalTxTime, 5);
+				memcpy(&(inst->msg_f.messageData[FTXT]), (uint8_t *)&tagCalculatedFinalTxTime, 5);
 				// 将poll的TX时间戳写入final消息中
-				memcpy(&(inst->msg_f.messageData[PTXT]), (uint8 *)&inst->txu.tagPollTxTime, 5);
+				memcpy(&(inst->msg_f.messageData[PTXT]), (uint8_t *)&inst->txu.tagPollTxTime, 5);
 			}
 			inst->AppState = TA_RX_WAIT_DATA; // 设置状态机标志位为TA_RX_WAIT_DATA，等待接收消息
 			message = 0;					  // 清空message，等待读取
@@ -543,11 +540,11 @@ int tag_app_run(instance_data_t *inst)
 		case DWT_SIG_RX_OKAY: // 收到数据帧
 		{
 			event_data_t *dw_event = instance_getevent(); // 接收事件消息
-			uint8 srcAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-			uint8 dstAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+			uint8_t srcAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+			uint8_t dstAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 			int fcode = 0;
-			uint8 tof_idx = 0;
-			uint8 *messageData;
+			uint8_t tof_idx = 0;
+			uint8_t *messageData;
 
 			memcpy(&srcAddr[0], &(dw_event->msgu.rxmsg_ss.sourceAddr[0]), ADDR_BYTE_SIZE_S); // 读取源地址
 			memcpy(&dstAddr[0], &(dw_event->msgu.rxmsg_ss.destAddr[0]), ADDR_BYTE_SIZE_S);	 // 读取目标地址
@@ -559,14 +556,14 @@ int tag_app_run(instance_data_t *inst)
 			{
 			case RTLS_DEMO_MSG_ANCH_RESP: // 收到基站发送的resp消息
 			{
-				uint8 currentRangeNum = (messageData[TOFRN] + 1);					   // 计算RangeNum
-				if (GATEWAY_ANCHOR_ADDR == (srcAddr[0] | ((uint32)(srcAddr[1] << 8)))) // 收到A0(主基站)的resp消息
+				uint8_t currentRangeNum = (messageData[TOFRN] + 1);						 // 计算RangeNum
+				if (GATEWAY_ANCHOR_ADDR == (srcAddr[0] | ((uint32_t)(srcAddr[1] << 8)))) // 收到A0(主基站)的resp消息
 				{
 					/*
 						A0基站具有SleepCorrection校准功能，此处接收校准信息
 						tagSleepRnd_ms是未收到A0校准信息的默认测距周期，如收到A0消息后，将tagSleepRnd_ms清零不再使用
 					*/
-					inst->tagSleepCorrection_ms = (int16)(((uint16)messageData[RES_TAG_SLP1] << 8) + messageData[RES_TAG_SLP0]);
+					inst->tagSleepCorrection_ms = (int16_t)(((uint16_t)messageData[RES_TAG_SLP1] << 8) + messageData[RES_TAG_SLP0]);
 					inst->tagSleepRnd_ms = 0;
 				}
 
@@ -611,20 +608,20 @@ int tag_app_run(instance_data_t *inst)
 		case RTLS_DEMO_MSG_RNG_INIT: // 测距初始化数据，当DISCOVERY=1时会产生该消息
 		{
 			event_data_t *dw_event = instance_getevent(); // get and clear this event
-			uint8 srcAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+			uint8_t srcAddr[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
-			uint8 *messageData = &dw_event->msgu.rxmsg_ls.messageData[0];
+			uint8_t *messageData = &dw_event->msgu.rxmsg_ls.messageData[0];
 			memcpy(&srcAddr[0], &(dw_event->msgu.rxmsg_ls.sourceAddr[0]), ADDR_BYTE_SIZE_S);
 
-			if (GATEWAY_ANCHOR_ADDR == (srcAddr[0] | ((uint32)(srcAddr[1] << 8)))) // if response from gateway then use the correction factor
+			if (GATEWAY_ANCHOR_ADDR == (srcAddr[0] | ((uint32_t)(srcAddr[1] << 8)))) // if response from gateway then use the correction factor
 			{
 				// casting received bytes to int because this is a signed correction -0.5 periods to +1.5 periods
-				inst->tagSleepCorrection_ms = (int16)(((uint16)messageData[RES_TAG_SLP1] << 8) + messageData[RES_TAG_SLP0]);
+				inst->tagSleepCorrection_ms = (int16_t)(((uint16_t)messageData[RES_TAG_SLP1] << 8) + messageData[RES_TAG_SLP0]);
 				inst->tagSleepRnd_ms = 0; // once we have initial response from Anchor #0 the slot correction acts and we don't need this anymore
 			}
 
 			// get short address from anchor
-			inst->instanceAddress16 = (int16)(((uint16)messageData[RES_TAG_ADD1] << 8) + messageData[RES_TAG_ADD0]);
+			inst->instanceAddress16 = (int16_t)(((uint16_t)messageData[RES_TAG_ADD1] << 8) + messageData[RES_TAG_ADD0]);
 
 			// set source address
 			inst->newRangeTagAddress = inst->instanceAddress16;
@@ -697,11 +694,11 @@ int tag_run(void)
 
 	if (done == INST_DONE_WAIT_FOR_NEXT_EVENT_TO) // 标签完成一次测距周期，进入休眠
 	{
-		int32 nextPeriod; // 设置下次测距周期开始时间=休眠时间+校准时间
+		int32_t nextPeriod; // 设置下次测距周期开始时间=休眠时间+校准时间
 		nextPeriod = inst->tagSleepRnd_ms + inst->tagSleepTime_ms + inst->tagSleepCorrection_ms;
-		inst->nextWakeUpTime_ms = (uint32)nextPeriod; // 设置唤醒时间
-		inst->tagSleepCorrection_ms = 0;			  // 清除tagSleepCorrection_ms
-		inst->instanceTimerEn = 1;					  // 开始计时器计时
+		inst->nextWakeUpTime_ms = (uint32_t)nextPeriod; // 设置唤醒时间
+		inst->tagSleepCorrection_ms = 0;				// 清除tagSleepCorrection_ms
+		inst->instanceTimerEn = 1;						// 开始计时器计时
 	}
 
 	if (inst->instanceTimerEn == 1)

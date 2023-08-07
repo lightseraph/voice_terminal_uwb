@@ -74,37 +74,37 @@ const tx_struct txSpectrumConfig[8] =
 
 // these are default antenna delays for EVB1000, these can be used if there is no calibration data in the DW1000,
 // or instead of the calibration data
-const uint16 rfDelays[2] = {
-    (uint16)((DWT_PRF_16M_RFDLY / 2.0) * 1e-9 / DWT_TIME_UNITS), // PRF 16
-    (uint16)((DWT_PRF_64M_RFDLY / 2.0) * 1e-9 / DWT_TIME_UNITS)};
+const uint16_t rfDelays[2] = {
+    (uint16_t)((DWT_PRF_16M_RFDLY / 2.0) * 1e-9 / DWT_TIME_UNITS), // PRF 16
+    (uint16_t)((DWT_PRF_64M_RFDLY / 2.0) * 1e-9 / DWT_TIME_UNITS)};
 
-int instance_starttxtest(int framePeriod)
+int instance_starttxtest(int framePeriod, uint8_t channel)
 {
-        // define some test data for the tx buffer
-        uint8 msg[127] = "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the l";
+    // define some test data for the tx buffer
+    uint8_t msg[127] = "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the l";
 
-        // NOTE: SPI frequency must be < 3MHz
-        port_set_dw1000_slowrate(); // max SPI before PLLs configured is ~4M
+    // NOTE: SPI frequency must be < 3MHz
+    port_set_dw_ic_spi_slowrate(); // max SPI before PLLs configured is ~4M
 
-        // the value here 0x1000 gives a period of 32.82 �s
-        // this is setting 0x1000 as frame period (125MHz clock cycles) (time from Tx en - to next - Tx en)
-        dwt_configcontinuousframemode(framePeriod);
+    // the value here 0x1000 gives a period of 32.82 �s
+    // this is setting 0x1000 as frame period (125MHz clock cycles) (time from Tx en - to next - Tx en)
+    dwt_configcontinuousframemode((uint32_t)framePeriod, channel);
 
-        dwt_writetxdata(127, (uint8 *)msg, 0);
-        dwt_writetxfctrl(127, 0, 0);
+    dwt_writetxdata(127, (uint8_t *)msg, 0);
+    dwt_writetxfctrl(127, 0, 0);
 
-        // to start the first frame - set TXSTRT
-        dwt_starttx(DWT_START_TX_IMMEDIATE);
+    // to start the first frame - set TXSTRT
+    dwt_starttx(DWT_START_TX_IMMEDIATE);
 
-        // measure the power
-        // Spectrum Analyser set:
-        // FREQ to be channel default e.g. 3.9936 GHz for channel 2
-        // SPAN to 1GHz
-        // SWEEP TIME 1s
-        // RBW and VBW 1MHz
-        // measure channel power
+    // measure the power
+    // Spectrum Analyser set:
+    // FREQ to be channel default e.g. 3.9936 GHz for channel 2
+    // SPAN to 1GHz
+    // SWEEP TIME 1s
+    // RBW and VBW 1MHz
+    // measure channel power
 
-        return DWT_SUCCESS;
+    return DWT_SUCCESS;
 }
 
 // -------------------------------------------------------------------------------------------------------------------

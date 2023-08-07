@@ -26,7 +26,7 @@
 // Quantity AA is updated for major changes that will need user code changes
 //
 
-#define DW3000_DRIVER_VERSION 0x040000
-#define DW3000_DEVICE_DRIVER_VER_STRING "DW3000 C0 Device Driver Version 04.00.00"
+#define DW3000_DRIVER_VERSION               0x040000
+#define DW3000_DEVICE_DRIVER_VER_STRING     "DW3000 C0 Device Driver Version 04.00.00"
 
 #endif

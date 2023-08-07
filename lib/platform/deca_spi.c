@@ -1,28 +1,28 @@
 /*! ----------------------------------------------------------------------------
- * @file	deca_spi.c
- * @brief	SPI access functions
+ * @file    deca_spi.c
+ * @brief   SPI access functions
  *
  * @attention
  *
- * Copyright 2015 (c) DecaWave Ltd, Dublin, Ireland.
+ * Copyright 2015-2020 (c) DecaWave Ltd, Dublin, Ireland.
  *
  * All rights reserved.
  *
  * @author DecaWave
  */
 
-#include "deca_spi.h"
-#include "deca_device_api.h"
-#include "port.h"
-#include "main.h"
+#include <deca_spi.h>
+#include <deca_device_api.h>
+#include <port.h>
+#include <stm32g0xx_hal_def.h>
 
-extern 	SPI_HandleTypeDef hspi1;	/*clocked from 72MHz*/
+extern SPI_HandleTypeDef hspi1; /*clocked from 72MHz*/
 
-/****************************************************************************//**
- *
- * 								DW1000 SPI section
- *
- *******************************************************************************/
+/****************************************************************************/ /**
+                                                                                *
+                                                                                *                              DW1000 SPI section
+                                                                                *
+                                                                                *******************************************************************************/
 /*! ------------------------------------------------------------------------------------------------------------------
  * Function: openspi()
  *
@@ -31,7 +31,7 @@ extern 	SPI_HandleTypeDef hspi1;	/*clocked from 72MHz*/
  */
 int openspi(/*SPI_TypeDef* SPIx*/)
 {
-	return 0;
+    return 0;
 } // end openspi()
 
 /*! ------------------------------------------------------------------------------------------------------------------
@@ -42,8 +42,38 @@ int openspi(/*SPI_TypeDef* SPIx*/)
  */
 int closespi(void)
 {
-	return 0;
+    return 0;
 } // end closespi()
+
+/*! ------------------------------------------------------------------------------------------------------------------
+ * Function: writetospiwithcrc()
+ *
+ * Low level abstract function to write to the SPI when SPI CRC mode is used
+ * Takes two separate byte buffers for write header and write data, and a CRC8 byte which is written last
+ * returns 0 for success, or -1 for error
+ */
+int writetospiwithcrc(
+    uint16_t headerLength,
+    const uint8_t *headerBuffer,
+    uint16_t bodyLength,
+    const uint8_t *bodyBuffer,
+    uint8_t crc8)
+{
+    decaIrqStatus_t stat;
+    stat = decamutexon();
+    while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY)
+        ;
+
+    HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_RESET); /**< Put chip select line low */
+
+    HAL_SPI_Transmit(&hspi1, (uint8_t *)headerBuffer, headerLength, 10); /* Send header in polling mode */
+    HAL_SPI_Transmit(&hspi1, (uint8_t *)bodyBuffer, bodyLength, 10);     /* Send data in polling mode */
+    HAL_SPI_Transmit(&hspi1, (uint8_t *)&crc8, 1, 10);                   /* Send data in polling mode */
+
+    HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_SET); /**< Put chip select line high */
+    decamutexoff(stat);
+    return 0;
+} // end writetospiwithcrc()
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * Function: writetospi()
@@ -52,30 +82,54 @@ int closespi(void)
  * Takes two separate byte buffers for write header and write data
  * returns 0 for success, or -1 for error
  */
-#pragma GCC optimize ("O3")
 int writetospi(uint16_t headerLength,
-			   const	uint8_t *headerBuffer,
-			   uint32_t bodyLength,
-			   const	uint8_t *bodyBuffer)
+               const uint8_t *headerBuffer,
+               uint16_t bodyLength,
+               const uint8_t *bodyBuffer)
 {
-//    decaIrqStatus_t  stat ;
-//    stat = decamutexon() ;
+    decaIrqStatus_t stat;
+    stat = decamutexon();
 
-	  while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+    while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY)
+        ;
 
     HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_RESET); /**< Put chip select line low */
 
-    HAL_SPI_Transmit(&hspi1, (uint8_t *)&headerBuffer[0], headerLength, 10);	/* Send header in polling mode */
-    HAL_SPI_Transmit(&hspi1, (uint8_t *)&bodyBuffer[0], bodyLength, 10);		/* Send data in polling mode */
+    HAL_SPI_Transmit(&hspi1, (uint8_t *)headerBuffer, headerLength, HAL_MAX_DELAY); /* Send header in polling mode */
+
+    if (bodyLength != 0)
+        HAL_SPI_Transmit(&hspi1, (uint8_t *)bodyBuffer, bodyLength, HAL_MAX_DELAY); /* Send data in polling mode */
 
     HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_SET); /**< Put chip select line high */
-
-
-//    decamutexoff(stat) ;
-
+    decamutexoff(stat);
     return 0;
 } // end writetospi()
 
+/*! ------------------------------------------------------------------------------------------------------------------
+ * @fn spi_cs_low_delay()
+ *
+ * @brief This function sets the CS to '0' for ms delay and than raises it up
+ *
+ * input parameters:
+ * @param ms_delay - The delay for CS to be in '0' state
+ *
+ * no return value
+ */
+uint16_t spi_cs_low_delay(uint16_t delay_ms)
+{
+    /* Blocking: Check whether previous transfer has been finished */
+    while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY)
+        ;
+    /* Process Locked */
+    __HAL_LOCK(&hspi1);
+    HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_RESET); /**< Put chip select line low */
+    Sleep(delay_ms);
+    HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_SET); /**< Put chip select line high */
+    /* Process Unlocked */
+    __HAL_UNLOCK(&hspi1);
+
+    return 0;
+}
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * Function: readfromspi()
@@ -85,42 +139,59 @@ int writetospi(uint16_t headerLength,
  * returns the offset into read buffer where first byte of read data may be found,
  * or returns -1 if there was an error
  */
-#pragma GCC optimize ("O3")
+// #pragma GCC optimize ("O3")
 int readfromspi(uint16_t headerLength,
-				const uint8_t *headerBuffer,
-				uint32_t readlength,
-				uint8_t *readBuffer)
+                uint8_t *headerBuffer,
+                uint16_t readlength,
+                uint8_t *readBuffer)
 {
-	
-	uint8_t spi_TmpBuffer[BUFFLEN];
-	assert_param(headerLength+readlength < BUFFLEN );
-	
-//    decaIrqStatus_t  stat ;
-//    stat = decamutexon() ;
+    int i;
 
-	/* Blocking: Check whether previous transfer has been finished */
-	   
-	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY);
-	
+    decaIrqStatus_t stat;
+    stat = decamutexon();
 
-	HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_RESET); /**< Put chip select line low */
-  
-	HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)headerBuffer, spi_TmpBuffer, (uint16_t)(headerLength+readlength), 10);
+    /* Blocking: Check whether previous transfer has been finished */
+    while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY)
+        ;
 
-	HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_SET); /**< Put chip select line high */
+    HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_RESET); /**< Put chip select line low */
 
-	memcpy((uint8_t*)readBuffer , (uint8_t*)&spi_TmpBuffer[headerLength], readlength);
+    /* Send header */
+    for (i = 0; i < headerLength; i++)
+    {
+        HAL_SPI_Transmit(&hspi1, (uint8_t *)&headerBuffer[i], 1, HAL_MAX_DELAY); // No timeout
+    }
 
-//	decamutexoff(stat);
+    /* for the data buffer use LL functions directly as the HAL SPI read function
+     * has issue reading single bytes */
+    while (readlength-- > 0)
+    {
+        /* Wait until TXE flag is set to send data */
+        while (__HAL_SPI_GET_FLAG(&hspi1, SPI_FLAG_TXE) == RESET)
+        {
+        }
+
+        hspi1.Instance->DR = 0; /* set output to 0 (MOSI), this is necessary for
+        e.g. when waking up DW3000 from DEEPSLEEP via dwt_spicswakeup() function.
+        */
+
+        /* Wait until RXNE flag is set to read data */
+        while (__HAL_SPI_GET_FLAG(&hspi1, SPI_FLAG_RXNE) == RESET)
+        {
+        }
+
+        (*readBuffer++) = hspi1.Instance->DR; // copy data read form (MISO)
+    }
+
+    HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_SET); /**< Put chip select line high */
+
+    decamutexoff(stat);
 
     return 0;
 } // end readfromspi()
 
-/****************************************************************************//**
- *
- * 								END OF DW1000 SPI section
- *
- *******************************************************************************/
-
-
-
+/****************************************************************************/ /**
+                                                                                *
+                                                                                *                              END OF DW1000 SPI section
+                                                                                *
+                                                                                *******************************************************************************/
